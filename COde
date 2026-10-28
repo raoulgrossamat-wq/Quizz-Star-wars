@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEGO Star Wars - Morning Brief Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Orbitron & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0e14;
+      background-image: 
+        radial-gradient(ellipse at 50% -20%, rgba(254, 209, 0, 0.15), transparent 70%),
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #ffd700, rgba(0,0,0,0));
+      background-size: 100% 100%, 250px 250px, 320px 320px, 200px 200px, 400px 400px;
+    }
+
+    .font-scifi {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.08em;
+    }
+
+    /* LEGO Stud Motif */
+    .lego-studs {
+      background-image: radial-gradient(#ffd50033 20%, transparent 20%);
+      background-position: 0 0;
+      background-size: 20px 20px;
+    }
+
+    /* Glow effects */
+    .glow-yellow {
+      box-shadow: 0 0 25px rgba(254, 209, 0, 0.35);
+    }
+    .glow-saber-blue {
+      box-shadow: 0 0 25px rgba(0, 150, 255, 0.45);
+    }
+    .glow-saber-red {
+      box-shadow: 0 0 25px rgba(255, 30, 60, 0.45);
+    }
+
+    @keyframes pulseTimer {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .animate-danger-pulse {
+      animation: pulseTimer 0.6s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between selection:bg-yellow-400 selection:text-black">
+
+  <!-- HEADER -->
+  <header class="w-full border-b border-yellow-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="app.showScreen('welcome')">
+        <!-- LEGO Brick Icon -->
+        <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center font-black text-black shadow-md border-2 border-yellow-200">
+          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            <path d="M19 6V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1H9V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-3zM7 5a1 1 0 0 1 2 0v1H7V5zm8 0a1 1 0 0 1 2 0v1h-2V5z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="text-xs uppercase font-extrabold tracking-widest text-yellow-400 block">LEGO Store Brief</span>
+          <h1 class="text-lg md:text-xl font-scifi font-bold tracking-tight text-white flex items-center gap-2">
+            STAR WARS <span class="text-yellow-400 text-sm md:text-base font-normal">QUIZ</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Header actions -->
+      <div class="flex items-center gap-2">
+        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Activer / Couper le son">
+          <svg id="soundIconOn" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+          <svg id="soundIconOff" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z m12.414-4.586L21 7.414M18 10.414l3 3"/>
+          </svg>
+        </button>
+        <button onclick="app.openCustomModal()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-semibold border border-slate-700 transition flex items-center gap-1.5 text-slate-200">
+          <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span class="hidden sm:inline">Ajouter des</span> Questions
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow flex items-center justify-center p-4 max-w-4xl w-full mx-auto">
+
+    <!-- SCREEN 1: ACCUEIL & CHOIX DU MODE -->
+    <section id="screen-welcome" class="w-full text-center space-y-8 py-6">
+      <div class="space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-xs uppercase tracking-wider font-bold">
+          ⚡ Prêt pour l'ouverture du magasin ?
+        </div>
+        <h2 class="text-3xl md:text-5xl font-black font-scifi text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-500 drop-shadow">
+          LE BRIEF DES JEDI
+        </h2>
+        <p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base">
+          Testez vos connaissances sur l'univers Star Wars et les secrets des sets LEGO avant de monter sur le floor !
+        </p>
+      </div>
+
+      <!-- Sélection du mode -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-left max-w-2xl mx-auto">
+        <!-- Mode Solo / Flash -->
+        <div onclick="app.setupGame('solo')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xl border border-blue-400/30">
+              ⚡
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 font-semibold">Express</span>
+          </div>
+          <h3 class="text-xl font-bold text-white group-hover:text-yellow-400 transition mb-1">Mode Collectif / Solo</h3>
+          <p class="text-sm text-slate-400">Idéal projeté sur grand écran : toute l'équipe répond ensemble ou un collègue est tiré au sort pour relever le défi.</p>
+        </div>
+
+        <!-- Mode Duel Équipes -->
+        <div onclick="app.setupGame('duel')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center font-bold text-xl border border-red-400/30">
+              ⚔️
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 border border-red-500/20 font-semibold">Compétition</span>
+          </div>
+          <h3 class="text-xl font-bold text-white group-hover:text-yellow-400 transition mb-1">Duel de Floor (2 Équipes)</h3>
+          <p class="text-sm text-slate-400">Rebelles vs Empire ! Chaque équipe répond à tour de rôle pour remporter la victoire du matin.</p>
+        </div>
+      </div>
+
+      <!-- Quick Settings -->
+      <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 pt-4">
+        <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 px-4 py-2 rounded-xl border border-slate-800">
+          <input type="checkbox" id="timerEnabledCheck" checked class="w-4 h-4 text-yellow-400 accent-yellow-400 rounded">
+          <span>Minuteur de 15 secondes</span>
+        </label>
+        <span class="text-slate-600">•</span>
+        <div class="text-xs text-slate-500">
+          Base : <span id="poolCountText" class="text-yellow-400 font-bold">20</span> questions prêtes
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: QUESTION EN COURS -->
+    <section id="screen-quiz" class="w-full hidden space-y-6">
+
+      <!-- Barre d'état (Scores, Tour, Minuteur) -->
+      <div class="bg-slate-900/90 backdrop-blur-md rounded-2xl p-4 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+        <!-- Info progression -->
+        <div class="flex items-center gap-3">
+          <span class="text-xs uppercase font-extrabold tracking-wider px-2.5 py-1 rounded bg-slate-800 text-yellow-400 border border-yellow-400/20" id="currentRoundBadge">
+            Question 1 / 10
+          </span>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-md" id="categoryBadge">
+            LEGO Star Wars
+          </span>
+        </div>
+
+        <!-- Mode Duel Status -->
+        <div id="duelHeaderWidget" class="hidden flex items-center gap-4 text-xs font-bold">
+          <div id="teamAStatus" class="px-3 py-1.5 rounded-lg border transition">
+            <span class="text-blue-400">Rebelles :</span> <span id="teamAScore" class="text-white text-sm">0</span>
+          </div>
+          <span class="text-slate-600 font-bold">VS</span>
+          <div id="teamBStatus" class="px-3 py-1.5 rounded-lg border transition">
+            <span class="text-red-400">Empire :</span> <span id="teamBScore" class="text-white text-sm">0</span>
+          </div>
+        </div>
+
+        <!-- Solo Score -->
+        <div id="soloHeaderWidget" class="text-sm font-semibold text-slate-300">
+          Score : <span id="soloScore" class="text-yellow-400 font-scifi font-bold text-lg">0</span> pts
+        </div>
+
+        <!-- Timer Circle -->
+        <div id="timerContainer" class="flex items-center gap-2 font-scifi">
+          <div id="timerBox" class="w-11 h-11 rounded-full bg-slate-800 border-2 border-yellow-400 flex items-center justify-center font-black text-yellow-400 text-lg transition-colors">
+            15
+          </div>
+        </div>
+      </div>
+
+      <!-- Turn Indicator for Duel Mode -->
+      <div id="teamTurnIndicator" class="hidden text-center py-1">
+        <p class="text-sm font-bold tracking-wide uppercase" id="teamTurnText">
+          C'est au tour des <span class="text-blue-400">Rebelles</span> de répondre !
+        </p>
+      </div>
+
+      <!-- Question Card -->
+      <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-2xl">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500"></div>
+
+        <div class="min-h-[100px] flex items-center justify-center text-center">
+          <h3 id="questionText" class="text-xl md:text-2xl font-bold text-slate-100 leading-snug">
+            Question en chargement...
+          </h3>
+        </div>
+
+        <!-- Options Container -->
+        <div id="optionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mt-8">
+          <!-- Les boutons de réponses seront injectés dynamiquement -->
+        </div>
+
+        <!-- Feedback & Explication -->
+        <div id="feedbackContainer" class="hidden mt-6 p-4 rounded-xl border transition-all text-center space-y-2">
+          <div id="feedbackTitle" class="font-scifi font-bold text-lg"></div>
+          <p id="feedbackExplanation" class="text-sm text-slate-300"></p>
+          <button id="nextBtn" onclick="app.nextQuestion()" class="mt-3 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold rounded-xl transition shadow-lg inline-flex items-center gap-2">
+            <span>Question suivante</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: RÉSULTATS / BILAN DU BRIEF -->
+    <section id="screen-results" class="w-full hidden text-center space-y-8 py-6">
+      <div class="space-y-3">
+        <div class="inline-block p-4 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-4xl mb-2" id="resultTrophyIcon">
+          🏆
+        </div>
+        <h2 id="resultMainTitle" class="text-3xl md:text-4xl font-scifi font-black text-white">
+          BRIEF TERMINÉ !
+        </h2>
+        <p id="resultSubtitle" class="text-slate-400 max-w-md mx-auto text-sm md:text-base">
+          Voici le récapitulatif des forces en présence ce matin.
+        </p>
+      </div>
+
+      <!-- Bilan Card -->
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-xl mx-auto shadow-2xl space-y-6">
+        
+        <div id="soloScoreDisplay" class="space-y-2">
+          <p class="text-xs uppercase tracking-widest text-slate-400 font-bold">Score Global</p>
+          <div class="text-5xl font-scifi font-black text-yellow-400" id="finalScoreVal">8 / 10</div>
+          <div class="text-sm font-semibold text-slate-300 pt-1" id="rankTitleBadge">Rang : Chevalier Jedi de Rayon</div>
+        </div>
+
+        <div id="duelScoreDisplay" class="hidden space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-blue-950/40 border border-blue-500/30">
+              <span class="text-xs uppercase font-extrabold text-blue-400 block mb-1">Rebelles</span>
+              <span id="finalTeamAScore" class="text-4xl font-black font-scifi text-white">0</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-red-950/40 border border-red-500/30">
+              <span class="text-xs uppercase font-extrabold text-red-400 block mb-1">Empire</span>
+              <span id="finalTeamBScore" class="text-4xl font-black font-scifi text-white">0</span>
+            </div>
+          </div>
+          <div id="duelWinnerText" class="text-lg font-bold text-yellow-400">
+            Victoire écrasante de l'Alliance Rebelle !
+          </div>
+        </div>
+
+        <!-- Conseil / Punchline LEGO pour la journée -->
+        <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 text-left flex gap-3 items-center">
+          <span class="text-2xl">🧱</span>
+          <div class="text-xs md:text-sm text-slate-300">
+            <strong class="text-white block">Objectif floor du jour :</strong>
+            <span id="dailyMotto">Puisse la Force des ventes être avec vous sur le mur des briques Pick-A-Brick !</span>
+          </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          <button onclick="app.showScreen('welcome')" class="px-6 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-sm transition">
+            Recommencer un quiz
+          </button>
+          <button onclick="app.restartWithSameSettings()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition">
+            Revanche immédiate
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: AJOUTER DES QUESTIONS -->
+  <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+        <h3 class="text-lg font-bold font-scifi text-yellow-400">Ajouter une question personnalisée</h3>
+        <button onclick="app.closeCustomModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-400">
+        Pratique pour injecter une anecdote de votre magasin, une private joke d'équipe ou un set tout juste arrivé en livraison !
+      </p>
+
+      <form id="addQuestionForm" onsubmit="app.handleCustomQuestionSubmit(event)" class="space-y-3 text-sm">
+        <div>
+          <label class="block text-slate-300 text-xs font-semibold mb-1">Question</label>
+          <input type="text" id="custQText" required placeholder="Ex: Combien de pièces compte le Faucon UCS 75192 ?" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-yellow-400">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-emerald-400 text-xs font-semibold mb-1">Bonne réponse</label>
+            <input type="text" id="custQCorrect" required placeholder="Ex: 7 541 pièces" class="w-full bg-slate-800 border border-emerald-500/50 rounded-lg p-2 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-red-400 text-xs font-semibold mb-1">Fausse réponse 1</label>
+            <input type="text" id="custQWrong1" required placeholder="Ex: 5 192 pièces" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-red-400 text-xs font-semibold mb-1">Fausse réponse 2</label>
+            <input type="text" id="custQWrong2" required placeholder="Ex: 8 200 pièces" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-red-400 text-xs font-semibold mb-1">Fausse réponse 3</label>
+            <input type="text" id="custQWrong3" required placeholder="Ex: 6 020 pièces" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 text-xs font-semibold mb-1">Explication fun / Anecdote</label>
+          <input type="text" id="custQExpl" placeholder="Ex: C'est l'un des plus gros sets LEGO jamais créés !" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3">
+          <button type="button" onclick="app.closeCustomModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Annuler</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold">Ajouter au jeu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full text-center py-4 text-xs text-slate-500 border-t border-slate-800/80">
+    <p>Conçu pour animer le brief d'équipe • LEGO® & Star Wars™ • Que la Force soit avec votre chiffre du jour ! 🚀</p>
+  </footer>
+
+  <script>
+    /**
+     * BANQUE DE QUESTIONS STAR WARS & LEGO STAR WARS
+     */
+    const INITIAL_QUESTIONS = [
+      // 1. LEGO Star Wars - Set Mythique
+      {
+        question: "Combien de pièces possède l'iconique Faucon Millenium UCS (réf. 75192) ?",
+        options: ["7 541 pièces", "5 197 pièces", "8 420 pièces", "6 890 pièces"],
+        correct: 0,
+        category: "LEGO UCS",
+        explanation: "Avec ses 7 541 briques, il a longtemps été le plus gros set LEGO de l'histoire avant d'être dépassé par la Carte du Monde et le Titanic !"
+      },
+      // 2. Lore Star Wars
+      {
+        question: "Quelle est la couleur originale du sabre laser de Luke Skywalker dans l'Épisode IV : Un Nouvel Espoir ?",
+        options: ["Bleu", "Vert", "Jaune", "Violet"],
+        correct: 0,
+        category: "Lore Films",
+        explanation: "C'est l'ancien sabre bleu d'Anakin Skywalker, légué par Obi-Wan Kenobi. Il construira son sabre vert pour Le Retour du Jedi."
+      },
+      // 3. LEGO Minifig Collector
+      {
+        question: "Quelle est la particularité très célèbre de la minifig originale de Boba Fett dans le Cloud City de 2003 (set 10123) ?",
+        options: ["Sérigraphie sur les bras et les jambes", "Casque en or 24 carats", "Cape en cuir véritable", "Visage phosphorescent"],
+        correct: 0,
+        category: "Minifigures",
+        explanation: "C'était l'une des toutes premières minifigs avec des bras et jambes imprimés. Elle est aujourd'hui ultra recherchée et cote plus de 1 500 € !"
+      },
+      // 4. Lore Star Wars
+      {
+        question: "Quel numéro d'ordre déclenche l'éradication des Jedi par les soldats Clones ?",
+        options: ["Ordre 66", "Ordre 99", "Ordre 42", "Ordre 1138"],
+        correct: 0,
+        category: "Lore Films",
+        explanation: "L'Ordre 66 a été secrètement implanté via des puces inhibitrices dans le cerveau des soldats clones de la République."
+      },
+      // 5. LEGO Lore
+      {
+        question: "En quelle année est sortie la toute première gamme LEGO Star Wars ?",
+        options: ["1999", "1997", "2002", "1995"],
+        correct: 0,
+        category: "Histoire LEGO",
+        explanation: "1999, à l'occasion de la sortie de La Menace Fantôme au cinéma ! C'était aussi la première licence officielle du Groupe LEGO."
+      },
+      // 6. Lore Star Wars
+      {
+        question: "En combien de parsecs Han Solo affirme-t-il avoir fait le raid de Kessel avec le Faucon Millenium ?",
+        options: ["Moins de 12 parsecs", "En 14 parsecs", "En 20 parsecs", "Moins de 5 parsecs"],
+        correct: 0,
+        category: "Lore Films",
+        explanation: "Moins de 12 parsecs ! Et comme un parsec est une unité de distance et non de temps, cela prouve qu'il a coupé par un raccourci ultra dangereux."
+      },
+      // 7. LEGO Minifig
+      {
+        question: "Avant l'introduction de la couleur 'chair' en 2004, de quelle couleur étaient les visages des minifigs Star Wars ?",
+        options: ["Jaune classique LEGO", "Blanc pâle", "Gris souris", "Transparent"],
+        correct: 0,
+        category: "Histoire LEGO",
+        explanation: "Entre 1999 et début 2004, tous les personnages sous licence comme Luke ou Han Solo avaient la tête jaune classique !"
+      },
+      // 8. Lore Star Wars
+      {
+        question: "Quel est le vrai nom de l'adorable enfant surnommé 'Baby Yoda' dans The Mandalorian ?",
+        options: ["Grogu", "Gorgan", "Yaddle Jr.", "Babu Frik"],
+        correct: 0,
+        category: "Séries & Lore",
+        explanation: "Son nom est Grogu, révélé par Ahsoka Tano sur la planète Corvus."
+      },
+      // 9. LEGO Star Wars
+      {
+        question: "Quel véhicule impérial géant de Hoth a eu droit à une monumentale version UCS (set 75313) de 6 785 pièces ?",
+        options: ["L'AT-AT", "Le Star Destroyer", "Le TIE Interceptor", "L'AT-ST"],
+        correct: 0,
+        category: "LEGO UCS",
+        explanation: "L'AT-AT UCS ! Tellement spacieux qu'il peut accueillir jusqu'à 40 minifigurines de Snowtroopers dans sa carlingue."
+      },
+      // 10. Lore Star Wars
+      {
+        question: "De quel compositeur légendaire sont les musiques inoubliables de la saga Star Wars ?",
+        options: ["John Williams", "Hans Zimmer", "Ennio Morricone", "Howard Shore"],
+        correct: 0,
+        category: "Cinéma",
+        explanation: "John Williams a composé l'ensemble des musiques des 9 films canoniques, remportant un Oscar dès 1978."
+      },
+      // 11. LEGO Fun
+      {
+        question: "Combien d'exemplaires en or massif 14k de la minifig de C-3PO ont été édités pour le concours du 30ème anniversaire en 2007 ?",
+        options: ["Seulement 5 exemplaires", "100 exemplaires", "1 exemplaire unique", "50 exemplaires"],
+        correct: 0,
+        category: "Collector",
+        explanation: "Seulement 5 exemplaires officiels au monde ont été insérés au hasard dans des boîtes de sets aux USA !"
+      },
+      // 12. Lore Star Wars
+      {
+        question: "Qui tue l'Empereur Palpatine dans Le Retour du Jedi en le jetant dans le puits du réacteur ?",
+        options: ["Dark Vador (Anakin Skywalker)", "Luke Skywalker", "Lando Calrissian", "Chewbacca"],
+        correct: 0,
+        category: "Lore Films",
+        explanation: "Dark Vador accomplit enfin la prophétie de l'Élu en sauvant son fils Luke et en précipitant l'Empereur dans l'abîme."
+      },
+      // 13. LEGO Battle Pack
+      {
+        question: "Quel célèbre Battle Pack sorti en 2020 a été massivement réclamé par la communauté AFOL sur les réseaux sociaux ?",
+        options: ["La 501ème Légion de Clone Troopers", "La Garde Royale Impériale", "Les Jawas de Tatooine", "Les Rebelles de Scarif"],
+        correct: 0,
+        category: "Sets Cultes",
+        explanation: "Le set 75280 '501st Legion Clone Troopers' a vu le jour grâce à la campagne virale menée par des milliers de fans !"
+      },
+      // 14. Lore Star Wars
+      {
+        question: "Quelle espèce d'extraterrestres pilote les Podracers et gère la boutique de ferraille où travaille le jeune Anakin sur Tatooine ?",
+        options: ["Un Toydarien (Watto)", "Un Hutt", "Un Rodien", "Un Zabrak"],
+        correct: 0,
+        category: "Lore Films",
+        explanation: "Watto est un Toydarien, une espèce insensible aux tours de passe-passe de l'esprit des Jedi ('Seul l'argent marche avec moi !')."
+      },
+      // 15. LEGO Star Wars
+      {
+        question: "Quelle arme emblématique de Dark Vador est souvent représentée par une tige LEGO trans-red 4L fixée sur une poignée argentée ?",
+        options: ["Son sabre laser", "Son blaster personnel", "Son scanner thermique", "Son détonateur thermique"],
+        correct: 0,
+        category: "Pièces LEGO",
+        explanation: "C'est la barre 4L trans-rouge, devenue l'une des pièces les plus iconiques de toute la gamme !"
+      }
+    ];
+
+    /**
+     * MOTEUR AUDIO (WEB AUDIO API - Sans dépendances externes)
+     */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playSaberCorrect() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        // Bruitage ascensionnel de sabre laser / force
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.35);
+
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.35);
+      }
+
+      playBlasterWrong() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        // Bruitage blaster raté
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(500, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.25);
+
+        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.25);
+      }
+
+      playTick() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(900, this.ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      playVictoryFanfare() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const notes = [261.6, 329.6, 392.0, 523.2]; // C - E - G - C aigu
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.4);
+          }, idx * 140);
+        });
+      }
+    }
+
+    /**
+     * CONTRÔLEUR PRINCIPAL DE L'APPLICATION
+     */
+    class QuizApp {
+      constructor() {
+        this.questionsPool = [...INITIAL_QUESTIONS];
+        this.sound = new SoundEngine();
+
+        this.gameMode = 'solo'; // 'solo' ou 'duel'
+        this.activeQuestions = [];
+        this.currentIndex = 0;
+        this.totalQuestionsCount = 8; // Brief idéal : 8 questions dynamiques
+
+        // Scores
+        this.soloScore = 0;
+        this.teamAScore = 0;
+        this.teamBScore = 0;
+        this.currentTurn = 'teamA'; // 'teamA' (Rebelles) ou 'teamB' (Empire)
+
+        // Minuteur
+        this.timerEnabled = true;
+        this.timerSeconds = 15;
+        this.timerInterval = null;
+        this.hasAnswered = false;
+
+        this.initUI();
+      }
+
+      initUI() {
+        document.getElementById('poolCountText').innerText = this.questionsPool.length;
+      }
+
+      toggleSound() {
+        this.sound.enabled = !this.sound.enabled;
+        const iconOn = document.getElementById('soundIconOn');
+        const iconOff = document.getElementById('soundIconOff');
+        if (this.sound.enabled) {
+          iconOn.classList.remove('hidden');
+          iconOff.classList.add('hidden');
+          this.sound.playTick();
+        } else {
+          iconOn.classList.add('hidden');
+          iconOff.classList.remove('hidden');
+        }
+      }
+
+      showScreen(screenId) {
+        clearInterval(this.timerInterval);
+        document.getElementById('screen-welcome').classList.add('hidden');
+        document.getElementById('screen-quiz').classList.add('hidden');
+        document.getElementById('screen-results').classList.add('hidden');
+
+        document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+      }
+
+      setupGame(mode) {
+        this.sound.init();
+        this.gameMode = mode;
+        this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
+
+        // Mélanger et tirer les questions pour le brief
+        const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
+        const targetCount = Math.min(this.totalQuestionsCount, shuffled.length);
+        this.activeQuestions = shuffled.slice(0, targetCount);
+
+        this.currentIndex = 0;
+        this.soloScore = 0;
+        this.teamAScore = 0;
+        this.teamBScore = 0;
+        this.currentTurn = 'teamA';
+
+        // Config UI
+        if (this.gameMode === 'duel') {
+          document.getElementById('duelHeaderWidget').classList.remove('hidden');
+          document.getElementById('soloHeaderWidget').classList.add('hidden');
+          document.getElementById('teamTurnIndicator').classList.remove('hidden');
+          this.updateDuelHeader();
+        } else {
+          document.getElementById('duelHeaderWidget').classList.add('hidden');
+          document.getElementById('soloHeaderWidget').classList.remove('hidden');
+          document.getElementById('teamTurnIndicator').classList.add('hidden');
+          document.getElementById('soloScore').innerText = '0';
+        }
+
+        const timerContainer = document.getElementById('timerContainer');
+        if (this.timerEnabled) {
+          timerContainer.classList.remove('hidden');
+        } else {
+          timerContainer.classList.add('hidden');
+        }
+
+        this.showScreen('quiz');
+        this.loadQuestion();
+      }
+
+      restartWithSameSettings() {
+        this.setupGame(this.gameMode);
+      }
+
+      updateDuelHeader() {
+        document.getElementById('teamAScore').innerText = this.teamAScore;
+        document.getElementById('teamBScore').innerText = this.teamBScore;
+
+        const teamABox = document.getElementById('teamAStatus');
+        const teamBBox = document.getElementById('teamBStatus');
+        const turnText = document.getElementById('teamTurnText');
+
+        if (this.currentTurn === 'teamA') {
+          teamABox.className = "px-3 py-1.5 rounded-lg border border-blue-400 bg-blue-950/60 shadow-lg shadow-blue-500/20";
+          teamBBox.className = "px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-900/60 opacity-60";
+          turnText.innerHTML = `Au tour de l'<span class="text-blue-400 font-black">ALLIANCE REBELLE</span> !`;
+        } else {
+          teamBBox.className = "px-3 py-1.5 rounded-lg border border-red-500 bg-red-950/60 shadow-lg shadow-red-500/20";
+          teamABox.className = "px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-900/60 opacity-60";
+          turnText.innerHTML = `Au tour de l'<span class="text-red-400 font-black">EMPIRE GALACTIQUE</span> !`;
+        }
+      }
+
+      loadQuestion() {
+        this.hasAnswered = false;
+        clearInterval(this.timerInterval);
+
+        const q = this.activeQuestions[this.currentIndex];
+        document.getElementById('currentRoundBadge').innerText = `Question ${this.currentIndex + 1} / ${this.activeQuestions.length}`;
+        document.getElementById('categoryBadge').innerText = q.category || 'Star Wars';
+
+        // Style badge category
+        const catBadge = document.getElementById('categoryBadge');
+        if (q.category && q.category.includes('LEGO')) {
+          catBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/40';
+        } else {
+          catBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30';
+        }
+
+        document.getElementById('questionText').innerText = q.question;
+        document.getElementById('feedbackContainer').classList.add('hidden');
+
+        // Créer les choix mélangés
+        const grid = document.getElementById('optionsGrid');
+        grid.innerHTML = '';
+
+        // Préparer les réponses avec suivi de l'index correct
+        const choices = q.options.map((opt, idx) => ({
+          text: opt,
+          isCorrect: idx === q.correct
+        }));
+
+        // Mélanger les propositions
+        choices.sort(() => 0.5 - Math.random());
+
+        const letters = ['A', 'B', 'C', 'D'];
+        choices.forEach((choice, i) => {
+          const btn = document.createElement('button');
+          btn.className = `group w-full p-4 rounded-2xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-left flex items-center justify-between transition-all transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none`;
+          btn.innerHTML = `
+            <div class="flex items-center gap-3.5">
+              <span class="w-8 h-8 rounded-lg bg-slate-900 group-hover:bg-yellow-400 group-hover:text-black flex items-center justify-center font-scifi font-bold text-xs text-yellow-400 border border-slate-700 transition">
+                ${letters[i] || '•'}
+              </span>
+              <span class="text-sm md:text-base font-semibold text-slate-100">${choice.text}</span>
+            </div>
+            <div class="option-icon opacity-0 transition"></div>
+          `;
+
+          btn.onclick = () => this.handleAnswer(choice.isCorrect, btn, choices);
+          grid.appendChild(btn);
+        });
+
+        // Minuteur
+        if (this.timerEnabled) {
+          this.startTimer();
+        }
+      }
+
+      startTimer() {
+        this.timerSeconds = 15;
+        const box = document.getElementById('timerBox');
+        box.innerText = this.timerSeconds;
+        box.className = "w-11 h-11 rounded-full bg-slate-800 border-2 border-yellow-400 flex items-center justify-center font-black text-yellow-400 text-lg transition-colors";
+
+        this.timerInterval = setInterval(() => {
+          this.timerSeconds--;
+          box.innerText = this.timerSeconds;
+
+          if (this.timerSeconds <= 5) {
+            box.className = "w-11 h-11 rounded-full bg-red-950/80 border-2 border-red-500 flex items-center justify-center font-black text-red-400 text-lg animate-danger-pulse";
+            this.sound.playTick();
+          }
+
+          if (this.timerSeconds <= 0) {
+            clearInterval(this.timerInterval);
+            this.handleTimeout();
+          }
+        }, 1000);
+      }
+
+      handleTimeout() {
+        if (this.hasAnswered) return;
+        this.hasAnswered = true;
+        this.sound.playBlasterWrong();
+
+        // Révéler les bonnes et mauvaises réponses
+        this.revealAnswers(null, false, true);
+      }
+
+      handleAnswer(isCorrect, clickedBtn, choices) {
+        if (this.hasAnswered) return;
+        this.hasAnswered = true;
+        clearInterval(this.timerInterval);
+
+        if (isCorrect) {
+          this.sound.playSaberCorrect();
+          // Confettis légers
+          if (typeof confetti === 'function') {
+            confetti({
+              particleCount: 35,
+              spread: 60,
+              origin: { y: 0.7 }
+            });
+          }
+
+          // Scores
+          if (this.gameMode === 'solo') {
+            this.soloScore++;
+            document.getElementById('soloScore').innerText = this.soloScore;
+          } else {
+            if (this.currentTurn === 'teamA') {
+              this.teamAScore++;
+            } else {
+              this.teamBScore++;
+            }
+          }
+        } else {
+          this.sound.playBlasterWrong();
+        }
+
+        this.revealAnswers(clickedBtn, isCorrect, false);
+      }
+
+      revealAnswers(clickedBtn, isCorrect, isTimeout) {
+        const q = this.activeQuestions[this.currentIndex];
+        const correctText = q.options[q.correct];
+        const buttons = document.querySelectorAll('#optionsGrid button');
+
+        buttons.forEach(btn => {
+          btn.disabled = true;
+          const text = btn.querySelector('.font-semibold').innerText;
+          const icon = btn.querySelector('.option-icon');
+
+          if (text === correctText) {
+            btn.className = "w-full p-4 rounded-2xl bg-emerald-950/80 border-2 border-emerald-400 text-left flex items-center justify-between";
+            icon.innerHTML = `<span class="text-emerald-400 font-bold text-lg">✓</span>`;
+            icon.classList.remove('opacity-0');
+          } else if (btn === clickedBtn && !isCorrect) {
+            btn.className = "w-full p-4 rounded-2xl bg-red-950/80 border-2 border-red-500 text-left flex items-center justify-between";
+            icon.innerHTML = `<span class="text-red-400 font-bold text-lg">✕</span>`;
+            icon.classList.remove('opacity-0');
+          } else {
+            btn.className = "w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-left opacity-40 flex items-center justify-between";
+          }
+        });
+
+        // Afficher l'explication
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const feedbackExplanation = document.getElementById('feedbackExplanation');
+
+        feedbackContainer.classList.remove('hidden');
+
+        if (isTimeout) {
+          feedbackContainer.className = "mt-6 p-4 rounded-xl border border-amber-500/30 bg-amber-950/30 text-center space-y-2";
+          feedbackTitle.innerText = "⏳ Temps écoulé !";
+          feedbackTitle.className = "font-scifi font-bold text-lg text-amber-400";
+        } else if (isCorrect) {
+          feedbackContainer.className = "mt-6 p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/30 text-center space-y-2";
+          feedbackTitle.innerText = "⭐ Excellente réponse !";
+          feedbackTitle.className = "font-scifi font-bold text-lg text-emerald-400";
+        } else {
+          feedbackContainer.className = "mt-6 p-4 rounded-xl border border-red-500/30 bg-red-950/30 text-center space-y-2";
+          feedbackTitle.innerText = "❌ Raté ! Les briques se sont effondrées";
+          feedbackTitle.className = "font-scifi font-bold text-lg text-red-400";
+        }
+
+        feedbackExplanation.innerText = q.explanation || "Bravo pour l'effort d'équipe !";
+        
+        // Mettre à jour duel widgets
+        if (this.gameMode === 'duel') {
+          this.updateDuelHeader();
+        }
+      }
+
+      nextQuestion() {
+        this.currentIndex++;
+        if (this.currentIndex < this.activeQuestions.length) {
+          // Si mode duel, alterner le tour
+          if (this.gameMode === 'duel') {
+            this.currentTurn = (this.currentTurn === 'teamA') ? 'teamB' : 'teamA';
+            this.updateDuelHeader();
+          }
+          this.loadQuestion();
+        } else {
+          this.showResults();
+        }
+      }
+
+      showResults() {
+        this.showScreen('results');
+        this.sound.playVictoryFanfare();
+
+        // Grande célébration confettis
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 120,
+            spread: 90,
+            origin: { y: 0.5 }
+          });
+        }
+
+        const mottos = [
+          "Que vos constructions soient solides et vos ventes légendaires aujourd'hui !",
+          "Préparez les sabres laser et faites briller le mur Pick-a-Brick !",
+          "La Force est puissante dans cette équipe du matin. Belle journée en magasin !",
+          "Un grand Jedi sait conseiller le bon set à la bonne personne au bon moment !"
+        ];
+        document.getElementById('dailyMotto').innerText = mottos[Math.floor(Math.random() * mottos.length)];
+
+        if (this.gameMode === 'solo') {
+          document.getElementById('soloScoreDisplay').classList.remove('hidden');
+          document.getElementById('duelScoreDisplay').classList.add('hidden');
+
+          const finalScore = this.soloScore;
+          const total = this.activeQuestions.length;
+          document.getElementById('finalScoreVal').innerText = `${finalScore} / ${total}`;
+
+          // Rangs d'équipe galactiques
+          let rank = "";
+          let icon = "🏆";
+          const ratio = finalScore / total;
+
+          if (ratio === 1) {
+            rank = "Grand Maître du Conseil Jedi & Vendeur Légendaire";
+            icon = "👑";
+          } else if (ratio >= 0.75) {
+            rank = "Chevalier Jedi du Floor";
+            icon = "⚔️";
+          } else if (ratio >= 0.5) {
+            rank = "Padawan Prometteur du LEGO Store";
+            icon = "🧱";
+          } else {
+            rank = "Recrue des Mines d'Épice de Kessel (Un café s'impose !)";
+            icon = "☕";
+          }
+
+          document.getElementById('rankTitleBadge').innerText = `Rang : ${rank}`;
+          document.getElementById('resultTrophyIcon').innerText = icon;
+        } else {
+          document.getElementById('soloScoreDisplay').classList.add('hidden');
+          document.getElementById('duelScoreDisplay').classList.remove('hidden');
+
+          document.getElementById('finalTeamAScore').innerText = this.teamAScore;
+          document.getElementById('finalTeamBScore').innerText = this.teamBScore;
+
+          const duelWinnerText = document.getElementById('duelWinnerText');
+          if (this.teamAScore > this.teamBScore) {
+            duelWinnerText.innerHTML = "🚀 Victoire éclatante de l'<span class='text-blue-400'>Alliance Rebelle</span> !";
+            document.getElementById('resultTrophyIcon').innerText = "🛸";
+          } else if (this.teamBScore > this.teamAScore) {
+            duelWinnerText.innerHTML = "⚡ Victoire impériale pour l'<span class='text-red-400'>Empire Galactique</span> !";
+            document.getElementById('resultTrophyIcon').innerText = "💀";
+          } else {
+            duelWinnerText.innerHTML = "🤝 Égalité parfaite ! La Force a trouvé son équilibre ce matin.";
+            document.getElementById('resultTrophyIcon').innerText = "⚖️";
+          }
+        }
+      }
+
+      // MODAL AJOUT QUESTION
+      openCustomModal() {
+        document.getElementById('customModal').classList.remove('hidden');
+      }
+
+      closeCustomModal() {
+        document.getElementById('customModal').classList.add('hidden');
+        document.getElementById('addQuestionForm').reset();
+      }
+
+      handleCustomQuestionSubmit(e) {
+        e.preventDefault();
+        const text = document.getElementById('custQText').value.trim();
+        const correct = document.getElementById('custQCorrect').value.trim();
+        const wrong1 = document.getElementById('custQWrong1').value.trim();
+        const wrong2 = document.getElementById('custQWrong2').value.trim();
+        const wrong3 = document.getElementById('custQWrong3').value.trim();
+        const expl = document.getElementById('custQExpl').value.trim() || "Question personnalisée ajoutée pour le brief d'équipe !";
+
+        if (!text || !correct || !wrong1) return;
+
+        this.questionsPool.unshift({
+          question: text,
+          options: [correct, wrong1, wrong2 || "Autre", wrong3 || "Inconnu"],
+          correct: 0,
+          category: "Spécial Store",
+          explanation: expl
+        });
+
+        this.initUI();
+        this.closeCustomModal();
+        this.sound.playSaberCorrect();
+      }
+    }
+
+    // Instanciation de l'application
+    let app;
+    window.addEventListener('DOMContentLoaded', () => {
+      app = new QuizApp();
+    });
+  </script>
+</body>
+</html>
