@@ -151,7 +151,7 @@
         </label>
         <span class="text-slate-600">•</span>
         <div class="text-xs text-slate-500">
-          Base : <span id="poolCountText" class="text-yellow-400 font-bold">20</span> questions prêtes
+          Base : <span id="poolCountText" class="text-yellow-400 font-bold">100</span> questions prêtes
         </div>
       </div>
     </section>
@@ -185,16 +185,6 @@
         <!-- Solo Score -->
         <div id="soloHeaderWidget" class="text-sm font-semibold text-slate-300">
           <span id="uiSoloName">Score</span> : <span id="soloScore" class="text-yellow-400 font-scifi font-bold text-lg">0</span> pts
-        </div>
-          <span class="text-slate-600 font-bold">VS</span>
-          <div id="teamBStatus" class="px-3 py-1.5 rounded-lg border transition">
-            <span class="text-red-400">Empire :</span> <span id="teamBScore" class="text-white text-sm">0</span>
-          </div>
-        </div>
-
-        <!-- Solo Score -->
-        <div id="soloHeaderWidget" class="text-sm font-semibold text-slate-300">
-          Score : <span id="soloScore" class="text-yellow-400 font-scifi font-bold text-lg">0</span> pts
         </div>
 
         <!-- Timer Circle -->
@@ -963,7 +953,7 @@
         question: "Comment s'appelle le petit alien vert à la voix robotique dans la série Rebels ?",
         options: ["Hera Syndulla", "Kanan Jarrus", "Zeb Orrelios", "C1-10P (Chopper)"],
         correct: 0, category: "Séries & Lore",
-        explanation: "Il s'agissait bien sûr d'un piège, l'alien de l'équipage n'est pas vert, c'est Zeb (qui est violet). L'alien vert c'est Hera, et le robot c'est Chopper !" // Question amusante
+        explanation: "Il s'agissait bien sûr d'un piège, l'alien de l'équipage n'est pas vert, c'est Zeb (qui est violet). L'alien vert c'est Hera, et le robot c'est Chopper !"
       },
       {
         question: "Sur quelle planète s'écrase le vaisseau de Padmé au début de La Menace Fantôme, la forçant à rencontrer Anakin ?",
@@ -1082,7 +1072,7 @@
     ];
 
     /**
-     * MOTEUR AUDIO HYBRIDE (SFX SEULEMENT)
+     * MOTEUR AUDIO HYBRIDE (SFX SEULEMENT - SANS MUSIQUE)
      */
     class SoundEngine {
       constructor() {
@@ -1100,12 +1090,6 @@
         if (this.ctx && this.ctx.state === 'suspended') {
           this.ctx.resume();
         }
-      }
-
-      // Bruitages synthétisés
-      testSound() {
-        this.initCtx();
-        this.playSaberCorrect();
       }
 
       playSaberCorrect() {
@@ -1202,7 +1186,7 @@
         this.gameMode = 'solo';
         this.activeQuestions = [];
         this.currentIndex = 0;
-        this.totalQuestionsCount = 8;
+        this.totalQuestionsCount = 10;
 
         this.soloScore = 0;
         this.teamAScore = 0;
@@ -1295,7 +1279,7 @@
         this.gameMode = mode;
         this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
 
-        // Passage à 10 questions par quiz
+        // Configuration pour 10 questions
         this.totalQuestionsCount = 10;
 
         const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
