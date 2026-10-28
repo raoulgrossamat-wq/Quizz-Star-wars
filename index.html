@@ -79,24 +79,24 @@
       <!-- Header actions -->
       <div class="flex items-center gap-2">
         <!-- BGM Controls Bar -->
-        <div class="hidden sm:flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-xl px-2.5 py-1.5 shadow-inner">
-          <button id="bgmToggleBtn" onclick="app.toggleMusic()" class="p-1.5 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 transition flex items-center gap-1.5 text-xs font-bold" title="Musique d'ambiance Star Wars">
+        <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-xl px-2.5 py-1.5 shadow-inner">
+          <button id="bgmToggleBtn" onclick="app.toggleMusic()" class="p-1.5 rounded-lg bg-yellow-400 text-black font-extrabold transition flex items-center gap-1.5 text-xs shadow-md shadow-yellow-500/20" title="Activer / Couper la musique">
             <span id="bgmPlayIcon">▶</span>
-            <span class="hidden md:inline" id="bgmStatusLabel">Musique</span>
+            <span class="hidden sm:inline" id="bgmStatusLabel">Musique</span>
           </button>
           
           <select id="bgmTrackSelect" onchange="app.changeMusicTrack(this.value)" class="bg-slate-800 text-xs text-yellow-300 font-semibold rounded-lg px-2 py-1 border border-slate-700 focus:outline-none focus:border-yellow-400">
             <option value="mainTheme">Thème Principal</option>
             <option value="imperialMarch">Marche Impériale</option>
+            <option value="cantina">Cantina Band</option>
           </select>
 
-          <input type="range" id="bgmVolumeSlider" min="0" max="1" step="0.05" value="0.25" oninput="app.setMusicVolume(this.value)" class="w-16 h-1.5 accent-yellow-400 bg-slate-700 rounded-lg cursor-pointer" title="Volume musique">
-        </div>
+          <input type="range" id="bgmVolumeSlider" min="0" max="1" step="0.05" value="0.45" oninput="app.setMusicVolume(this.value)" class="w-16 sm:w-20 h-1.5 accent-yellow-400 bg-slate-700 rounded-lg cursor-pointer" title="Volume musique">
 
-        <!-- Bouton compact musique mobile -->
-        <button onclick="app.toggleMusic()" class="sm:hidden p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Musique Star Wars">
-          🎵
-        </button>
+          <button onclick="app.sound.testSound()" class="hidden md:inline text-[11px] px-2 py-1 bg-slate-800 hover:bg-slate-700 text-yellow-400 rounded-lg border border-slate-700 font-semibold transition" title="Tester le son">
+            🔊 Test
+          </button>
+        </div>
 
         <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Activer / Couper les bruitages">
           <svg id="soundIconOn" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,6 +131,18 @@
         <p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base">
           Testez vos connaissances sur l'univers Star Wars et les secrets des sets LEGO avant de monter sur le floor !
         </p>
+
+        <!-- BANNIÈRE D'ACTIVATION AUDIO (Contourne le blocage d'autoplay des navigateurs) -->
+        <div class="pt-2">
+          <button id="bigAudioActivateBtn" onclick="app.enableAndPlayMusic()" class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-black text-sm md:text-base shadow-xl shadow-yellow-500/20 transform hover:scale-105 transition-all">
+            <span class="text-xl">🎵</span>
+            <span id="bigAudioBtnText">Lancer la Musique Star Wars</span>
+            <span class="text-xs bg-black/20 text-black px-2 py-0.5 rounded-full font-bold">MP3 & Audio HD</span>
+          </button>
+          <div id="audioStatusBadge" class="text-xs text-yellow-400/80 font-semibold mt-2">
+            Piste prête : <span id="currentPlayingName" class="text-white">Thème Principal Star Wars</span>
+          </div>
+        </div>
       </div>
 
       <!-- Sélection du mode -->
@@ -722,6 +734,289 @@
     }
 
     /**
+     * MOTEUR AUDIO HYBRIDE (MP3 STREAMING + FALLBACK WEB AUDIO + SFX)
+     */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+        this.isMusicPlaying = false;
+        this.musicVolume = 0.45;
+        this.currentTrack = 'mainTheme';
+
+        // Pistes MP3 réelles hébergées publiquement sur Internet Archive (CORS ouvert)
+        this.tracks = {
+          mainTheme: {
+            name: "Thème Principal Star Wars",
+            url: "https://archive.org/download/NimbleBit_Star-Wars_Tiny-Death-Star-Soundtrack/Tiny-Death-Star_Main-Star-Wars-Theme.mp3"
+          },
+          imperialMarch: {
+            name: "La Marche Impériale (Dark Vador)",
+            url: "https://archive.org/download/NimbleBit_Star-Wars_Tiny-Death-Star-Soundtrack/Tiny-Death-Star_The-Imperial-March.mp3"
+          },
+          cantina: {
+            name: "Cantina Band (Mos Eisley)",
+            url: "https://archive.org/download/NimbleBit_Star-Wars_Tiny-Death-Star-Soundtrack/Tiny-Death-Star_Cantina-Theme.mp3"
+          }
+        };
+
+        // Élément HTML5 Audio principal
+        this.audioElement = new Audio();
+        this.audioElement.loop = true;
+        this.audioElement.volume = this.musicVolume;
+        this.audioElement.preload = "auto";
+        this.audioElement.crossOrigin = "anonymous";
+
+        // Détection d'erreur réseau pour repli automatique sur le synthétiseur
+        this.audioElement.addEventListener('error', (e) => {
+          console.warn("Échec du streaming MP3, bascule sur le synthétiseur Web Audio :", e);
+          if (this.isMusicPlaying) {
+            this.startSynthMusic();
+          }
+        });
+
+        // Variables pour le synthétiseur de secours
+        this.synthTimer = null;
+        this.synthStep = 0;
+        this.isSynthRunning = false;
+      }
+
+      initCtx() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      setVolume(val) {
+        this.musicVolume = parseFloat(val);
+        if (this.audioElement) {
+          this.audioElement.volume = this.musicVolume;
+        }
+      }
+
+      playTrack(trackKey) {
+        this.initCtx();
+        if (this.tracks[trackKey]) {
+          this.currentTrack = trackKey;
+        }
+
+        const trackData = this.tracks[this.currentTrack];
+        this.stopSynthMusic();
+
+        // Mettre à jour l'audio source si différent
+        if (this.audioElement.src !== trackData.url) {
+          this.audioElement.src = trackData.url;
+        }
+
+        this.audioElement.volume = this.musicVolume;
+        const playPromise = this.audioElement.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              this.isMusicPlaying = true;
+              if (window.app) window.app.updateMusicUI(true);
+            })
+            .catch((err) => {
+              console.warn("Lecture MP3 bloquée ou indisponible, passage au synthétiseur Web Audio :", err);
+              this.startSynthMusic();
+            });
+        }
+      }
+
+      pauseMusic() {
+        this.isMusicPlaying = false;
+        if (this.audioElement) {
+          this.audioElement.pause();
+        }
+        this.stopSynthMusic();
+        if (window.app) window.app.updateMusicUI(false);
+      }
+
+      toggleMusic() {
+        if (this.isMusicPlaying) {
+          this.pauseMusic();
+        } else {
+          this.playTrack(this.currentTrack);
+        }
+      }
+
+      // Synthétiseur Web Audio en secours direct
+      startSynthMusic() {
+        this.initCtx();
+        this.isMusicPlaying = true;
+        this.isSynthRunning = true;
+        this.synthStep = 0;
+        if (window.app) window.app.updateMusicUI(true);
+        this.runSynthLoop();
+      }
+
+      stopSynthMusic() {
+        this.isSynthRunning = false;
+        if (this.synthTimer) {
+          clearTimeout(this.synthTimer);
+          this.synthTimer = null;
+        }
+      }
+
+      playSynthNote(freq, duration) {
+        if (!this.ctx || !this.isSynthRunning) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+        const targetGain = Math.max(0.01, this.musicVolume * 0.2);
+        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(targetGain, this.ctx.currentTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration - 0.02);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      }
+
+      runSynthLoop() {
+        if (!this.isSynthRunning) return;
+
+        const mainThemeSeq = [
+          [261.63, 140, 150], [261.63, 140, 150], [261.63, 140, 150],
+          [349.23, 750, 780], [523.25, 750, 780],
+          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170],
+          [698.46, 750, 780], [523.25, 450, 480],
+          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170],
+          [698.46, 750, 800]
+        ];
+
+        const imperialSeq = [
+          [392.00, 420, 480], [392.00, 420, 480], [392.00, 420, 480],
+          [311.13, 320, 360], [466.16, 130, 160], [392.00, 420, 480],
+          [311.13, 320, 360], [466.16, 130, 160], [392.00, 800, 950]
+        ];
+
+        const cantinaSeq = [
+          [293.66, 160, 180], [392.00, 160, 180], [293.66, 160, 180], [392.00, 160, 180],
+          [440.00, 160, 180], [392.00, 160, 180], [369.99, 160, 180], [392.00, 320, 380]
+        ];
+
+        let seq = mainThemeSeq;
+        if (this.currentTrack === 'imperialMarch') seq = imperialSeq;
+        if (this.currentTrack === 'cantina') seq = cantinaSeq;
+
+        const currentNote = seq[this.synthStep];
+        if (currentNote) {
+          const [freq, durMs, delayMs] = currentNote;
+          this.playSynthNote(freq, durMs / 1000);
+
+          this.synthTimer = setTimeout(() => {
+            this.synthStep++;
+            if (this.synthStep >= seq.length) {
+              this.synthStep = 0;
+              this.synthTimer = setTimeout(() => this.runSynthLoop(), 1000);
+            } else {
+              this.runSynthLoop();
+            }
+          }, delayMs);
+        }
+      }
+
+      // Bruitages synthétisés
+      testSound() {
+        this.initCtx();
+        this.playSaberCorrect();
+      }
+
+      playSaberCorrect() {
+        if (!this.enabled) return;
+        this.initCtx();
+        if (!this.ctx) return;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(280, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.35);
+
+        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.35);
+      }
+
+      playBlasterWrong() {
+        if (!this.enabled) return;
+        this.initCtx();
+        if (!this.ctx) return;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(550, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.25);
+
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.25);
+      }
+
+      playTick() {
+        if (!this.enabled) return;
+        this.initCtx();
+        if (!this.ctx) return;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(950, this.ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      playVictoryFanfare() {
+        if (!this.enabled) return;
+        this.initCtx();
+        if (!this.ctx) return;
+
+        const notes = [261.6, 329.6, 392.0, 523.2];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.4);
+          }, idx * 130);
+        });
+      }
+    }
+
+    /**
      * CONTRÔLEUR PRINCIPAL DE L'APPLICATION
      */
     class QuizApp {
@@ -729,18 +1024,16 @@
         this.questionsPool = [...INITIAL_QUESTIONS];
         this.sound = new SoundEngine();
 
-        this.gameMode = 'solo'; // 'solo' ou 'duel'
+        this.gameMode = 'solo';
         this.activeQuestions = [];
         this.currentIndex = 0;
-        this.totalQuestionsCount = 8; // Brief idéal : 8 questions dynamiques
+        this.totalQuestionsCount = 8;
 
-        // Scores
         this.soloScore = 0;
         this.teamAScore = 0;
         this.teamBScore = 0;
-        this.currentTurn = 'teamA'; // 'teamA' (Rebelles) ou 'teamB' (Empire)
+        this.currentTurn = 'teamA';
 
-        // Minuteur
         this.timerEnabled = true;
         this.timerSeconds = 15;
         this.timerInterval = null;
@@ -751,44 +1044,60 @@
 
       initUI() {
         document.getElementById('poolCountText').innerText = this.questionsPool.length;
+        this.updateMusicUI(false);
       }
 
-      toggleMusic() {
-        this.sound.init();
-        if (this.sound.isMusicPlaying) {
-          this.sound.stopMusic();
-          this.updateMusicUI(false);
+      enableAndPlayMusic() {
+        this.sound.initCtx();
+        if (!this.sound.isMusicPlaying) {
+          this.sound.playTrack(this.sound.currentTrack);
         } else {
-          this.sound.startMusic(this.sound.currentTrack);
-          this.updateMusicUI(true);
+          this.sound.pauseMusic();
         }
       }
 
-      changeMusicTrack(track) {
-        this.sound.currentTrack = track;
+      toggleMusic() {
+        this.sound.initCtx();
+        this.sound.toggleMusic();
+      }
+
+      changeMusicTrack(trackKey) {
+        this.sound.currentTrack = trackKey;
+        const name = this.sound.tracks[trackKey] ? this.sound.tracks[trackKey].name : trackKey;
+        const playingLabel = document.getElementById('currentPlayingName');
+        if (playingLabel) playingLabel.innerText = name;
+
         if (this.sound.isMusicPlaying) {
-          this.sound.startMusic(track);
+          this.sound.playTrack(trackKey);
         }
       }
 
       setMusicVolume(val) {
-        this.sound.setMusicVolume(val);
+        this.sound.setVolume(val);
       }
 
       updateMusicUI(isPlaying) {
         const btn = document.getElementById('bgmToggleBtn');
         const icon = document.getElementById('bgmPlayIcon');
         const label = document.getElementById('bgmStatusLabel');
-        if (btn && icon && label) {
-          if (isPlaying) {
-            btn.className = "p-1.5 rounded-lg bg-yellow-400 text-black transition flex items-center gap-1.5 text-xs font-bold shadow-md shadow-yellow-500/30";
-            icon.innerText = "⏸";
-            label.innerText = "Lecture";
-          } else {
-            btn.className = "p-1.5 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 transition flex items-center gap-1.5 text-xs font-bold";
-            icon.innerText = "▶";
-            label.innerText = "Musique";
-          }
+        const bigBtn = document.getElementById('bigAudioBtnText');
+
+        if (isPlaying) {
+          if (btn) btn.className = "p-1.5 rounded-lg bg-yellow-400 text-black font-extrabold transition flex items-center gap-1.5 text-xs shadow-md shadow-yellow-500/40 animate-pulse";
+          if (icon) icon.innerText = "⏸";
+          if (label) label.innerText = "Pause";
+          if (bigBtn) bigBtn.innerText = "Couper la musique";
+        } else {
+          if (btn) btn.className = "p-1.5 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 font-extrabold transition flex items-center gap-1.5 text-xs";
+          if (icon) icon.innerText = "▶";
+          if (label) label.innerText = "Musique";
+          if (bigBtn) bigBtn.innerText = "Lancer la Musique Star Wars";
+        }
+
+        const trackData = this.sound.tracks[this.sound.currentTrack];
+        const playingLabel = document.getElementById('currentPlayingName');
+        if (playingLabel && trackData) {
+          playingLabel.innerText = `${trackData.name} ${isPlaying ? '(En cours 🎶)' : ''}`;
         }
       }
 
@@ -816,17 +1125,15 @@
       }
 
       setupGame(mode) {
-        this.sound.init();
+        this.sound.initCtx();
         this.gameMode = mode;
         this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
 
-        // Lancer la musique automatiquement si elle n'est pas encore en cours pour donner de l'énergie au brief
+        // Démarrer la musique en direct lors du clic si elle n'est pas déjà en cours
         if (!this.sound.isMusicPlaying) {
-          this.sound.startMusic(this.sound.currentTrack);
-          this.updateMusicUI(true);
+          this.sound.playTrack(this.sound.currentTrack);
         }
 
-        // Mélanger et tirer les questions pour le brief
         const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
         const targetCount = Math.min(this.totalQuestionsCount, shuffled.length);
         this.activeQuestions = shuffled.slice(0, targetCount);
@@ -837,7 +1144,6 @@
         this.teamBScore = 0;
         this.currentTurn = 'teamA';
 
-        // Config UI
         if (this.gameMode === 'duel') {
           document.getElementById('duelHeaderWidget').classList.remove('hidden');
           document.getElementById('soloHeaderWidget').classList.add('hidden');
@@ -892,7 +1198,6 @@
         document.getElementById('currentRoundBadge').innerText = `Question ${this.currentIndex + 1} / ${this.activeQuestions.length}`;
         document.getElementById('categoryBadge').innerText = q.category || 'Star Wars';
 
-        // Style badge category
         const catBadge = document.getElementById('categoryBadge');
         if (q.category && q.category.includes('LEGO')) {
           catBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/40';
@@ -903,17 +1208,14 @@
         document.getElementById('questionText').innerText = q.question;
         document.getElementById('feedbackContainer').classList.add('hidden');
 
-        // Créer les choix mélangés
         const grid = document.getElementById('optionsGrid');
         grid.innerHTML = '';
 
-        // Préparer les réponses avec suivi de l'index correct
         const choices = q.options.map((opt, idx) => ({
           text: opt,
           isCorrect: idx === q.correct
         }));
 
-        // Mélanger les propositions
         choices.sort(() => 0.5 - Math.random());
 
         const letters = ['A', 'B', 'C', 'D'];
@@ -934,7 +1236,6 @@
           grid.appendChild(btn);
         });
 
-        // Minuteur
         if (this.timerEnabled) {
           this.startTimer();
         }
@@ -966,8 +1267,6 @@
         if (this.hasAnswered) return;
         this.hasAnswered = true;
         this.sound.playBlasterWrong();
-
-        // Révéler les bonnes et mauvaises réponses
         this.revealAnswers(null, false, true);
       }
 
@@ -978,7 +1277,6 @@
 
         if (isCorrect) {
           this.sound.playSaberCorrect();
-          // Confettis légers
           if (typeof confetti === 'function') {
             confetti({
               particleCount: 35,
@@ -987,7 +1285,6 @@
             });
           }
 
-          // Scores
           if (this.gameMode === 'solo') {
             this.soloScore++;
             document.getElementById('soloScore').innerText = this.soloScore;
@@ -1028,7 +1325,6 @@
           }
         });
 
-        // Afficher l'explication
         const feedbackContainer = document.getElementById('feedbackContainer');
         const feedbackTitle = document.getElementById('feedbackTitle');
         const feedbackExplanation = document.getElementById('feedbackExplanation');
@@ -1051,7 +1347,6 @@
 
         feedbackExplanation.innerText = q.explanation || "Bravo pour l'effort d'équipe !";
         
-        // Mettre à jour duel widgets
         if (this.gameMode === 'duel') {
           this.updateDuelHeader();
         }
@@ -1060,7 +1355,6 @@
       nextQuestion() {
         this.currentIndex++;
         if (this.currentIndex < this.activeQuestions.length) {
-          // Si mode duel, alterner le tour
           if (this.gameMode === 'duel') {
             this.currentTurn = (this.currentTurn === 'teamA') ? 'teamB' : 'teamA';
             this.updateDuelHeader();
@@ -1075,7 +1369,6 @@
         this.showScreen('results');
         this.sound.playVictoryFanfare();
 
-        // Grande célébration confettis
         if (typeof confetti === 'function') {
           confetti({
             particleCount: 120,
@@ -1100,7 +1393,6 @@
           const total = this.activeQuestions.length;
           document.getElementById('finalScoreVal').innerText = `${finalScore} / ${total}`;
 
-          // Rangs d'équipe galactiques
           let rank = "";
           let icon = "🏆";
           const ratio = finalScore / total;
@@ -1142,7 +1434,6 @@
         }
       }
 
-      // MODAL AJOUT QUESTION
       openCustomModal() {
         document.getElementById('customModal').classList.remove('hidden');
       }
@@ -1177,7 +1468,6 @@
       }
     }
 
-    // Instanciation de l'application
     let app;
     window.addEventListener('DOMContentLoaded', () => {
       app = new QuizApp();
