@@ -78,7 +78,27 @@
 
       <!-- Header actions -->
       <div class="flex items-center gap-2">
-        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Activer / Couper le son">
+        <!-- BGM Controls Bar -->
+        <div class="hidden sm:flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-xl px-2.5 py-1.5 shadow-inner">
+          <button id="bgmToggleBtn" onclick="app.toggleMusic()" class="p-1.5 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 transition flex items-center gap-1.5 text-xs font-bold" title="Musique d'ambiance Star Wars">
+            <span id="bgmPlayIcon">▶</span>
+            <span class="hidden md:inline" id="bgmStatusLabel">Musique</span>
+          </button>
+          
+          <select id="bgmTrackSelect" onchange="app.changeMusicTrack(this.value)" class="bg-slate-800 text-xs text-yellow-300 font-semibold rounded-lg px-2 py-1 border border-slate-700 focus:outline-none focus:border-yellow-400">
+            <option value="mainTheme">Thème Principal</option>
+            <option value="imperialMarch">Marche Impériale</option>
+          </select>
+
+          <input type="range" id="bgmVolumeSlider" min="0" max="1" step="0.05" value="0.25" oninput="app.setMusicVolume(this.value)" class="w-16 h-1.5 accent-yellow-400 bg-slate-700 rounded-lg cursor-pointer" title="Volume musique">
+        </div>
+
+        <!-- Bouton compact musique mobile -->
+        <button onclick="app.toggleMusic()" class="sm:hidden p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Musique Star Wars">
+          🎵
+        </button>
+
+        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Activer / Couper les bruitages">
           <svg id="soundIconOn" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
           </svg>
@@ -150,6 +170,11 @@
         <div class="text-xs text-slate-500">
           Base : <span id="poolCountText" class="text-yellow-400 font-bold">20</span> questions prêtes
         </div>
+        <span class="text-slate-600">•</span>
+        <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800 text-yellow-400 text-xs">
+          <span>🎵 Musique pendant le quiz :</span>
+          <span class="font-bold cursor-pointer underline" onclick="app.toggleMusic()">Basculer</span>
+        </label>
       </div>
     </section>
 
@@ -477,6 +502,14 @@
       constructor() {
         this.ctx = null;
         this.enabled = true;
+
+        // Music synthesizer state
+        this.isMusicPlaying = false;
+        this.currentTrack = 'mainTheme'; // 'mainTheme' ou 'imperialMarch'
+        this.musicVolume = 0.25;
+        this.musicTimer = null;
+        this.musicStep = 0;
+        this.masterMusicGain = null;
       }
 
       init() {
@@ -484,10 +517,122 @@
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           if (AudioContext) {
             this.ctx = new AudioContext();
+            this.masterMusicGain = this.ctx.createGain();
+            this.masterMusicGain.gain.setValueAtTime(this.musicVolume, this.ctx.currentTime);
+            this.masterMusicGain.connect(this.ctx.destination);
           }
         }
         if (this.ctx && this.ctx.state === 'suspended') {
           this.ctx.resume();
+        }
+      }
+
+      setMusicVolume(val) {
+        this.musicVolume = parseFloat(val);
+        if (this.masterMusicGain && this.ctx) {
+          this.masterMusicGain.gain.setValueAtTime(this.musicVolume, this.ctx.currentTime);
+        }
+      }
+
+      // Synthèse des notes orchestrales (cuivres / cordes spatiales)
+      playTone(freq, duration, type = 'sawtooth', detune = 0) {
+        if (!this.ctx || !this.isMusicPlaying) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        // Légère émulation de résonance pour un timbre plus cuivré
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        osc.detune.setValueAtTime(detune, this.ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.18, this.ctx.currentTime + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration - 0.02);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterMusicGain);
+
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      }
+
+      playChordNote(freq, duration) {
+        // Double oscillateur pour un effet majestueux
+        this.playTone(freq, duration, 'sawtooth', 0);
+        this.playTone(freq * 0.998, duration, 'triangle', -4);
+        // Basse octave sous-jacente
+        this.playTone(freq / 2, duration, 'triangle', 0);
+      }
+
+      startMusic(trackName) {
+        this.init();
+        if (trackName) this.currentTrack = trackName;
+        this.stopMusic();
+        this.isMusicPlaying = true;
+        this.musicStep = 0;
+        this.runMusicLoop();
+      }
+
+      stopMusic() {
+        this.isMusicPlaying = false;
+        if (this.musicTimer) {
+          clearTimeout(this.musicTimer);
+          this.musicTimer = null;
+        }
+      }
+
+      runMusicLoop() {
+        if (!this.isMusicPlaying) return;
+
+        // Partitions simplifiées mais reconnaissables des deux chefs-d'œuvre de John Williams
+        // Note: [Fréquence en Hz, durée en ms, délai avant note suivante en ms]
+        const mainThemeSequence = [
+          // Fanfare d'ouverture
+          [261.63, 140, 150], [261.63, 140, 150], [261.63, 140, 150], // C C C
+          [349.23, 750, 780], // F
+          [523.25, 750, 780], // C aigu
+          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170], // Bb A G
+          [698.46, 750, 780], // F aigu
+          [523.25, 450, 480], // C
+          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170], // Bb A G
+          [698.46, 750, 780], // F aigu
+          [523.25, 550, 600], // C
+          [466.16, 180, 190], [440.00, 180, 190], [466.16, 180, 190], [392.00, 700, 950] // Bb A Bb G
+        ];
+
+        const imperialMarchSequence = [
+          // Thème Dark Vador (Sol - Sol - Sol - Mib - Sib - Sol...)
+          [392.00, 420, 480], [392.00, 420, 480], [392.00, 420, 480],
+          [311.13, 320, 360], [466.16, 130, 160], [392.00, 420, 480],
+          [311.13, 320, 360], [466.16, 130, 160], [392.00, 800, 900],
+          // Deuxième phrase
+          [587.33, 420, 480], [587.33, 420, 480], [587.33, 420, 480],
+          [622.25, 320, 360], [466.16, 130, 160], [369.99, 420, 480],
+          [311.13, 320, 360], [466.16, 130, 160], [392.00, 800, 950]
+        ];
+
+        const seq = this.currentTrack === 'imperialMarch' ? imperialMarchSequence : mainThemeSequence;
+        const currentNote = seq[this.musicStep];
+
+        if (currentNote) {
+          const [freq, durationMs, stepDelay] = currentNote;
+          this.playChordNote(freq, durationMs / 1000);
+
+          this.musicTimer = setTimeout(() => {
+            this.musicStep++;
+            if (this.musicStep >= seq.length) {
+              this.musicStep = 0;
+              // Petite respiration avant de reboucler
+              this.musicTimer = setTimeout(() => this.runMusicLoop(), 1200);
+            } else {
+              this.runMusicLoop();
+            }
+          }, stepDelay);
         }
       }
 
@@ -608,6 +753,45 @@
         document.getElementById('poolCountText').innerText = this.questionsPool.length;
       }
 
+      toggleMusic() {
+        this.sound.init();
+        if (this.sound.isMusicPlaying) {
+          this.sound.stopMusic();
+          this.updateMusicUI(false);
+        } else {
+          this.sound.startMusic(this.sound.currentTrack);
+          this.updateMusicUI(true);
+        }
+      }
+
+      changeMusicTrack(track) {
+        this.sound.currentTrack = track;
+        if (this.sound.isMusicPlaying) {
+          this.sound.startMusic(track);
+        }
+      }
+
+      setMusicVolume(val) {
+        this.sound.setMusicVolume(val);
+      }
+
+      updateMusicUI(isPlaying) {
+        const btn = document.getElementById('bgmToggleBtn');
+        const icon = document.getElementById('bgmPlayIcon');
+        const label = document.getElementById('bgmStatusLabel');
+        if (btn && icon && label) {
+          if (isPlaying) {
+            btn.className = "p-1.5 rounded-lg bg-yellow-400 text-black transition flex items-center gap-1.5 text-xs font-bold shadow-md shadow-yellow-500/30";
+            icon.innerText = "⏸";
+            label.innerText = "Lecture";
+          } else {
+            btn.className = "p-1.5 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 transition flex items-center gap-1.5 text-xs font-bold";
+            icon.innerText = "▶";
+            label.innerText = "Musique";
+          }
+        }
+      }
+
       toggleSound() {
         this.sound.enabled = !this.sound.enabled;
         const iconOn = document.getElementById('soundIconOn');
@@ -635,6 +819,12 @@
         this.sound.init();
         this.gameMode = mode;
         this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
+
+        // Lancer la musique automatiquement si elle n'est pas encore en cours pour donner de l'énergie au brief
+        if (!this.sound.isMusicPlaying) {
+          this.sound.startMusic(this.sound.currentTrack);
+          this.updateMusicUI(true);
+        }
 
         // Mélanger et tirer les questions pour le brief
         const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
