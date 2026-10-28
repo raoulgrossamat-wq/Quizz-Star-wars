@@ -377,128 +377,707 @@
 
   <script>
     /**
-     * BANQUE DE QUESTIONS STAR WARS & LEGO STAR WARS
+     * BANQUE DE 100 QUESTIONS STAR WARS & LEGO STAR WARS
      */
     const INITIAL_QUESTIONS = [
-      // 1. LEGO Star Wars - Set Mythique
+      // 1-15 : Les questions originales
       {
         question: "Combien de pièces possède l'iconique Faucon Millenium UCS (réf. 75192) ?",
         options: ["7 541 pièces", "5 197 pièces", "8 420 pièces", "6 890 pièces"],
-        correct: 0,
-        category: "LEGO UCS",
+        correct: 0, category: "LEGO UCS",
         explanation: "Avec ses 7 541 briques, il a longtemps été le plus gros set LEGO de l'histoire avant d'être dépassé par la Carte du Monde et le Titanic !"
       },
-      // 2. Lore Star Wars
       {
         question: "Quelle est la couleur originale du sabre laser de Luke Skywalker dans l'Épisode IV : Un Nouvel Espoir ?",
         options: ["Bleu", "Vert", "Jaune", "Violet"],
-        correct: 0,
-        category: "Lore Films",
+        correct: 0, category: "Lore Films",
         explanation: "C'est l'ancien sabre bleu d'Anakin Skywalker, légué par Obi-Wan Kenobi. Il construira son sabre vert pour Le Retour du Jedi."
       },
-      // 3. LEGO Minifig Collector
       {
         question: "Quelle est la particularité très célèbre de la minifig originale de Boba Fett dans le Cloud City de 2003 (set 10123) ?",
         options: ["Sérigraphie sur les bras et les jambes", "Casque en or 24 carats", "Cape en cuir véritable", "Visage phosphorescent"],
-        correct: 0,
-        category: "Minifigures",
+        correct: 0, category: "Minifigures",
         explanation: "C'était l'une des toutes premières minifigs avec des bras et jambes imprimés. Elle est aujourd'hui ultra recherchée et cote plus de 1 500 € !"
       },
-      // 4. Lore Star Wars
       {
         question: "Quel numéro d'ordre déclenche l'éradication des Jedi par les soldats Clones ?",
         options: ["Ordre 66", "Ordre 99", "Ordre 42", "Ordre 1138"],
-        correct: 0,
-        category: "Lore Films",
+        correct: 0, category: "Lore Films",
         explanation: "L'Ordre 66 a été secrètement implanté via des puces inhibitrices dans le cerveau des soldats clones de la République."
       },
-      // 5. LEGO Lore
       {
         question: "En quelle année est sortie la toute première gamme LEGO Star Wars ?",
         options: ["1999", "1997", "2002", "1995"],
-        correct: 0,
-        category: "Histoire LEGO",
+        correct: 0, category: "Histoire LEGO",
         explanation: "1999, à l'occasion de la sortie de La Menace Fantôme au cinéma ! C'était aussi la première licence officielle du Groupe LEGO."
       },
-      // 6. Lore Star Wars
       {
         question: "En combien de parsecs Han Solo affirme-t-il avoir fait le raid de Kessel avec le Faucon Millenium ?",
         options: ["Moins de 12 parsecs", "En 14 parsecs", "En 20 parsecs", "Moins de 5 parsecs"],
-        correct: 0,
-        category: "Lore Films",
+        correct: 0, category: "Lore Films",
         explanation: "Moins de 12 parsecs ! Et comme un parsec est une unité de distance et non de temps, cela prouve qu'il a coupé par un raccourci ultra dangereux."
       },
-      // 7. LEGO Minifig
       {
         question: "Avant l'introduction de la couleur 'chair' en 2004, de quelle couleur étaient les visages des minifigs Star Wars ?",
         options: ["Jaune classique LEGO", "Blanc pâle", "Gris souris", "Transparent"],
-        correct: 0,
-        category: "Histoire LEGO",
+        correct: 0, category: "Histoire LEGO",
         explanation: "Entre 1999 et début 2004, tous les personnages sous licence comme Luke ou Han Solo avaient la tête jaune classique !"
       },
-      // 8. Lore Star Wars
       {
         question: "Quel est le vrai nom de l'adorable enfant surnommé 'Baby Yoda' dans The Mandalorian ?",
         options: ["Grogu", "Gorgan", "Yaddle Jr.", "Babu Frik"],
-        correct: 0,
-        category: "Séries & Lore",
+        correct: 0, category: "Séries & Lore",
         explanation: "Son nom est Grogu, révélé par Ahsoka Tano sur la planète Corvus."
       },
-      // 9. LEGO Star Wars
       {
         question: "Quel véhicule impérial géant de Hoth a eu droit à une monumentale version UCS (set 75313) de 6 785 pièces ?",
         options: ["L'AT-AT", "Le Star Destroyer", "Le TIE Interceptor", "L'AT-ST"],
-        correct: 0,
-        category: "LEGO UCS",
+        correct: 0, category: "LEGO UCS",
         explanation: "L'AT-AT UCS ! Tellement spacieux qu'il peut accueillir jusqu'à 40 minifigurines de Snowtroopers dans sa carlingue."
       },
-      // 10. Lore Star Wars
       {
         question: "De quel compositeur légendaire sont les musiques inoubliables de la saga Star Wars ?",
         options: ["John Williams", "Hans Zimmer", "Ennio Morricone", "Howard Shore"],
-        correct: 0,
-        category: "Cinéma",
+        correct: 0, category: "Cinéma",
         explanation: "John Williams a composé l'ensemble des musiques des 9 films canoniques, remportant un Oscar dès 1978."
       },
-      // 11. LEGO Fun
       {
         question: "Combien d'exemplaires en or massif 14k de la minifig de C-3PO ont été édités pour le concours du 30ème anniversaire en 2007 ?",
         options: ["Seulement 5 exemplaires", "100 exemplaires", "1 exemplaire unique", "50 exemplaires"],
-        correct: 0,
-        category: "Collector",
+        correct: 0, category: "Collector",
         explanation: "Seulement 5 exemplaires officiels au monde ont été insérés au hasard dans des boîtes de sets aux USA !"
       },
-      // 12. Lore Star Wars
       {
         question: "Qui tue l'Empereur Palpatine dans Le Retour du Jedi en le jetant dans le puits du réacteur ?",
         options: ["Dark Vador (Anakin Skywalker)", "Luke Skywalker", "Lando Calrissian", "Chewbacca"],
-        correct: 0,
-        category: "Lore Films",
+        correct: 0, category: "Lore Films",
         explanation: "Dark Vador accomplit enfin la prophétie de l'Élu en sauvant son fils Luke et en précipitant l'Empereur dans l'abîme."
       },
-      // 13. LEGO Battle Pack
       {
         question: "Quel célèbre Battle Pack sorti en 2020 a été massivement réclamé par la communauté AFOL sur les réseaux sociaux ?",
         options: ["La 501ème Légion de Clone Troopers", "La Garde Royale Impériale", "Les Jawas de Tatooine", "Les Rebelles de Scarif"],
-        correct: 0,
-        category: "Sets Cultes",
+        correct: 0, category: "Sets Cultes",
         explanation: "Le set 75280 '501st Legion Clone Troopers' a vu le jour grâce à la campagne virale menée par des milliers de fans !"
       },
-      // 14. Lore Star Wars
       {
         question: "Quelle espèce d'extraterrestres pilote les Podracers et gère la boutique de ferraille où travaille le jeune Anakin sur Tatooine ?",
         options: ["Un Toydarien (Watto)", "Un Hutt", "Un Rodien", "Un Zabrak"],
-        correct: 0,
-        category: "Lore Films",
-        explanation: "Watto est un Toydarien, une espèce insensible aux tours de passe-passe de l'esprit des Jedi ('Seul l'argent marche avec moi !')."
+        correct: 0, category: "Lore Films",
+        explanation: "Watto est un Toydarien, une espèce insensible aux tours de passe-passe de l'esprit des Jedi."
       },
-      // 15. LEGO Star Wars
       {
         question: "Quelle arme emblématique de Dark Vador est souvent représentée par une tige LEGO trans-red 4L fixée sur une poignée argentée ?",
         options: ["Son sabre laser", "Son blaster personnel", "Son scanner thermique", "Son détonateur thermique"],
-        correct: 0,
-        category: "Pièces LEGO",
+        correct: 0, category: "Pièces LEGO",
         explanation: "C'est la barre 4L trans-rouge, devenue l'une des pièces les plus iconiques de toute la gamme !"
+      },
+
+      // NOUVELLES QUESTIONS (16-100)
+      {
+        question: "Sur quelle planète volcanique a lieu le duel épique entre Obi-Wan Kenobi et Anakin Skywalker ?",
+        options: ["Mustafar", "Geonosis", "Sullust", "Tatooine"],
+        correct: 0, category: "Lore Films",
+        explanation: "C'est sur Mustafar, au milieu des rivières de lave, que Dark Vador subit ses terribles blessures."
+      },
+      {
+        question: "Dans quel set LEGO de 2023 trouve-t-on le Croiseur d'Assaut de classe Venator de la République ?",
+        options: ["Le set UCS 75367", "Le set Master Builder 75290", "Le set 75252", "Le set 75192"],
+        correct: 0, category: "LEGO UCS",
+        explanation: "Le monumental Venator UCS (75367) célèbre les 20 ans de la série The Clone Wars avec plus de 5 000 pièces."
+      },
+      {
+        question: "Comment s'appelle le Wookiee, fidèle compagnon de Han Solo ?",
+        options: ["Chewbacca", "Tarfful", "Krrsantan", "Zaalbar"],
+        correct: 0, category: "Lore Films",
+        explanation: "Chewbacca (ou Chewie), copilote du Faucon Millenium et ami fidèle de Han Solo."
+      },
+      {
+        question: "Dans la gamme LEGO Star Wars 'Diorama Collection', quelle scène mythique de l'Épisode IV a été recréée (set 75339) ?",
+        options: ["Le compacteur d'ordures de l'Étoile de la Mort", "Le bar de Mos Eisley", "L'attaque de Hoth", "Le combat sur Mustafar"],
+        correct: 0, category: "Dioramas LEGO",
+        explanation: "Le compacteur d'ordures, avec un mécanisme ingénieux permettant de resserrer les murs sur Luke, Han, Leia et Chewie !"
+      },
+      {
+        question: "Quel Seigneur Sith possède un sabre laser rouge à double lame dans La Menace Fantôme ?",
+        options: ["Dark Maul", "Le Comte Dooku", "Dark Sidious", "Kylo Ren"],
+        correct: 0, category: "Lore Films",
+        explanation: "Dark Maul, l'apprenti de Dark Sidious, qui utilise ce sabre impressionnant lors du Duel of the Fates."
+      },
+      {
+        question: "Comment s'appelle le vaisseau emblématique de Boba Fett (bien que Disney l'appelle désormais 'Firespray') ?",
+        options: ["Le Slave I", "Le Razor Crest", "Le Hound's Tooth", "L'IG-2000"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "Le Slave I (Esclave I), un vaisseau de patrouille de classe Firespray-31 redouté dans toute la galaxie."
+      },
+      {
+        question: "Quel acteur incarne Luke Skywalker dans la trilogie originale ?",
+        options: ["Mark Hamill", "Harrison Ford", "Carrie Fisher", "Alec Guinness"],
+        correct: 0, category: "Cinéma",
+        explanation: "Mark Hamill a donné vie au personnage de Luke Skywalker à partir de 1977."
+      },
+      {
+        question: "Dans le set LEGO Cantina de Mos Eisley (Master Builder Series 75290), combien de minifigures exclusives environ trouve-t-on ?",
+        options: ["Plus de 20 (dont 7 exclusives)", "Environ 10", "Seulement 5", "Plus de 40"],
+        correct: 0, category: "Master Builder",
+        explanation: "Ce set massif contient 21 minifigures, dont des personnages jamais édités auparavant comme Ponda Baba ou Dr. Evazan."
+      },
+      {
+        question: "Quelle est la couleur du sabre laser de Mace Windu ?",
+        options: ["Violet", "Rouge", "Vert", "Bleu"],
+        correct: 0, category: "Armes & Lore",
+        explanation: "Violet ! L'acteur Samuel L. Jackson avait expressément demandé cette couleur à George Lucas pour se démarquer dans les batailles."
+      },
+      {
+        question: "Quel droïde astromech est le compagnon indissociable de C-3PO ?",
+        options: ["R2-D2", "BB-8", "Chopper", "K-2SO"],
+        correct: 0, category: "Personnages",
+        explanation: "R2-D2, le petit droïde cylindrique bleu et blanc qui a sauvé la mise de nos héros d'innombrables fois."
+      },
+      {
+        question: "Quel set LEGO de la collection 'Casques' a été le premier à sortir représentant un chasseur de primes ?",
+        options: ["Casque de Boba Fett (75277)", "Casque du Mandalorien", "Casque de Boushh", "Casque de Jango Fett"],
+        correct: 0, category: "Casques LEGO",
+        explanation: "Le casque de Boba Fett a fait partie de la toute première vague de la Helmet Collection en 2020."
+      },
+      {
+        question: "Sur quelle planète se trouve la base Echo des rebelles dans L'Empire Contre-Attaque ?",
+        options: ["Hoth", "Endor", "Yavin 4", "Crait"],
+        correct: 0, category: "Planètes",
+        explanation: "Hoth, la planète glacée qui est le théâtre d'une des plus grandes batailles de la saga."
+      },
+      {
+        question: "Quel chasseur stellaire de l'Alliance Rebelle est célèbre pour ses ailes en forme de 'X' ?",
+        options: ["Le X-Wing", "Le Y-Wing", "Le A-Wing", "Le B-Wing"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "Le X-Wing, piloté par Luke Skywalker lors de la destruction de la première Étoile de la Mort."
+      },
+      {
+        question: "En quelle année LEGO a-t-il sorti pour la première fois l'Étoile de la Mort sous forme de playset géant (10188) ?",
+        options: ["2008", "2005", "2012", "2016"],
+        correct: 0, category: "Histoire LEGO",
+        explanation: "Sortie en 2008, la Death Star 10188 est restée au catalogue pendant 7 ans, un record de longévité pour un set !"
+      },
+      {
+        question: "Qui est le père de Boba Fett ?",
+        options: ["Jango Fett", "Cad Bane", "Hondo Ohnaka", "Din Djarin"],
+        correct: 0, category: "Lore Films",
+        explanation: "Jango Fett, dont Boba est un clone inaltéré qu'il a élevé comme son fils sur Kamino."
+      },
+      {
+        question: "Quel Cristal donne sa couleur et sa puissance à un sabre laser ?",
+        options: ["Un Cristal Kyber", "Un Cristal de Krayt", "Un Cristal de Corusca", "Un Diamant de Naboo"],
+        correct: 0, category: "Armes & Lore",
+        explanation: "Les cristaux Kyber. Les Sith doivent faire 'saigner' le cristal pour qu'il devienne rouge."
+      },
+      {
+        question: "Dans le premier jeu vidéo LEGO Star Wars sorti en 2005, quel lieu servait de Hub central (Menu) ?",
+        options: ["Le Dexter's Diner (Coruscant)", "La Cantina de Mos Eisley", "Le Temple Jedi", "Le Faucon Millenium"],
+        correct: 0, category: "Jeux Vidéo LEGO",
+        explanation: "C'était le fameux 'Dexter's Diner'. La Cantina est devenue le hub dans le deuxième jeu !"
+      },
+      {
+        question: "Qui est le Suprême Leader du Premier Ordre au début de la Postlogie ?",
+        options: ["Snoke", "Kylo Ren", "Général Hux", "Palpatine"],
+        correct: 0, category: "Lore Films",
+        explanation: "Le Suprême Leader Snoke, qui sera par la suite trahi par son apprenti Kylo Ren."
+      },
+      {
+        question: "Quel set LEGO de 2022 (75331) reproduit le vaisseau emblématique de Din Djarin en version UCS ?",
+        options: ["Le Razor Crest", "Le Naboo N-1 Starfighter", "Le Gauntlet Mandalorien", "Le Light Cruiser"],
+        correct: 0, category: "LEGO UCS",
+        explanation: "Le Razor Crest UCS avec plus de 6000 pièces, détaillé à l'extrême avec sa soute et sa chambre de congélation carbonique."
+      },
+      {
+        question: "Comment s'appelle l'apprentie d'Anakin Skywalker dans The Clone Wars ?",
+        options: ["Ahsoka Tano", "Asajj Ventress", "Barriss Offee", "Aayla Secura"],
+        correct: 0, category: "Séries & Lore",
+        explanation: "Ahsoka Tano, surnommée 'Chipie' (Snips en VO) par Anakin."
+      },
+      {
+        question: "Quelle créature poilue vit sur la lune forestière d'Endor ?",
+        options: ["Les Ewoks", "Les Wookiees", "Les Jawas", "Les Ugnaughts"],
+        correct: 0, category: "Espèces",
+        explanation: "Les Ewoks, qui ont aidé l'Alliance Rebelle à vaincre l'Empire dans Le Retour du Jedi."
+      },
+      {
+        question: "La première minifigurine de Maître Yoda (en 2002) avait un défaut de fabrication amusant. Lequel ?",
+        options: ["La couleur verte n'était pas la bonne (vert sable)", "Il était plus grand que Luke Skywalker", "Ses oreilles étaient à l'envers", "Il n'avait pas de jambes"],
+        correct: 0, category: "Anecdotes LEGO",
+        explanation: "La teinte choisie était un vert sable (sand green) très terne. Cela a vite été corrigé par la suite vers un vert plus vif."
+      },
+      {
+        question: "Quel chasseur TIE possède des panneaux solaires incurvés vers l'intérieur ?",
+        options: ["Le TIE Advanced x1 (Dark Vador)", "Le TIE Interceptor", "Le TIE Bomber", "Le TIE Defender"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "Le TIE Advanced x1, le prototype personnel utilisé par Dark Vador lors de la Bataille de Yavin."
+      },
+      {
+        question: "Quel droïde assassin accompagne souvent Boba Fett et a une forme élancée ?",
+        options: ["IG-88", "4-LOM", "HK-47", "K-2SO"],
+        correct: 0, category: "Personnages",
+        explanation: "IG-88, un terrifiant droïde assassin devenu chasseur de primes."
+      },
+      {
+        question: "Quel set de 2021 (75308) est une version ultra détaillée de R2-D2 et inclut une brique spéciale pour le 50ème anniversaire de Lucasfilm ?",
+        options: ["R2-D2 (Construisible)", "Le Diorama de Dagobah", "Le Faucon Millenium Microfighter", "La base d'Endor"],
+        correct: 0, category: "Sets Cultes",
+        explanation: "Ce R2-D2 construisible cache d'ailleurs le sabre laser de Luke dans sa tête, comme dans le film !"
+      },
+      {
+        question: "Sur quelle planète est basé le Temple Jedi dans la prélogie ?",
+        options: ["Coruscant", "Naboo", "Alderaan", "Tython"],
+        correct: 0, category: "Planètes",
+        explanation: "Coruscant, la planète-ville qui sert de capitale à la République Galactique."
+      },
+      {
+        question: "Quel est l'ancien nom de Kylo Ren ?",
+        options: ["Ben Solo", "Jacen Solo", "Anakin Solo", "Kyp Durron"],
+        correct: 0, category: "Lore Films",
+        explanation: "Ben Solo, le fils de Leia Organa et de Han Solo."
+      },
+      {
+        question: "Laquelle de ces couleurs n'a jamais été utilisée officiellement par LEGO pour la lame d'un sabre laser ?",
+        options: ["Orange opaque", "Vert fluo transparent", "Violet transparent", "Noir (Darksaber)"],
+        correct: 0, category: "Pièces LEGO",
+        explanation: "La tige n'a jamais été moulée en 'Orange opaque'. L'orange a toujours été transparent, comme les autres sabres."
+      },
+      {
+        question: "Quel contrebandier gagne la cité des Nuages (Bespin) au jeu de Sabacc ?",
+        options: ["Lando Calrissian", "Han Solo", "Dash Rendar", "Maz Kanata"],
+        correct: 0, category: "Lore Films",
+        explanation: "Lando Calrissian, avant d'en devenir l'administrateur baron."
+      },
+      {
+        question: "Comment s'appelle le vaisseau amiral de Dark Vador, long de 19 kilomètres ?",
+        options: ["L'Executor", "L'Étoile de la Mort", "Le Chimaera", "L'Invisible Hand"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "L'Executor, un Super Star Destroyer de classe Executor qui s'écrase sur la 2ème Étoile de la Mort."
+      },
+      {
+        question: "En quelle année est sorti le jeu vidéo épique 'LEGO Star Wars : La Saga Skywalker' ?",
+        options: ["2022", "2020", "2019", "2023"],
+        correct: 0, category: "Jeux Vidéo LEGO",
+        explanation: "Sorti en avril 2022, il retrace l'intégralité des 9 films canoniques avec un tout nouveau moteur de jeu."
+      },
+      {
+        question: "Quel Seigneur Sith a instauré la célèbre 'Règle des Deux' (un maître et un apprenti) ?",
+        options: ["Dark Bane", "Dark Plagueis", "Dark Revan", "Dark Sidious"],
+        correct: 0, category: "Lore Étendu",
+        explanation: "Dark Bane, pour éviter que les Sith ne se détruisent perpétuellement entre eux."
+      },
+      {
+        question: "Quelle créature monstrueuse vit dans les égouts du compacteur d'ordures de l'Étoile de la Mort ?",
+        options: ["Un Dianoga", "Un Sarlacc", "Un Rathtar", "Un Wampa"],
+        correct: 0, category: "Créatures",
+        explanation: "Le Dianoga, une créature tentaculaire avec un seul œil sur un pédoncule."
+      },
+      {
+        question: "Dans le Faucon Millenium UCS (75192), on trouve deux 'équipages'. Qui représente la version Postlogie ?",
+        options: ["Vieux Han, Rey, Finn, BB-8", "Luke, Leia, Han, Chewie", "Lando, Nien Nunb", "Rey, Poe, Rose"],
+        correct: 0, category: "LEGO UCS",
+        explanation: "Le set permet de changer l'antenne (ronde ou rectangulaire) et fournit les deux générations de personnages !"
+      },
+      {
+        question: "Qui a dit la célèbre réplique : 'C'est un piège !' (It's a trap!) ?",
+        options: ["L'Amiral Ackbar", "Mon Mothma", "Général Dodonna", "Princesse Leia"],
+        correct: 0, category: "Citations",
+        explanation: "L'Amiral Ackbar du peuple Mon Calamari lors de la Bataille d'Endor."
+      },
+      {
+        question: "Sur quelle planète Luke Skywalker s'isole-t-il à la fin de sa vie ?",
+        options: ["Ahch-To", "Dagobah", "Tatooine", "Exegol"],
+        correct: 0, category: "Planètes",
+        explanation: "Ahch-To, le lieu supposé du premier Temple Jedi."
+      },
+      {
+        question: "Quel format LEGO regroupe généralement 4 minifigures et un petit véhicule pour se créer une armée à petit prix ?",
+        options: ["Les Battle Packs", "Les Microfighters", "Les Mechs (Robots)", "Les Polybags"],
+        correct: 0, category: "Gamme LEGO",
+        explanation: "Les Battle Packs, inventés en 2007, sont les produits préférés des collectionneurs pour faire du 'Army Building'."
+      },
+      {
+        question: "De quelle planète est originaire la Reine Padmé Amidala ?",
+        options: ["Naboo", "Alderaan", "Chandrila", "Coruscant"],
+        correct: 0, category: "Lore Films",
+        explanation: "Naboo, une planète pacifique connue pour son architecture magnifique et le peuple Gungan."
+      },
+      {
+        question: "Qui est le créateur original de la saga Star Wars ?",
+        options: ["George Lucas", "Steven Spielberg", "J.J. Abrams", "Dave Filoni"],
+        correct: 0, category: "Cinéma",
+        explanation: "George Lucas, qui a écrit et réalisé le premier film en 1977."
+      },
+      {
+        question: "Combien y a-t-il de films Star Wars dans la 'Saga Skywalker' canonique (sans les spin-offs) ?",
+        options: ["9 films", "6 films", "12 films", "8 films"],
+        correct: 0, category: "Cinéma",
+        explanation: "9 films divisés en 3 trilogies (Prélogie, Originale, Postlogie)."
+      },
+      {
+        question: "Dans le set LEGO du 'Trône de l'Empereur' (Diorama 75352), quel élément sert de fenêtre géante à l'arrière-plan ?",
+        options: ["Une pièce sérigraphiée sur mesure de grande taille", "Un grand autocollant transparent", "L'utilisation de briques de cockpit", "Rien, c'est ouvert"],
+        correct: 0, category: "Pièces LEGO",
+        explanation: "C'est en réalité une verrière géante (souvent utilisée pour les cockpits de gros vaisseaux) spécialement sérigraphiée !"
+      },
+      {
+        question: "Quel nom porte l'armée de clones commandée par le Capitaine Rex et Anakin Skywalker ?",
+        options: ["La 501ème Légion", "La 212ème Bataillon d'Attaque", "La Garde de Coruscant", "Les Bad Batch (Clone Force 99)"],
+        correct: 0, category: "Lore Films",
+        explanation: "La 501ème Légion, arborant des marques bleues sur leurs armures."
+      },
+      {
+        question: "Quelle princesse est la sœur jumelle de Luke Skywalker ?",
+        options: ["Leia Organa", "Padmé Amidala", "Mon Mothma", "Jyn Erso"],
+        correct: 0, category: "Lore Films",
+        explanation: "Leia Organa, adoptée et élevée sur Alderaan par Bail Organa."
+      },
+      {
+        question: "Quel animal Din Djarin (le Mandalorien) doit-il monter pour maîtriser l'art de la monte sur Arvala-7 ?",
+        options: ["Un Blurrg", "Un Bantha", "Un Tauntaun", "Un Dewback"],
+        correct: 0, category: "Séries & Lore",
+        explanation: "Un Blurrg, une bête bipède têtue avec l'aide de Kuiil ('J'ai parlé')."
+      },
+      {
+        question: "Quelle a été la toute première arme brandie par un Jedi en brique LEGO dans le set 7140 X-Wing en 1999 ?",
+        options: ["Un sabre laser (manche gris classique + tige transparente)", "Un blaster noir standard", "Un pistolet chromé", "Une épée médiévale LEGO"],
+        correct: 0, category: "Histoire LEGO",
+        explanation: "Dès 1999, LEGO avait moulé le manche de sabre laser que nous connaissons tous encore aujourd'hui !"
+      },
+      {
+        question: "Quel Général cyborg manie 4 sabres laser grâce à ses 4 bras ?",
+        options: ["Général Grievous", "Dark Maul", "L'Amiral Trench", "K-2SO"],
+        correct: 0, category: "Lore Films",
+        explanation: "Le Général Grievous, commandant en chef de l'armée droïde séparatiste."
+      },
+      {
+        question: "Quelle drogue épicée est extraite des mines de la planète Kessel ?",
+        options: ["Le Coaxium", "L'Épice", "Le Bacta", "La Carbonite"],
+        correct: 0, category: "Lore Films",
+        explanation: "L'Épice (ou coaxium brut). C'est pourquoi Han Solo fait le 'raid de Kessel'."
+      },
+      {
+        question: "Comment s'appelle l'Édition Spéciale LEGO qui fête les 25 ans de la gamme Star Wars en 2024 ?",
+        options: ["Des sets incluant une minifig exclusive 25ème anniversaire", "Des briques en or dans toutes les boîtes", "Des sets 100% gratuits", "La réédition du tout premier Faucon"],
+        correct: 0, category: "Histoire LEGO",
+        explanation: "Des minifigs spéciales (Fives, Dark Malak, Cal Kestis...) sont incluses sur un socle anniversaire dans certains sets de 2024 !"
+      },
+      {
+        question: "Qui dirige la cantina sur Takodana dans l'Épisode VII ?",
+        options: ["Maz Kanata", "Jabba le Hutt", "Dexter Jettster", "Greef Karga"],
+        correct: 0, category: "Lore Films",
+        explanation: "Maz Kanata, une extraterrestre millénaire qui conserve le sabre laser de Luke/Anakin."
+      },
+      {
+        question: "Quelle était la spécialité des soldats clones appelés 'Bad Batch' (Clone Force 99) ?",
+        options: ["Des clones avec des mutations génétiques désirables", "Des pilotes de chasse d'élite", "Des clones défectueux envoyés à la casse", "La garde personnelle de Palpatine"],
+        correct: 0, category: "Séries & Lore",
+        explanation: "Ce sont des clones génétiquement modifiés (Hunter, Wrecker, Tech, Crosshair) possédant des talents uniques."
+      },
+      {
+        question: "Quel set géant UCS a été réédité en 2017 (réf. 75192) après une première version culte en 2007 (réf. 10179) ?",
+        options: ["Le Faucon Millenium", "L'Étoile de la Mort", "L'Imperial Star Destroyer", "Le Super Star Destroyer"],
+        correct: 0, category: "LEGO UCS",
+        explanation: "Le Millennium Falcon UCS, passant de 5195 pièces (2007) à 7541 pièces (2017)."
+      },
+      {
+        question: "Sur Tatooine, quel véhicule chenillé massif est utilisé par les Jawas comme base mobile ?",
+        options: ["Un Sandcrawler (Char des Sables)", "Un Juggernaut", "Un AT-AT", "Un Landspeeder"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "Le Sandcrawler (Char des sables). De nombreux sets LEGO l'ont reproduit au fil des ans !"
+      },
+      {
+        question: "Quel Jedi s'infiltre sur Kamino et découvre l'armée de clones ?",
+        options: ["Obi-Wan Kenobi", "Mace Windu", "Yoda", "Qui-Gon Jinn"],
+        correct: 0, category: "Lore Films",
+        explanation: "Obi-Wan Kenobi, en poursuivant Jango Fett depuis Coruscant."
+      },
+      {
+        question: "Dans la gamme LEGO Star Wars 'Microfighters', qui conduit généralement le mini-vaisseau ?",
+        options: ["Une vraie minifigurine assise sur le toit", "Personne, il n'y a pas de place", "Un micro-droïde exclusif", "Une figurine moulée d'une seule pièce"],
+        correct: 0, category: "Gamme LEGO",
+        explanation: "Les Microfighters se caractérisent par des proportions déformées (Chibi) où la vraie minifig s'assoit de manière comique sur le dessus du vaisseau !"
+      },
+      {
+        question: "Comment s'appelle l'Amiral impérial à la peau bleue et aux yeux rouges de la série Ahsoka / Rebels ?",
+        options: ["Le Grand Amiral Thrawn", "L'Amiral Piett", "L'Amiral Ozzel", "Le Moff Gideon"],
+        correct: 0, category: "Séries & Lore",
+        explanation: "Le Grand Amiral Thrawn, un génie tacticien brillant et impitoyable."
+      },
+      {
+        question: "Quel animal monstrueux Luke doit-il affronter dans la fosse de Jabba le Hutt ?",
+        options: ["Un Rancor", "Un Sarlacc", "Un Wampa", "Un Dragon Krayt"],
+        correct: 0, category: "Créatures",
+        explanation: "Le Rancor. Luke parvient à le tuer en écrasant sa tête avec la herse de la grotte."
+      },
+      {
+        question: "En quelle année LEGO a-t-il mis fin aux visages de couleur 'jaune classique' pour la licence Star Wars ?",
+        options: ["2004", "1999", "2010", "2007"],
+        correct: 0, category: "Histoire LEGO",
+        explanation: "À partir de 2004 (notamment avec la sortie de l'Étoile de la mort 10188 et les sets Episode IV), les teintes 'chair' ont été adoptées."
+      },
+      {
+        question: "Comment s'appelle l'arme traditionnelle mandalorienne à lame noire ?",
+        options: ["Le Darksaber (Sabre Noir)", "La Lance en Beskar", "Le Vibrolame", "Le Marteau de Forge"],
+        correct: 0, category: "Armes & Lore",
+        explanation: "Le Darksaber, créé par Tarre Vizsla, le premier Mandalorien à intégrer l'Ordre Jedi."
+      },
+      {
+        question: "Quel chasseur est piloté par l'Empire et est réputé pour son cri perçant dans le vide spatial ?",
+        options: ["Le Chasseur TIE", "Le Star Destroyer", "La Navette Lambda", "L'Intercepteur Jedi"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "Le TIE Fighter (Twin Ion Engine), célèbre pour son hurlement caractéristique inventé par le designer sonore Ben Burtt."
+      },
+      {
+        question: "Dans le set LEGO 75159 (L'Étoile de la Mort de 2016), combien de pièces contient-il environ ?",
+        options: ["~4 000 pièces", "~2 000 pièces", "~7 500 pièces", "~10 000 pièces"],
+        correct: 0, category: "Sets Cultes",
+        explanation: "Elle contient précisément 4 016 pièces. C'est une mise à jour mineure de la version de 2008 (10188)."
+      },
+      {
+        question: "Quelle Sith Inquisitrice traque Obi-Wan Kenobi dans la série éponyme ?",
+        options: ["Reva (La Troisième Sœur)", "Trilla (La Deuxième Sœur)", "Shin Hati", "Asajj Ventress"],
+        correct: 0, category: "Séries & Lore",
+        explanation: "Reva, ancienne apprentie Jedi ayant survécu à l'Ordre 66 et cherchant à se venger de Dark Vador."
+      },
+      {
+        question: "Qui est le chasseur de primes qui a capturé Han Solo dans la Cité des Nuages ?",
+        options: ["Boba Fett", "Bossk", "Dengar", "IG-88"],
+        correct: 0, category: "Lore Films",
+        explanation: "Boba Fett, qui livre ensuite Han Solo figé dans la carbonite à Jabba le Hutt."
+      },
+      {
+        question: "Quel set est reconnu comme étant la première 'Cantina de Mos Eisley' éditée par LEGO (réf 4501) ?",
+        options: ["Un set sorti en 2004", "Un set sorti en 1999", "Un set sorti en 2014", "Un set Master Builder sorti en 2020"],
+        correct: 0, category: "Histoire LEGO",
+        explanation: "La toute première version (4501) est sortie en 2004, incluant un petit Landspeeder, un bout de bar, Luke, Obi-Wan, Han, Greedo et un Sandtrooper monté sur Dewback !"
+      },
+      {
+        question: "Sur quelle planète neigeuse se cachent les Rebelles au début de L'Empire Contre-Attaque ?",
+        options: ["Hoth", "Ilum", "Kijimi", "Crait"],
+        correct: 0, category: "Planètes",
+        explanation: "Hoth, une planète inhospitalière balayée par le blizzard."
+      },
+      {
+        question: "Quel est le grade du père de Jyn Erso (Galen Erso) dans Rogue One ?",
+        options: ["Concepteur principal de l'Étoile de la Mort", "Amiral de la Flotte Impériale", "Général Rebelle", "Sénateur de la République"],
+        correct: 0, category: "Lore Films",
+        explanation: "C'est un brillant scientifique forcé par l'Empire à concevoir le superlaser de l'Étoile de la Mort (il y intègre une faille secrète)."
+      },
+      {
+        question: "Dans la gamme LEGO Star Wars 'Helmet Collection' (Casques), lequel de ces personnages n'a PAS (encore) eu son casque ?",
+        options: ["Général Grievous", "Le Mandalorien", "Boba Fett", "Scout Trooper"],
+        correct: 0, category: "Casques LEGO",
+        explanation: "Grievous n'a pas (encore) eu de set casque ! Son visage étant plus un crâne cyborg qu'un véritable casque de soldat."
+      },
+      {
+        question: "Qui tue Jabba le Hutt sur la barge à voiles ?",
+        options: ["Leia Organa", "Luke Skywalker", "Han Solo", "Boba Fett"],
+        correct: 0, category: "Lore Films",
+        explanation: "Leia l'étrangle avec la chaîne par laquelle il la tenait captive."
+      },
+      {
+        question: "Quel droïde sphérique blanc et orange accompagne Poe Dameron ?",
+        options: ["BB-8", "R2-D2", "D-O", "Chopper"],
+        correct: 0, category: "Personnages",
+        explanation: "BB-8, un droïde astromech de la Résistance."
+      },
+      {
+        question: "Dans le monde merveilleux des briques LEGO, que signifie l'acronyme 'AFOL' ?",
+        options: ["Adult Fan Of LEGO", "Awesome Fans Of LEGO", "Association For Original LEGO", "Action Figure Object LEGO"],
+        correct: 0, category: "Culture LEGO",
+        explanation: "L'AFOL (Adult Fan Of LEGO) représente la part des adultes qui collectionnent, construisent et exposent des LEGO. Un marché énorme pour Star Wars !"
+      },
+      {
+        question: "Quel Sith légendaire est ramené à la vie dans l'Épisode IX : L'Ascension de Skywalker ?",
+        options: ["L'Empereur Palpatine", "Dark Vador", "Le Comte Dooku", "Dark Plagueis"],
+        correct: 0, category: "Lore Films",
+        explanation: "Palpatine (Dark Sidious), qui a survécu via la technologie du clonage et le côté obscur."
+      },
+      {
+        question: "Quel célèbre gang criminel dirige Tatooine après la chute de Jabba le Hutt ?",
+        options: ["Boba Fett et Fennec Shand (Leur propre syndicat)", "L'Aube Écarlate", "Le Syndicat Pyke", "Le Soleil Noir"],
+        correct: 0, category: "Séries & Lore",
+        explanation: "Dans le Livre de Boba Fett, Boba prend la place de Bib Fortuna et tente de régner par le respect plutôt que la peur."
+      },
+      {
+        question: "Dans le set du Gunship de la République UCS (75309), quelle erreur s'est glissée sur la première version de la boîte ?",
+        options: ["Le logo impérial était imprimé à la place du logo républicain", "Il manquait une pièce sur l'illustration", "Le nom était écrit 'Republic Dropship'", "Yoda avait un sabre bleu"],
+        correct: 0, category: "Anecdotes LEGO",
+        explanation: "Sur les toutes premières boîtes, le logo imprimé à côté du nom était celui de l'Empire Galactique au lieu de celui de la République ! LEGO a vite corrigé."
+      },
+      {
+        question: "Qui a dit 'Fais-le ou ne le fais pas. Il n'y a pas d'essai.' ?",
+        options: ["Yoda", "Obi-Wan Kenobi", "Qui-Gon Jinn", "Luke Skywalker"],
+        correct: 0, category: "Citations",
+        explanation: "Yoda, tentant d'enseigner à Luke que la Force requiert conviction et foi, pas de simples 'essais'."
+      },
+      {
+        question: "Sur quelle planète désertique Rey grandit-elle dans la postlogie ?",
+        options: ["Jakku", "Tatooine", "Geonosis", "Jedha"],
+        correct: 0, category: "Planètes",
+        explanation: "Jakku, un cimetière géant de vaisseaux spatiaux datant de la chute de l'Empire."
+      },
+      {
+        question: "Comment s'appelle le métal précieux indestructible, utilisé pour l'armure du Mandalorien ?",
+        options: ["Le Beskar", "Le Cortosis", "Le Duracier", "Le Phrik"],
+        correct: 0, category: "Armes & Lore",
+        explanation: "Le Beskar, ou fer mandalorien, l'un des rares matériaux capables de résister à un coup direct de sabre laser."
+      },
+      {
+        question: "Quel set de 2018 détient le record du Faucon Millenium le plus controversé car basé sur un film Spin-off ?",
+        options: ["Le Faucon Millenium du Raid de Kessel (75212)", "Le Faucon de The Force Awakens (75105)", "Le Faucon de Rise of Skywalker (75257)", "Le Microfighter (75193)"],
+        correct: 0, category: "Sets Cultes",
+        explanation: "Le Kessel Run Millennium Falcon de 'Solo: A Star Wars Story' arborait un design bleu et blanc tout neuf et une capsule d'évasion à l'avant, très différent du gris usé classique !"
+      },
+      {
+        question: "Quelle créature avale Boba Fett dans Le Retour du Jedi ?",
+        options: ["Le Sarlacc", "Le Rancor", "Un Krayt Dragon", "Un Exogorth"],
+        correct: 0, category: "Créatures",
+        explanation: "Le Sarlacc, situé dans le Puits de Carkoon. Boba réussira finalement à s'en échapper (comme vu dans la série)."
+      },
+      {
+        question: "Combien de moteurs principaux propulsent un X-Wing de l'Alliance Rebelle ?",
+        options: ["4 moteurs", "2 moteurs", "3 moteurs", "6 moteurs"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "Il y a 4 moteurs (d'où les 4 ailes se déployant en X pour élargir l'angle de tir et de refroidissement)."
+      },
+      {
+        question: "Parmi ces personnages, lequel n'est JAMAIS apparu sous forme de minifigurine LEGO ?",
+        options: ["Shmi Skywalker (Mère d'Anakin)", "Dexter Jettster (Le cuisinier de Coruscant)", "Yaddle (Membre du conseil Jedi)", "Boss Nass (Chef Gungan)"],
+        correct: 0, category: "Minifigures",
+        explanation: "Shmi Skywalker n'a jamais été produite en figurine LEGO à ce jour, au grand dam des fans complétistes de la Menace Fantôme !"
+      },
+      {
+        question: "Qui est le réalisateur de 'L'Empire Contre-Attaque' ?",
+        options: ["Irvin Kershner", "George Lucas", "Richard Marquand", "Ron Howard"],
+        correct: 0, category: "Cinéma",
+        explanation: "Irvin Kershner a été choisi par George Lucas (qui produisait) pour réaliser ce film souvent considéré comme le meilleur de la saga."
+      },
+      {
+        question: "Dans le lore Star Wars, que signifie 'TIE' dans TIE Fighter ?",
+        options: ["Twin Ion Engine (Moteur à Double Ion)", "Tactical Imperial Escort", "Territorial Infiltration Enforcer", "Target Interceptor Engine"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "Twin Ion Engine (Moteur à Double Ion), qui donne à ce chasseur sa vitesse redoutable au détriment du bouclier."
+      },
+      {
+        question: "Comment s'appelle le petit alien vert à la voix robotique dans la série Rebels ?",
+        options: ["Hera Syndulla", "Kanan Jarrus", "Zeb Orrelios", "C1-10P (Chopper)"],
+        correct: 0, category: "Séries & Lore",
+        explanation: "Il s'agissait bien sûr d'un piège, l'alien de l'équipage n'est pas vert, c'est Zeb (qui est violet). L'alien vert c'est Hera, et le robot c'est Chopper !" // Question amusante
+      },
+      {
+        question: "Sur quelle planète s'écrase le vaisseau de Padmé au début de La Menace Fantôme, la forçant à rencontrer Anakin ?",
+        options: ["Tatooine", "Naboo", "Coruscant", "Geonosis"],
+        correct: 0, category: "Lore Films",
+        explanation: "Tatooine, où Qui-Gon découvre le jeune esclave Anakin Skywalker et son potentiel dans la Force."
+      },
+      {
+        question: "Quel vaisseau géant de plus de 4 700 pièces est sorti en set UCS en 2019 (réf. 75252) ?",
+        options: ["L'Imperial Star Destroyer", "Le Super Star Destroyer", "Le croiseur de Kylo Ren", "La frégate médicale Nebulon-B"],
+        correct: 0, category: "LEGO UCS",
+        explanation: "L'Imperial Star Destroyer (ISD) UCS, reprenant le vaisseau mythique vu au tout premier plan de l'Épisode IV en 1977."
+      },
+      {
+        question: "Qui est l'actrice qui incarne Ahsoka Tano en prise de vues réelles (Live Action) ?",
+        options: ["Rosario Dawson", "Ashley Eckstein", "Zoe Saldana", "Tessa Thompson"],
+        correct: 0, category: "Cinéma / TV",
+        explanation: "Rosario Dawson a repris le rôle dans The Mandalorian et sa propre série Ahsoka."
+      },
+      {
+        question: "Quel nom porte la bataille épique sur la planète de glace dans l'Épisode V ?",
+        options: ["La Bataille de Hoth", "La Bataille d'Endor", "La Bataille de Yavin", "La Bataille de Scarif"],
+        correct: 0, category: "Lore Films",
+        explanation: "La Bataille de Hoth, où l'Empire utilise ses marcheurs AT-AT pour écraser la base rebelle Echo."
+      },
+      {
+        question: "Quelle arme est emblématique de Chewbacca ?",
+        options: ["Une Arbalète Wookiee (Bowcaster)", "Un Fusil Blaster E-11", "Un Pistolet Blaster DL-44", "Un Bâton Gaffi"],
+        correct: 0, category: "Armes & Lore",
+        explanation: "Le Bowcaster (arbalète laser wookiee) tire de puissants carreaux d'énergie capables de propulser un ennemi en arrière."
+      },
+      {
+        question: "Dans le jeu 'LEGO Star Wars: The Freemaker Adventures', comment s'appelle le petit droïde de l'équipe ?",
+        options: ["R0-GR (Roger)", "BB-8", "Chopper", "D-O"],
+        correct: 0, category: "Jeux Vidéo LEGO",
+        explanation: "Roger, un droïde de combat séparatiste reprogrammé devenu un fidèle (mais maladroit) allié de la famille Freemaker."
+      },
+      {
+        question: "Combien de pattes possède le véhicule de transport impérial AT-AT ?",
+        options: ["4 pattes", "2 pattes", "6 pattes", "8 pattes"],
+        correct: 0, category: "Vaisseaux",
+        explanation: "L'AT-AT (All Terrain Armored Transport) est un quadripode."
+      },
+      {
+        question: "Qui était le maître Sith de Palpatine ?",
+        options: ["Dark Plagueis", "Dark Bane", "Dark Tenebrous", "Dark Revan"],
+        correct: 0, category: "Lore Étendu",
+        explanation: "Dark Plagueis 'le Sage', qui prétendait pouvoir manipuler les midi-chloriens pour créer la vie."
+      },
+      {
+        question: "Quel numéro porte la cellule de Leia sur la première Étoile de la Mort ?",
+        options: ["2187", "1138", "501", "327"],
+        correct: 0, category: "Anecdotes",
+        explanation: "La cellule 2187. Ce nombre est aussi le matricule de Finn (FN-2187) dans Le Réveil de la Force !"
+      },
+      {
+        question: "Parmi ces gammes LEGO, laquelle s'adresse spécifiquement au public 18+ (Adults Welcome) ?",
+        options: ["Diorama Collection", "Microfighters", "Battle Packs", "Action Battle (Spring-loaded)"],
+        correct: 0, category: "Gamme LEGO",
+        explanation: "La Diorama Collection, avec ses socles noirs et ses citations cultes, est conçue spécifiquement pour l'exposition adulte."
+      },
+      {
+        question: "Quel personnage a été recréé en CGI pour une scène d'action spectaculaire à la fin de Rogue One ?",
+        options: ["Dark Vador", "Princesse Leia", "Grand Moff Tarkin", "Luke Skywalker"],
+        correct: 0, category: "Cinéma",
+        explanation: "Dark Vador a fait une apparition physique brutale, mais Leia et Tarkin ont tous les deux été recréés en CGI pour lier le film à l'Épisode IV !"
+      },
+      {
+        question: "Quel est le nom de l'Ordre religieux respectant l'équilibre de la galaxie (le côté clair) ?",
+        options: ["L'Ordre Jedi", "L'Empire Sith", "Les Sœurs de la Nuit", "L'Aube Écarlate"],
+        correct: 0, category: "Lore Films",
+        explanation: "L'Ordre Jedi, les gardiens de la paix et de la justice dans la galaxie depuis plus de mille générations."
+      },
+      {
+        question: "L'acteur Peter Mayhew mesurait 2m21. Quel personnage a-t-il incarné ?",
+        options: ["Chewbacca", "Dark Vador", "Un Wampa", "L'Empereur"],
+        correct: 0, category: "Cinéma",
+        explanation: "Le grand Peter Mayhew a incarné le légendaire Wookiee Chewbacca."
+      },
+      {
+        question: "Quelle est la particularité du sabre laser de Kylo Ren ?",
+        options: ["Il a une garde laser (quillons croisés)", "Il est noir (Darksaber)", "Il possède une double lame tournante", "Sa lame est jaune"],
+        correct: 0, category: "Armes & Lore",
+        explanation: "Son cristal Kyber étant fissuré, le sabre nécessite des évents latéraux pour évacuer l'excédent d'énergie, formant une garde en croix."
+      },
+      {
+        question: "Quelle exclusivité LEGO est souvent offerte chaque année pour célébrer la date du 4 mai (May the 4th) ?",
+        options: ["Un petit set GWP (Gift With Purchase) inédit", "Une énorme boîte à 500€", "Des capes en vrai tissu", "Un set qui coûte 4€"],
+        correct: 0, category: "Culture LEGO",
+        explanation: "Chaque 'May the 4th', LEGO offre des petits sets promotionnels GWP ou des polybags exclusifs pour tout achat Star Wars."
+      },
+      {
+        question: "Sur quelle planète Jyn Erso et l'équipe Rogue One dérobent-ils les plans de l'Étoile de la Mort ?",
+        options: ["Scarif", "Coruscant", "Eadu", "Jedha"],
+        correct: 0, category: "Planètes",
+        explanation: "Scarif, une planète tropicale abritant les gigantesques archives impériales."
+      },
+      {
+        question: "Combien d'années séparent La Revanche des Sith et Un Nouvel Espoir dans la chronologie des films ?",
+        options: ["19 ans", "10 ans", "30 ans", "5 ans"],
+        correct: 0, category: "Lore Films",
+        explanation: "Il s'écoule 19 ans, le temps pour Luke et Leia de grandir."
+      },
+      {
+        question: "Quel nom donne Palpatine à l'Empire naissant lors de son discours au Sénat ?",
+        options: ["Le Premier Empire Galactique", "Le Nouvel Ordre", "L'Hégémonie Sith", "La République Impériale"],
+        correct: 0, category: "Lore Films",
+        explanation: "Il le proclame 'Le Premier Empire Galactique' pour assurer un ordre et une sécurité garantis."
+      },
+      {
+        question: "Dans le set LEGO du combat de Obi-Wan vs Dark Vador (75334), quel mécanisme permet aux flammes de surgir ?",
+        options: ["Un plateau tournant qui pousse des briques trans-orange", "Une lampe LED intégrée", "Un système de propulsion à ressort (ressort missile)", "De vraies briques chauffantes (Faux, ça serait dangereux !)"],
+        correct: 0, category: "Pièces LEGO",
+        explanation: "Un mécanisme simple coulissant sous le plateau fait 'pousser' les flammes entre les deux personnages."
       }
     ];
 
@@ -715,6 +1294,9 @@
         this.sound.initCtx();
         this.gameMode = mode;
         this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
+
+        // Passage à 10 questions par quiz
+        this.totalQuestionsCount = 10;
 
         const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
         const targetCount = Math.min(this.totalQuestionsCount, shuffled.length);
