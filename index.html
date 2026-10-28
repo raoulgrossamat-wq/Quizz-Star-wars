@@ -78,26 +78,9 @@
 
       <!-- Header actions -->
       <div class="flex items-center gap-2">
-        <!-- BGM Controls Bar -->
-        <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-xl px-2.5 py-1.5 shadow-inner">
-          <button id="bgmToggleBtn" onclick="app.toggleMusic()" class="p-1.5 rounded-lg bg-yellow-400 text-black font-extrabold transition flex items-center gap-1.5 text-xs shadow-md shadow-yellow-500/20" title="Activer / Couper la musique">
-            <span id="bgmPlayIcon">▶</span>
-            <span class="hidden sm:inline" id="bgmStatusLabel">Musique</span>
-          </button>
-          
-          <select id="bgmTrackSelect" onchange="app.changeMusicTrack(this.value)" class="bg-slate-800 text-xs text-yellow-300 font-semibold rounded-lg px-2 py-1 border border-slate-700 focus:outline-none focus:border-yellow-400">
-            <option value="mainTheme">Thème Principal</option>
-            <option value="imperialMarch">Marche Impériale</option>
-            <option value="cantina">Cantina Band</option>
-          </select>
-
-          <input type="range" id="bgmVolumeSlider" min="0" max="1" step="0.05" value="0.45" oninput="app.setMusicVolume(this.value)" class="w-16 sm:w-20 h-1.5 accent-yellow-400 bg-slate-700 rounded-lg cursor-pointer" title="Volume musique">
-
-          <button onclick="app.sound.testSound()" class="hidden md:inline text-[11px] px-2 py-1 bg-slate-800 hover:bg-slate-700 text-yellow-400 rounded-lg border border-slate-700 font-semibold transition" title="Tester le son">
-            🔊 Test
-          </button>
-        </div>
-
+        <button onclick="app.showLeaderboard()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-semibold border border-slate-700 transition flex items-center gap-1.5 text-slate-200">
+          🏆 <span class="hidden sm:inline">Classement</span>
+        </button>
         <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Activer / Couper les bruitages">
           <svg id="soundIconOn" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
@@ -131,24 +114,12 @@
         <p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base">
           Testez vos connaissances sur l'univers Star Wars et les secrets des sets LEGO avant de monter sur le floor !
         </p>
-
-        <!-- BANNIÈRE D'ACTIVATION AUDIO (Contourne le blocage d'autoplay des navigateurs) -->
-        <div class="pt-2">
-          <button id="bigAudioActivateBtn" onclick="app.enableAndPlayMusic()" class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-black text-sm md:text-base shadow-xl shadow-yellow-500/20 transform hover:scale-105 transition-all">
-            <span class="text-xl">🎵</span>
-            <span id="bigAudioBtnText">Lancer la Musique Star Wars</span>
-            <span class="text-xs bg-black/20 text-black px-2 py-0.5 rounded-full font-bold">MP3 & Audio HD</span>
-          </button>
-          <div id="audioStatusBadge" class="text-xs text-yellow-400/80 font-semibold mt-2">
-            Piste prête : <span id="currentPlayingName" class="text-white">Thème Principal Star Wars</span>
-          </div>
-        </div>
       </div>
 
       <!-- Sélection du mode -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-left max-w-2xl mx-auto">
         <!-- Mode Solo / Flash -->
-        <div onclick="app.setupGame('solo')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
+        <div onclick="app.openNameSetup('solo')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xl border border-blue-400/30">
               ⚡
@@ -160,7 +131,7 @@
         </div>
 
         <!-- Mode Duel Équipes -->
-        <div onclick="app.setupGame('duel')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
+        <div onclick="app.openNameSetup('duel')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center font-bold text-xl border border-red-400/30">
               ⚔️
@@ -182,11 +153,6 @@
         <div class="text-xs text-slate-500">
           Base : <span id="poolCountText" class="text-yellow-400 font-bold">20</span> questions prêtes
         </div>
-        <span class="text-slate-600">•</span>
-        <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800 text-yellow-400 text-xs">
-          <span>🎵 Musique pendant le quiz :</span>
-          <span class="font-bold cursor-pointer underline" onclick="app.toggleMusic()">Basculer</span>
-        </label>
       </div>
     </section>
 
@@ -208,8 +174,18 @@
         <!-- Mode Duel Status -->
         <div id="duelHeaderWidget" class="hidden flex items-center gap-4 text-xs font-bold">
           <div id="teamAStatus" class="px-3 py-1.5 rounded-lg border transition">
-            <span class="text-blue-400">Rebelles :</span> <span id="teamAScore" class="text-white text-sm">0</span>
+            <span class="text-blue-400" id="uiTeamAName">Rebelles</span> : <span id="teamAScore" class="text-white text-sm">0</span>
           </div>
+          <span class="text-slate-600 font-bold">VS</span>
+          <div id="teamBStatus" class="px-3 py-1.5 rounded-lg border transition">
+            <span class="text-red-400" id="uiTeamBName">Empire</span> : <span id="teamBScore" class="text-white text-sm">0</span>
+          </div>
+        </div>
+
+        <!-- Solo Score -->
+        <div id="soloHeaderWidget" class="text-sm font-semibold text-slate-300">
+          <span id="uiSoloName">Score</span> : <span id="soloScore" class="text-yellow-400 font-scifi font-bold text-lg">0</span> pts
+        </div>
           <span class="text-slate-600 font-bold">VS</span>
           <div id="teamBStatus" class="px-3 py-1.5 rounded-lg border transition">
             <span class="text-red-400">Empire :</span> <span id="teamBScore" class="text-white text-sm">0</span>
@@ -289,11 +265,11 @@
         <div id="duelScoreDisplay" class="hidden space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="p-4 rounded-2xl bg-blue-950/40 border border-blue-500/30">
-              <span class="text-xs uppercase font-extrabold text-blue-400 block mb-1">Rebelles</span>
+              <span id="finalUiTeamAName" class="text-xs uppercase font-extrabold text-blue-400 block mb-1">Rebelles</span>
               <span id="finalTeamAScore" class="text-4xl font-black font-scifi text-white">0</span>
             </div>
             <div class="p-4 rounded-2xl bg-red-950/40 border border-red-500/30">
-              <span class="text-xs uppercase font-extrabold text-red-400 block mb-1">Empire</span>
+              <span id="finalUiTeamBName" class="text-xs uppercase font-extrabold text-red-400 block mb-1">Empire</span>
               <span id="finalTeamBScore" class="text-4xl font-black font-scifi text-white">0</span>
             </div>
           </div>
@@ -314,10 +290,46 @@
         <!-- Boutons d'action -->
         <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
           <button onclick="app.showScreen('welcome')" class="px-6 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-sm transition">
-            Recommencer un quiz
+            Menu Principal
           </button>
           <button onclick="app.restartWithSameSettings()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition">
             Revanche immédiate
+          </button>
+          <button onclick="app.showLeaderboard()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 font-semibold text-sm border border-yellow-500/30 transition shadow-md shadow-yellow-500/10">
+            Voir le Classement
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: CLASSEMENT -->
+    <section id="screen-leaderboard" class="w-full hidden text-center space-y-8 py-6">
+      <div class="space-y-3">
+        <h2 class="text-3xl md:text-4xl font-scifi font-black text-yellow-400">
+          TABLEAU D'HONNEUR
+        </h2>
+        <p class="text-slate-400 max-w-md mx-auto text-sm md:text-base">
+          L'historique des meilleurs Jedi de votre LEGO Store.
+        </p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl">
+        <!-- Onglets -->
+        <div class="flex gap-4 border-b border-slate-800 mb-6 pb-2 justify-center">
+          <button onclick="app.renderLeaderboardList('solo')" id="tabSolo" class="text-yellow-400 font-bold border-b-2 border-yellow-400 px-4 py-2">Classement Solo</button>
+          <button onclick="app.renderLeaderboardList('duel')" id="tabDuel" class="text-slate-500 hover:text-slate-300 font-bold px-4 py-2">Historique des Duels</button>
+        </div>
+
+        <div id="leaderboardList" class="space-y-3 text-left">
+          <!-- Injecté dynamiquement -->
+        </div>
+        
+        <div class="mt-8 flex justify-center gap-4">
+          <button onclick="app.showScreen('welcome')" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition border border-slate-600">
+            Retour à l'accueil
+          </button>
+          <button onclick="app.clearLeaderboard()" class="px-4 py-2.5 rounded-xl bg-red-950/30 hover:bg-red-900/50 text-red-400 font-semibold text-xs border border-red-900 transition">
+            Vider l'historique
           </button>
         </div>
       </div>
@@ -325,51 +337,34 @@
 
   </main>
 
-  <!-- MODAL: AJOUTER DES QUESTIONS -->
-  <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+  <!-- MODAL: CHOIX DES NOMS -->
+  <div id="nameSetupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4">
       <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-lg font-bold font-scifi text-yellow-400">Ajouter une question personnalisée</h3>
-        <button onclick="app.closeCustomModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+        <h3 class="text-lg font-bold font-scifi text-yellow-400">Identification des recrues</h3>
+        <button onclick="app.closeNameSetup()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
       </div>
-
-      <p class="text-xs text-slate-400">
-        Pratique pour injecter une anecdote de votre magasin, une private joke d'équipe ou un set tout juste arrivé en livraison !
-      </p>
-
-      <form id="addQuestionForm" onsubmit="app.handleCustomQuestionSubmit(event)" class="space-y-3 text-sm">
-        <div>
-          <label class="block text-slate-300 text-xs font-semibold mb-1">Question</label>
-          <input type="text" id="custQText" required placeholder="Ex: Combien de pièces compte le Faucon UCS 75192 ?" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-yellow-400">
+      
+      <form id="nameSetupForm" onsubmit="app.startWithNames(event)" class="space-y-4 text-sm">
+        <div id="soloNameInput" class="space-y-2">
+          <label class="block text-slate-300 text-xs font-semibold">Nom du participant (ou du groupe)</label>
+          <input type="text" id="participantName" placeholder="Ex: Maître Yoda, L'équipe Vente..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-yellow-400">
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div id="duelNameInputs" class="space-y-4 hidden">
           <div>
-            <label class="block text-emerald-400 text-xs font-semibold mb-1">Bonne réponse</label>
-            <input type="text" id="custQCorrect" required placeholder="Ex: 7 541 pièces" class="w-full bg-slate-800 border border-emerald-500/50 rounded-lg p-2 text-white focus:outline-none">
+            <label class="block text-blue-400 text-xs font-semibold mb-1">Équipe 1 (Bleu)</label>
+            <input type="text" id="team1Name" placeholder="Ex: Les Rebelles, Vendeurs..." class="w-full bg-slate-800 border border-blue-500/50 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-400">
           </div>
           <div>
-            <label class="block text-red-400 text-xs font-semibold mb-1">Fausse réponse 1</label>
-            <input type="text" id="custQWrong1" required placeholder="Ex: 5 192 pièces" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
+            <label class="block text-red-400 text-xs font-semibold mb-1">Équipe 2 (Rouge)</label>
+            <input type="text" id="team2Name" placeholder="Ex: L'Empire, Managers..." class="w-full bg-slate-800 border border-red-500/50 rounded-lg p-2.5 text-white focus:outline-none focus:border-red-400">
           </div>
-          <div>
-            <label class="block text-red-400 text-xs font-semibold mb-1">Fausse réponse 2</label>
-            <input type="text" id="custQWrong2" required placeholder="Ex: 8 200 pièces" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-red-400 text-xs font-semibold mb-1">Fausse réponse 3</label>
-            <input type="text" id="custQWrong3" required placeholder="Ex: 6 020 pièces" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-slate-300 text-xs font-semibold mb-1">Explication fun / Anecdote</label>
-          <input type="text" id="custQExpl" placeholder="Ex: C'est l'un des plus gros sets LEGO jamais créés !" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
         </div>
 
         <div class="flex justify-end gap-2 pt-3">
-          <button type="button" onclick="app.closeCustomModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Annuler</button>
-          <button type="submit" class="px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold">Ajouter au jeu</button>
+          <button type="button" onclick="app.closeNameSetup()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Annuler</button>
+          <button type="submit" class="px-6 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold shadow-lg shadow-yellow-500/20">Démarrer le Quiz !</button>
         </div>
       </form>
     </div>
@@ -508,277 +503,12 @@
     ];
 
     /**
-     * MOTEUR AUDIO (WEB AUDIO API - Sans dépendances externes)
+     * MOTEUR AUDIO HYBRIDE (SFX SEULEMENT)
      */
     class SoundEngine {
       constructor() {
         this.ctx = null;
         this.enabled = true;
-
-        // Music synthesizer state
-        this.isMusicPlaying = false;
-        this.currentTrack = 'mainTheme'; // 'mainTheme' ou 'imperialMarch'
-        this.musicVolume = 0.25;
-        this.musicTimer = null;
-        this.musicStep = 0;
-        this.masterMusicGain = null;
-      }
-
-      init() {
-        if (!this.ctx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) {
-            this.ctx = new AudioContext();
-            this.masterMusicGain = this.ctx.createGain();
-            this.masterMusicGain.gain.setValueAtTime(this.musicVolume, this.ctx.currentTime);
-            this.masterMusicGain.connect(this.ctx.destination);
-          }
-        }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
-      }
-
-      setMusicVolume(val) {
-        this.musicVolume = parseFloat(val);
-        if (this.masterMusicGain && this.ctx) {
-          this.masterMusicGain.gain.setValueAtTime(this.musicVolume, this.ctx.currentTime);
-        }
-      }
-
-      // Synthèse des notes orchestrales (cuivres / cordes spatiales)
-      playTone(freq, duration, type = 'sawtooth', detune = 0) {
-        if (!this.ctx || !this.isMusicPlaying) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        
-        // Légère émulation de résonance pour un timbre plus cuivré
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
-
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        osc.detune.setValueAtTime(detune, this.ctx.currentTime);
-
-        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.18, this.ctx.currentTime + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration - 0.02);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.masterMusicGain);
-
-        osc.start();
-        osc.stop(this.ctx.currentTime + duration);
-      }
-
-      playChordNote(freq, duration) {
-        // Double oscillateur pour un effet majestueux
-        this.playTone(freq, duration, 'sawtooth', 0);
-        this.playTone(freq * 0.998, duration, 'triangle', -4);
-        // Basse octave sous-jacente
-        this.playTone(freq / 2, duration, 'triangle', 0);
-      }
-
-      startMusic(trackName) {
-        this.init();
-        if (trackName) this.currentTrack = trackName;
-        this.stopMusic();
-        this.isMusicPlaying = true;
-        this.musicStep = 0;
-        this.runMusicLoop();
-      }
-
-      stopMusic() {
-        this.isMusicPlaying = false;
-        if (this.musicTimer) {
-          clearTimeout(this.musicTimer);
-          this.musicTimer = null;
-        }
-      }
-
-      runMusicLoop() {
-        if (!this.isMusicPlaying) return;
-
-        // Partitions simplifiées mais reconnaissables des deux chefs-d'œuvre de John Williams
-        // Note: [Fréquence en Hz, durée en ms, délai avant note suivante en ms]
-        const mainThemeSequence = [
-          // Fanfare d'ouverture
-          [261.63, 140, 150], [261.63, 140, 150], [261.63, 140, 150], // C C C
-          [349.23, 750, 780], // F
-          [523.25, 750, 780], // C aigu
-          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170], // Bb A G
-          [698.46, 750, 780], // F aigu
-          [523.25, 450, 480], // C
-          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170], // Bb A G
-          [698.46, 750, 780], // F aigu
-          [523.25, 550, 600], // C
-          [466.16, 180, 190], [440.00, 180, 190], [466.16, 180, 190], [392.00, 700, 950] // Bb A Bb G
-        ];
-
-        const imperialMarchSequence = [
-          // Thème Dark Vador (Sol - Sol - Sol - Mib - Sib - Sol...)
-          [392.00, 420, 480], [392.00, 420, 480], [392.00, 420, 480],
-          [311.13, 320, 360], [466.16, 130, 160], [392.00, 420, 480],
-          [311.13, 320, 360], [466.16, 130, 160], [392.00, 800, 900],
-          // Deuxième phrase
-          [587.33, 420, 480], [587.33, 420, 480], [587.33, 420, 480],
-          [622.25, 320, 360], [466.16, 130, 160], [369.99, 420, 480],
-          [311.13, 320, 360], [466.16, 130, 160], [392.00, 800, 950]
-        ];
-
-        const seq = this.currentTrack === 'imperialMarch' ? imperialMarchSequence : mainThemeSequence;
-        const currentNote = seq[this.musicStep];
-
-        if (currentNote) {
-          const [freq, durationMs, stepDelay] = currentNote;
-          this.playChordNote(freq, durationMs / 1000);
-
-          this.musicTimer = setTimeout(() => {
-            this.musicStep++;
-            if (this.musicStep >= seq.length) {
-              this.musicStep = 0;
-              // Petite respiration avant de reboucler
-              this.musicTimer = setTimeout(() => this.runMusicLoop(), 1200);
-            } else {
-              this.runMusicLoop();
-            }
-          }, stepDelay);
-        }
-      }
-
-      playSaberCorrect() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        // Bruitage ascensionnel de sabre laser / force
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(320, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.35);
-
-        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.35);
-      }
-
-      playBlasterWrong() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        // Bruitage blaster raté
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(500, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.25);
-
-        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.25);
-      }
-
-      playTick() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(900, this.ctx.currentTime);
-
-        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.05);
-      }
-
-      playVictoryFanfare() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        const notes = [261.6, 329.6, 392.0, 523.2]; // C - E - G - C aigu
-        notes.forEach((freq, idx) => {
-          setTimeout(() => {
-            if (!this.ctx) return;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start();
-            osc.stop(this.ctx.currentTime + 0.4);
-          }, idx * 140);
-        });
-      }
-    }
-
-    /**
-     * MOTEUR AUDIO HYBRIDE (MP3 STREAMING + FALLBACK WEB AUDIO + SFX)
-     */
-    class SoundEngine {
-      constructor() {
-        this.ctx = null;
-        this.enabled = true;
-        this.isMusicPlaying = false;
-        this.musicVolume = 0.45;
-        this.currentTrack = 'mainTheme';
-
-        // Pistes MP3 réelles hébergées publiquement sur Internet Archive (CORS ouvert)
-        this.tracks = {
-          mainTheme: {
-            name: "Thème Principal Star Wars",
-            url: "https://archive.org/download/NimbleBit_Star-Wars_Tiny-Death-Star-Soundtrack/Tiny-Death-Star_Main-Star-Wars-Theme.mp3"
-          },
-          imperialMarch: {
-            name: "La Marche Impériale (Dark Vador)",
-            url: "https://archive.org/download/NimbleBit_Star-Wars_Tiny-Death-Star-Soundtrack/Tiny-Death-Star_The-Imperial-March.mp3"
-          },
-          cantina: {
-            name: "Cantina Band (Mos Eisley)",
-            url: "https://archive.org/download/NimbleBit_Star-Wars_Tiny-Death-Star-Soundtrack/Tiny-Death-Star_Cantina-Theme.mp3"
-          }
-        };
-
-        // Élément HTML5 Audio principal
-        this.audioElement = new Audio();
-        this.audioElement.loop = true;
-        this.audioElement.volume = this.musicVolume;
-        this.audioElement.preload = "auto";
-        this.audioElement.crossOrigin = "anonymous";
-
-        // Détection d'erreur réseau pour repli automatique sur le synthétiseur
-        this.audioElement.addEventListener('error', (e) => {
-          console.warn("Échec du streaming MP3, bascule sur le synthétiseur Web Audio :", e);
-          if (this.isMusicPlaying) {
-            this.startSynthMusic();
-          }
-        });
-
-        // Variables pour le synthétiseur de secours
-        this.synthTimer = null;
-        this.synthStep = 0;
-        this.isSynthRunning = false;
       }
 
       initCtx() {
@@ -790,140 +520,6 @@
         }
         if (this.ctx && this.ctx.state === 'suspended') {
           this.ctx.resume();
-        }
-      }
-
-      setVolume(val) {
-        this.musicVolume = parseFloat(val);
-        if (this.audioElement) {
-          this.audioElement.volume = this.musicVolume;
-        }
-      }
-
-      playTrack(trackKey) {
-        this.initCtx();
-        if (this.tracks[trackKey]) {
-          this.currentTrack = trackKey;
-        }
-
-        const trackData = this.tracks[this.currentTrack];
-        this.stopSynthMusic();
-
-        // Mettre à jour l'audio source si différent
-        if (this.audioElement.src !== trackData.url) {
-          this.audioElement.src = trackData.url;
-        }
-
-        this.audioElement.volume = this.musicVolume;
-        const playPromise = this.audioElement.play();
-
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              this.isMusicPlaying = true;
-              if (window.app) window.app.updateMusicUI(true);
-            })
-            .catch((err) => {
-              console.warn("Lecture MP3 bloquée ou indisponible, passage au synthétiseur Web Audio :", err);
-              this.startSynthMusic();
-            });
-        }
-      }
-
-      pauseMusic() {
-        this.isMusicPlaying = false;
-        if (this.audioElement) {
-          this.audioElement.pause();
-        }
-        this.stopSynthMusic();
-        if (window.app) window.app.updateMusicUI(false);
-      }
-
-      toggleMusic() {
-        if (this.isMusicPlaying) {
-          this.pauseMusic();
-        } else {
-          this.playTrack(this.currentTrack);
-        }
-      }
-
-      // Synthétiseur Web Audio en secours direct
-      startSynthMusic() {
-        this.initCtx();
-        this.isMusicPlaying = true;
-        this.isSynthRunning = true;
-        this.synthStep = 0;
-        if (window.app) window.app.updateMusicUI(true);
-        this.runSynthLoop();
-      }
-
-      stopSynthMusic() {
-        this.isSynthRunning = false;
-        if (this.synthTimer) {
-          clearTimeout(this.synthTimer);
-          this.synthTimer = null;
-        }
-      }
-
-      playSynthNote(freq, duration) {
-        if (!this.ctx || !this.isSynthRunning) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-
-        const targetGain = Math.max(0.01, this.musicVolume * 0.2);
-        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(targetGain, this.ctx.currentTime + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration - 0.02);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + duration);
-      }
-
-      runSynthLoop() {
-        if (!this.isSynthRunning) return;
-
-        const mainThemeSeq = [
-          [261.63, 140, 150], [261.63, 140, 150], [261.63, 140, 150],
-          [349.23, 750, 780], [523.25, 750, 780],
-          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170],
-          [698.46, 750, 780], [523.25, 450, 480],
-          [466.16, 160, 170], [440.00, 160, 170], [392.00, 160, 170],
-          [698.46, 750, 800]
-        ];
-
-        const imperialSeq = [
-          [392.00, 420, 480], [392.00, 420, 480], [392.00, 420, 480],
-          [311.13, 320, 360], [466.16, 130, 160], [392.00, 420, 480],
-          [311.13, 320, 360], [466.16, 130, 160], [392.00, 800, 950]
-        ];
-
-        const cantinaSeq = [
-          [293.66, 160, 180], [392.00, 160, 180], [293.66, 160, 180], [392.00, 160, 180],
-          [440.00, 160, 180], [392.00, 160, 180], [369.99, 160, 180], [392.00, 320, 380]
-        ];
-
-        let seq = mainThemeSeq;
-        if (this.currentTrack === 'imperialMarch') seq = imperialSeq;
-        if (this.currentTrack === 'cantina') seq = cantinaSeq;
-
-        const currentNote = seq[this.synthStep];
-        if (currentNote) {
-          const [freq, durMs, delayMs] = currentNote;
-          this.playSynthNote(freq, durMs / 1000);
-
-          this.synthTimer = setTimeout(() => {
-            this.synthStep++;
-            if (this.synthStep >= seq.length) {
-              this.synthStep = 0;
-              this.synthTimer = setTimeout(() => this.runSynthLoop(), 1000);
-            } else {
-              this.runSynthLoop();
-            }
-          }, delayMs);
         }
       }
 
@@ -1033,6 +629,12 @@
         this.teamAScore = 0;
         this.teamBScore = 0;
         this.currentTurn = 'teamA';
+        
+        // Variables pour les noms
+        this.playerName = 'Joueur';
+        this.teamAName = 'Rebelles';
+        this.teamBName = 'Empire';
+        this.pendingMode = 'solo';
 
         this.timerEnabled = true;
         this.timerSeconds = 15;
@@ -1044,61 +646,6 @@
 
       initUI() {
         document.getElementById('poolCountText').innerText = this.questionsPool.length;
-        this.updateMusicUI(false);
-      }
-
-      enableAndPlayMusic() {
-        this.sound.initCtx();
-        if (!this.sound.isMusicPlaying) {
-          this.sound.playTrack(this.sound.currentTrack);
-        } else {
-          this.sound.pauseMusic();
-        }
-      }
-
-      toggleMusic() {
-        this.sound.initCtx();
-        this.sound.toggleMusic();
-      }
-
-      changeMusicTrack(trackKey) {
-        this.sound.currentTrack = trackKey;
-        const name = this.sound.tracks[trackKey] ? this.sound.tracks[trackKey].name : trackKey;
-        const playingLabel = document.getElementById('currentPlayingName');
-        if (playingLabel) playingLabel.innerText = name;
-
-        if (this.sound.isMusicPlaying) {
-          this.sound.playTrack(trackKey);
-        }
-      }
-
-      setMusicVolume(val) {
-        this.sound.setVolume(val);
-      }
-
-      updateMusicUI(isPlaying) {
-        const btn = document.getElementById('bgmToggleBtn');
-        const icon = document.getElementById('bgmPlayIcon');
-        const label = document.getElementById('bgmStatusLabel');
-        const bigBtn = document.getElementById('bigAudioBtnText');
-
-        if (isPlaying) {
-          if (btn) btn.className = "p-1.5 rounded-lg bg-yellow-400 text-black font-extrabold transition flex items-center gap-1.5 text-xs shadow-md shadow-yellow-500/40 animate-pulse";
-          if (icon) icon.innerText = "⏸";
-          if (label) label.innerText = "Pause";
-          if (bigBtn) bigBtn.innerText = "Couper la musique";
-        } else {
-          if (btn) btn.className = "p-1.5 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 font-extrabold transition flex items-center gap-1.5 text-xs";
-          if (icon) icon.innerText = "▶";
-          if (label) label.innerText = "Musique";
-          if (bigBtn) bigBtn.innerText = "Lancer la Musique Star Wars";
-        }
-
-        const trackData = this.sound.tracks[this.sound.currentTrack];
-        const playingLabel = document.getElementById('currentPlayingName');
-        if (playingLabel && trackData) {
-          playingLabel.innerText = `${trackData.name} ${isPlaying ? '(En cours 🎶)' : ''}`;
-        }
       }
 
       toggleSound() {
@@ -1120,19 +667,54 @@
         document.getElementById('screen-welcome').classList.add('hidden');
         document.getElementById('screen-quiz').classList.add('hidden');
         document.getElementById('screen-results').classList.add('hidden');
+        document.getElementById('screen-leaderboard').classList.add('hidden');
 
         document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+      }
+
+      openNameSetup(mode) {
+        this.pendingMode = mode;
+        document.getElementById('nameSetupModal').classList.remove('hidden');
+        
+        if (mode === 'solo') {
+          document.getElementById('soloNameInput').classList.remove('hidden');
+          document.getElementById('duelNameInputs').classList.add('hidden');
+          document.getElementById('participantName').required = true;
+          document.getElementById('team1Name').required = false;
+          document.getElementById('team2Name').required = false;
+          // Petite astuce pour forcer le focus sur l'input une fois affiché
+          setTimeout(() => document.getElementById('participantName').focus(), 50);
+        } else {
+          document.getElementById('soloNameInput').classList.add('hidden');
+          document.getElementById('duelNameInputs').classList.remove('hidden');
+          document.getElementById('participantName').required = false;
+          document.getElementById('team1Name').required = true;
+          document.getElementById('team2Name').required = true;
+          setTimeout(() => document.getElementById('team1Name').focus(), 50);
+        }
+      }
+
+      closeNameSetup() {
+        document.getElementById('nameSetupModal').classList.add('hidden');
+        document.getElementById('nameSetupForm').reset();
+      }
+
+      startWithNames(e) {
+        e.preventDefault();
+        if (this.pendingMode === 'solo') {
+          this.playerName = document.getElementById('participantName').value.trim() || 'Joueur';
+        } else {
+          this.teamAName = document.getElementById('team1Name').value.trim() || 'Équipe 1';
+          this.teamBName = document.getElementById('team2Name').value.trim() || 'Équipe 2';
+        }
+        this.closeNameSetup();
+        this.setupGame(this.pendingMode);
       }
 
       setupGame(mode) {
         this.sound.initCtx();
         this.gameMode = mode;
         this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
-
-        // Démarrer la musique en direct lors du clic si elle n'est pas déjà en cours
-        if (!this.sound.isMusicPlaying) {
-          this.sound.playTrack(this.sound.currentTrack);
-        }
 
         const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
         const targetCount = Math.min(this.totalQuestionsCount, shuffled.length);
@@ -1148,11 +730,14 @@
           document.getElementById('duelHeaderWidget').classList.remove('hidden');
           document.getElementById('soloHeaderWidget').classList.add('hidden');
           document.getElementById('teamTurnIndicator').classList.remove('hidden');
+          document.getElementById('uiTeamAName').innerText = this.teamAName;
+          document.getElementById('uiTeamBName').innerText = this.teamBName;
           this.updateDuelHeader();
         } else {
           document.getElementById('duelHeaderWidget').classList.add('hidden');
           document.getElementById('soloHeaderWidget').classList.remove('hidden');
           document.getElementById('teamTurnIndicator').classList.add('hidden');
+          document.getElementById('uiSoloName').innerText = this.playerName;
           document.getElementById('soloScore').innerText = '0';
         }
 
@@ -1182,11 +767,11 @@
         if (this.currentTurn === 'teamA') {
           teamABox.className = "px-3 py-1.5 rounded-lg border border-blue-400 bg-blue-950/60 shadow-lg shadow-blue-500/20";
           teamBBox.className = "px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-900/60 opacity-60";
-          turnText.innerHTML = `Au tour de l'<span class="text-blue-400 font-black">ALLIANCE REBELLE</span> !`;
+          turnText.innerHTML = `Au tour de : <span class="text-blue-400 font-black">${this.teamAName.toUpperCase()}</span> !`;
         } else {
           teamBBox.className = "px-3 py-1.5 rounded-lg border border-red-500 bg-red-950/60 shadow-lg shadow-red-500/20";
           teamABox.className = "px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-900/60 opacity-60";
-          turnText.innerHTML = `Au tour de l'<span class="text-red-400 font-black">EMPIRE GALACTIQUE</span> !`;
+          turnText.innerHTML = `Au tour de : <span class="text-red-400 font-black">${this.teamBName.toUpperCase()}</span> !`;
         }
       }
 
@@ -1413,24 +998,141 @@
 
           document.getElementById('rankTitleBadge').innerText = `Rang : ${rank}`;
           document.getElementById('resultTrophyIcon').innerText = icon;
+          
+          // Sauvegarder dans le leaderboard
+          this.saveScoreToLocal({ mode: 'solo', name: this.playerName, score: finalScore, total: total, rank: rank });
         } else {
           document.getElementById('soloScoreDisplay').classList.add('hidden');
           document.getElementById('duelScoreDisplay').classList.remove('hidden');
 
+          document.getElementById('finalUiTeamAName').innerText = this.teamAName;
+          document.getElementById('finalUiTeamBName').innerText = this.teamBName;
           document.getElementById('finalTeamAScore').innerText = this.teamAScore;
           document.getElementById('finalTeamBScore').innerText = this.teamBScore;
 
           const duelWinnerText = document.getElementById('duelWinnerText');
+          let winner = "";
           if (this.teamAScore > this.teamBScore) {
-            duelWinnerText.innerHTML = "🚀 Victoire éclatante de l'<span class='text-blue-400'>Alliance Rebelle</span> !";
+            duelWinnerText.innerHTML = `🚀 Victoire éclatante de : <span class='text-blue-400 font-black'>${this.teamAName}</span> !`;
             document.getElementById('resultTrophyIcon').innerText = "🛸";
+            winner = this.teamAName;
           } else if (this.teamBScore > this.teamAScore) {
-            duelWinnerText.innerHTML = "⚡ Victoire impériale pour l'<span class='text-red-400'>Empire Galactique</span> !";
+            duelWinnerText.innerHTML = `⚡ Victoire impériale pour : <span class='text-red-400 font-black'>${this.teamBName}</span> !`;
             document.getElementById('resultTrophyIcon').innerText = "💀";
+            winner = this.teamBName;
           } else {
             duelWinnerText.innerHTML = "🤝 Égalité parfaite ! La Force a trouvé son équilibre ce matin.";
             document.getElementById('resultTrophyIcon').innerText = "⚖️";
+            winner = "Égalité";
           }
+          
+          // Sauvegarder dans l'historique
+          this.saveScoreToLocal({ 
+            mode: 'duel', 
+            teamA: this.teamAName, scoreA: this.teamAScore,
+            teamB: this.teamBName, scoreB: this.teamBScore,
+            winner: winner, total: this.activeQuestions.length
+          });
+        }
+      }
+
+      saveScoreToLocal(data) {
+        data.date = new Date().toISOString();
+        let scores = JSON.parse(localStorage.getItem('legoStarWarsQuizScores')) || [];
+        scores.push(data);
+        localStorage.setItem('legoStarWarsQuizScores', JSON.stringify(scores));
+      }
+      
+      showLeaderboard() {
+        this.showScreen('leaderboard');
+        this.renderLeaderboardList('solo');
+      }
+      
+      renderLeaderboardList(filterMode) {
+        const tabSolo = document.getElementById('tabSolo');
+        const tabDuel = document.getElementById('tabDuel');
+        if (filterMode === 'solo') {
+          tabSolo.className = "text-yellow-400 font-bold border-b-2 border-yellow-400 px-4 py-2";
+          tabDuel.className = "text-slate-500 hover:text-slate-300 font-bold px-4 py-2";
+        } else {
+          tabDuel.className = "text-yellow-400 font-bold border-b-2 border-yellow-400 px-4 py-2";
+          tabSolo.className = "text-slate-500 hover:text-slate-300 font-bold px-4 py-2";
+        }
+        
+        const listContainer = document.getElementById('leaderboardList');
+        listContainer.innerHTML = '';
+        
+        let scores = JSON.parse(localStorage.getItem('legoStarWarsQuizScores')) || [];
+        let filteredScores = scores.filter(s => s.mode === filterMode);
+        
+        if (filteredScores.length === 0) {
+          listContainer.innerHTML = `<div class="text-center py-10 text-slate-500 italic text-sm">Aucun score enregistré. Que la Force soit avec les prochains participants !</div>`;
+          return;
+        }
+        
+        if (filterMode === 'solo') {
+          // Tri : Le meilleur ratio (score/total), puis le plus récent
+          filteredScores.sort((a, b) => {
+            const ratioA = a.score / a.total;
+            const ratioB = b.score / b.total;
+            if (ratioB !== ratioA) return ratioB - ratioA;
+            return new Date(b.date) - new Date(a.date);
+          });
+          
+          filteredScores.forEach((s, idx) => {
+            const date = new Date(s.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
+            const ratio = Math.round((s.score / s.total) * 100);
+            listContainer.innerHTML += `
+              <div class="flex items-center justify-between p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 hover:bg-slate-700/60 transition">
+                <div class="flex items-center gap-4">
+                  <div class="w-8 text-center text-xl font-bold font-scifi ${idx === 0 ? 'text-yellow-400 text-2xl' : (idx === 1 ? 'text-slate-300' : (idx === 2 ? 'text-amber-600' : 'text-slate-500'))}">
+                    #${idx + 1}
+                  </div>
+                  <div>
+                    <div class="font-black text-slate-100 uppercase tracking-wide">${s.name}</div>
+                    <div class="text-xs text-slate-400">${date} - <span class="italic">${s.rank}</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-bold text-yellow-400 font-scifi text-xl">${s.score} <span class="text-sm text-slate-500">/ ${s.total}</span></div>
+                  <div class="text-[10px] uppercase font-bold text-slate-500">${ratio}% de réussite</div>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          // Tri duel : du plus récent au plus ancien
+          filteredScores.sort((a, b) => new Date(b.date) - new Date(a.date));
+          
+          filteredScores.forEach((s, idx) => {
+            const date = new Date(s.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
+            listContainer.innerHTML += `
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-3">
+                <div class="flex justify-between items-center text-xs text-slate-400">
+                  <span class="font-bold">Match du ${date}</span>
+                  <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 font-semibold ${s.winner === 'Égalité' ? 'text-slate-300' : 'text-yellow-400'}">Vainqueur : ${s.winner}</span>
+                </div>
+                <div class="flex items-stretch justify-between gap-3">
+                  <div class="flex-1 text-center bg-blue-950/40 rounded-lg py-2 border border-blue-500/20 flex flex-col justify-center">
+                    <span class="block text-xs font-black uppercase text-blue-400 truncate px-1" title="${s.teamA}">${s.teamA}</span>
+                    <span class="text-2xl font-bold font-scifi text-white">${s.scoreA} <span class="text-xs text-slate-500">/ ${s.total}</span></span>
+                  </div>
+                  <div class="flex items-center px-1 font-black text-slate-600 text-sm italic">VS</div>
+                  <div class="flex-1 text-center bg-red-950/40 rounded-lg py-2 border border-red-500/20 flex flex-col justify-center">
+                    <span class="block text-xs font-black uppercase text-red-400 truncate px-1" title="${s.teamB}">${s.teamB}</span>
+                    <span class="text-2xl font-bold font-scifi text-white">${s.scoreB} <span class="text-xs text-slate-500">/ ${s.total}</span></span>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        }
+      }
+      
+      clearLeaderboard() {
+        if (confirm("Êtes-vous sûr de vouloir effacer tout l'historique du magasin ?")) {
+          localStorage.removeItem('legoStarWarsQuizScores');
+          this.renderLeaderboardList('solo');
         }
       }
 
@@ -1468,10 +1170,18 @@
       }
     }
 
-    let app;
-    window.addEventListener('DOMContentLoaded', () => {
-      app = new QuizApp();
-    });
+    // Initialisation immédiate et globale pour éviter ReferenceError: app is not defined
+    const initApp = () => {
+      if (!window.app) {
+        window.app = new QuizApp();
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
   </script>
 </body>
 </html>
