@@ -1,157 +1,163 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LEGO Star Wars - Morning Brief Quiz</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Orbitron & Inter -->
+  <!-- Google Fonts: Orbitron (Sci-Fi) & Rajdhani (Technical) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
 
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0b0e14;
+      font-family: 'Rajdhani', sans-serif;
+      background-color: #0f172a;
       background-image: 
-        radial-gradient(ellipse at 50% -20%, rgba(254, 209, 0, 0.15), transparent 70%),
-        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
-        radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 160px 120px, #ffd700, rgba(0,0,0,0));
-      background-size: 100% 100%, 250px 250px, 320px 320px, 200px 200px, 400px 400px;
+        radial-gradient(circle at 15% 50%, rgba(255,255,255,0.04) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(255,255,255,0.04) 0%, transparent 50%);
+      color: #e2e8f0;
     }
 
-    .font-scifi {
+    /* Starfield Effect */
+    .starfield {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      background: #020617;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle infinite ease-in-out;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .font-sw {
       font-family: 'Orbitron', sans-serif;
-      letter-spacing: 0.08em;
-    }
-
-    /* LEGO Stud Motif */
-    .lego-studs {
-      background-image: radial-gradient(#ffd50033 20%, transparent 20%);
-      background-position: 0 0;
-      background-size: 20px 20px;
-    }
-
-    /* Glow effects */
-    .glow-yellow {
-      box-shadow: 0 0 25px rgba(254, 209, 0, 0.35);
-    }
-    .glow-saber-blue {
-      box-shadow: 0 0 25px rgba(0, 150, 255, 0.45);
-    }
-    .glow-saber-red {
-      box-shadow: 0 0 25px rgba(255, 30, 60, 0.45);
     }
 
     @keyframes pulseTimer {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 0 25px rgba(239, 68, 68, 0.8); }
     }
     .animate-danger-pulse {
       animation: pulseTimer 0.6s infinite ease-in-out;
     }
+    
+    .option-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .option-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #eab308; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ca8a04; }
   </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col justify-between selection:bg-yellow-400 selection:text-black">
+<body class="min-h-screen flex flex-col justify-between selection:bg-yellow-400 selection:text-black">
+
+  <!-- Background Stars -->
+  <div class="starfield" id="starsContainer"></div>
 
   <!-- HEADER -->
-  <header class="w-full border-b border-yellow-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
+  <header class="w-full bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)] border-b border-yellow-500/30">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="app.showScreen('welcome')">
-        <!-- LEGO Brick Icon -->
-        <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center font-black text-black shadow-md border-2 border-yellow-200">
+      <div class="flex items-center gap-3 cursor-pointer group" onclick="app.showScreen('welcome')">
+        <!-- LEGO Brick Icon (Yellow) -->
+        <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center font-black text-slate-900 shadow-[0_0_15px_rgba(250,204,21,0.5)] border border-yellow-300 group-hover:bg-yellow-300 transition-colors">
           <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
             <path d="M19 6V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1H9V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-3zM7 5a1 1 0 0 1 2 0v1H7V5zm8 0a1 1 0 0 1 2 0v1h-2V5z"/>
           </svg>
         </div>
         <div>
-          <span class="text-xs uppercase font-extrabold tracking-widest text-yellow-400 block">LEGO Store Brief</span>
-          <h1 class="text-lg md:text-xl font-scifi font-bold tracking-tight text-white flex items-center gap-2">
-            STAR WARS <span class="text-yellow-400 text-sm md:text-base font-normal">QUIZ</span>
+          <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-widest text-yellow-500 block">LEGO Store Brief</span>
+          <h1 class="text-xl md:text-2xl font-sw font-bold tracking-tight text-white flex items-center gap-2 mt-0.5">
+            STAR WARS <span class="bg-yellow-400 text-slate-900 px-2 py-0.5 rounded text-sm md:text-base font-sans font-black tracking-normal shadow-sm">QUIZ</span>
           </h1>
         </div>
       </div>
 
       <!-- Header actions -->
       <div class="flex items-center gap-2">
-        <button onclick="app.showLeaderboard()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-semibold border border-slate-700 transition flex items-center gap-1.5 text-slate-200">
-          🏆 <span class="hidden sm:inline">Classement</span>
+        <button onclick="app.showLeaderboard()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-bold border border-slate-600 transition flex items-center gap-1.5 text-yellow-400 shadow-sm">
+          🏆 <span class="hidden sm:inline">Holocron</span>
         </button>
-        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Activer / Couper les bruitages">
+        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 transition text-yellow-400 shadow-sm" title="Activer / Couper la musique">
           <svg id="soundIconOn" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
           </svg>
-          <svg id="soundIconOff" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg id="soundIconOff" class="w-5 h-5 hidden text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z m12.414-4.586L21 7.414M18 10.414l3 3"/>
           </svg>
-        </button>
-        <button onclick="app.openCustomModal()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-semibold border border-slate-700 transition flex items-center gap-1.5 text-slate-200">
-          <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-          <span class="hidden sm:inline">Ajouter des</span> Questions
         </button>
       </div>
     </div>
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="flex-grow flex items-center justify-center p-4 max-w-4xl w-full mx-auto">
+  <main class="flex-grow flex items-center justify-center p-4 max-w-4xl w-full mx-auto relative z-10">
 
     <!-- SCREEN 1: ACCUEIL & CHOIX DU MODE -->
     <section id="screen-welcome" class="w-full text-center space-y-8 py-6">
       <div class="space-y-3">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-xs uppercase tracking-wider font-bold">
-          ⚡ Prêt pour l'ouverture du magasin ?
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/80 border border-yellow-500/50 text-yellow-400 text-xs uppercase tracking-widest font-bold shadow-[0_0_10px_rgba(250,204,21,0.2)]">
+          🚀 IL Y A BIEN LONGTEMPS, DANS UNE GALAXIE LOINTAINE...
         </div>
-        <h2 class="text-3xl md:text-5xl font-black font-scifi text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-500 drop-shadow">
-          LE BRIEF DES JEDI
+        <h2 class="text-4xl md:text-6xl font-sw text-white drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] pb-2">
+          LE GRAND QUIZ
         </h2>
-        <p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base">
-          Testez vos connaissances sur l'univers Star Wars et les secrets des sets LEGO avant de monter sur le floor !
+        <p class="text-slate-300 max-w-lg mx-auto text-sm md:text-base font-semibold">
+          Préparez-vous pour le brief de la bordure extérieure. Que la Force soit avec vous !
         </p>
       </div>
 
       <!-- Sélection du mode -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-left max-w-2xl mx-auto">
         <!-- Mode Solo / Flash -->
-        <div onclick="app.openNameSetup('solo')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
+        <div onclick="app.openNameSetup('solo')" class="group relative bg-slate-800/60 backdrop-blur-sm border-2 border-slate-600 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(250,204,21,0.3)]">
           <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xl border border-blue-400/30">
-              ⚡
+            <div class="w-12 h-12 rounded-xl bg-slate-700 text-yellow-400 flex items-center justify-center font-bold text-2xl border border-slate-500">
+              🤺
             </div>
-            <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 font-semibold">Express</span>
+            <span class="text-xs px-3 py-1 rounded bg-slate-700 text-yellow-400 font-bold border border-yellow-500/30">Maître Jedi</span>
           </div>
-          <h3 class="text-xl font-bold text-white group-hover:text-yellow-400 transition mb-1">Mode Collectif / Solo</h3>
-          <p class="text-sm text-slate-400">Idéal projeté sur grand écran : toute l'équipe répond ensemble ou un collègue est tiré au sort pour relever le défi.</p>
+          <h3 class="text-2xl font-sw text-white group-hover:text-yellow-400 transition mb-2">Quiz Collectif / Solo</h3>
+          <p class="text-sm text-slate-400 font-medium">Idéal pour l'écran géant. Affrontez les questions tous ensemble !</p>
         </div>
 
         <!-- Mode Duel Équipes -->
-        <div onclick="app.openNameSetup('duel')" class="group relative bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/10">
+        <div onclick="app.openNameSetup('duel')" class="group relative bg-slate-800/60 backdrop-blur-sm border-2 border-slate-600 hover:border-blue-400 p-6 rounded-2xl cursor-pointer transition duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
           <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center font-bold text-xl border border-red-400/30">
+            <div class="w-12 h-12 rounded-xl bg-slate-700 text-blue-400 flex items-center justify-center font-bold text-2xl border border-slate-500">
               ⚔️
             </div>
-            <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 border border-red-500/20 font-semibold">Compétition</span>
+            <span class="text-xs px-3 py-1 rounded bg-slate-700 text-blue-400 font-bold border border-blue-500/30">Guerre Galactique</span>
           </div>
-          <h3 class="text-xl font-bold text-white group-hover:text-yellow-400 transition mb-1">Duel de Floor (2 Équipes)</h3>
-          <p class="text-sm text-slate-400">Rebelles vs Empire ! Chaque équipe répond à tour de rôle pour remporter la victoire du matin.</p>
+          <h3 class="text-2xl font-sw text-white group-hover:text-blue-400 transition mb-2">Duel par Équipes</h3>
+          <p class="text-sm text-slate-400 font-medium">L'Alliance Rebelle affronte l'Empire au tour par tour.</p>
         </div>
       </div>
 
       <!-- Quick Settings -->
-      <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 pt-4">
-        <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 px-4 py-2 rounded-xl border border-slate-800">
-          <input type="checkbox" id="timerEnabledCheck" checked class="w-4 h-4 text-yellow-400 accent-yellow-400 rounded">
-          <span>Minuteur de 15 secondes</span>
+      <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 pt-4 font-semibold">
+        <label class="flex items-center gap-2 cursor-pointer bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600 hover:bg-slate-700 transition">
+          <input type="checkbox" id="timerEnabledCheck" checked class="w-4 h-4 text-yellow-500 rounded bg-slate-900 border-slate-600">
+          <span>Chronomètre de 15s</span>
         </label>
-        <span class="text-slate-600">•</span>
-        <div class="text-xs text-slate-500">
-          Base : <span id="poolCountText" class="text-yellow-400 font-bold">100</span> questions prêtes
+        <div class="bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600">
+          Base : <span id="poolCountText" class="text-yellow-400 font-bold">40</span> questions
         </div>
       </div>
     </section>
@@ -160,167 +166,150 @@
     <section id="screen-quiz" class="w-full hidden space-y-6">
 
       <!-- Barre d'état (Scores, Tour, Minuteur) -->
-      <div class="bg-slate-900/90 backdrop-blur-md rounded-2xl p-4 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div class="bg-slate-800/90 backdrop-blur-md rounded-2xl p-4 border border-slate-600 flex flex-wrap items-center justify-between gap-4 shadow-xl">
         <!-- Info progression -->
         <div class="flex items-center gap-3">
-          <span class="text-xs uppercase font-extrabold tracking-wider px-2.5 py-1 rounded bg-slate-800 text-yellow-400 border border-yellow-400/20" id="currentRoundBadge">
-            Question 1 / 10
+          <span class="text-sm px-3 py-1 rounded bg-slate-700 text-yellow-400 font-sw border border-yellow-500/30" id="currentRoundBadge">
+            Q1 / 10
           </span>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-md" id="categoryBadge">
-            LEGO Star Wars
+          <span class="text-xs font-bold px-3 py-1 rounded bg-blue-900/50 text-blue-300 border border-blue-500/30" id="categoryBadge">
+            Univers Star Wars
           </span>
         </div>
 
         <!-- Mode Duel Status -->
-        <div id="duelHeaderWidget" class="hidden flex items-center gap-4 text-xs font-bold">
-          <div id="teamAStatus" class="px-3 py-1.5 rounded-lg border transition">
-            <span class="text-blue-400" id="uiTeamAName">Rebelles</span> : <span id="teamAScore" class="text-white text-sm">0</span>
+        <div id="duelHeaderWidget" class="hidden flex items-center gap-3 text-xs font-bold">
+          <div id="teamAStatus" class="px-3 py-1.5 rounded-lg border-2 transition-all">
+            <span class="font-sw text-lg" id="uiTeamAName">REBELLES</span> <span class="mx-1 opacity-50">|</span> <span id="teamAScore" class="text-base">0</span>
           </div>
-          <span class="text-slate-600 font-bold">VS</span>
-          <div id="teamBStatus" class="px-3 py-1.5 rounded-lg border transition">
-            <span class="text-red-400" id="uiTeamBName">Empire</span> : <span id="teamBScore" class="text-white text-sm">0</span>
+          <span class="text-slate-500 font-sw text-xl">VS</span>
+          <div id="teamBStatus" class="px-3 py-1.5 rounded-lg border-2 transition-all">
+            <span class="font-sw text-lg" id="uiTeamBName">EMPIRE</span> <span class="mx-1 opacity-50">|</span> <span id="teamBScore" class="text-base">0</span>
           </div>
         </div>
 
         <!-- Solo Score -->
-        <div id="soloHeaderWidget" class="text-sm font-semibold text-slate-300">
-          <span id="uiSoloName">Score</span> : <span id="soloScore" class="text-yellow-400 font-scifi font-bold text-lg">0</span> pts
+        <div id="soloHeaderWidget" class="text-sm font-bold text-slate-300 bg-slate-900 px-4 py-1.5 rounded-lg border border-slate-700">
+          <span id="uiSoloName" class="font-sw text-lg text-white">Joueur</span> <span class="mx-1 opacity-50">|</span> <span id="soloScore" class="text-yellow-400 font-sw text-2xl">0</span> pts
         </div>
 
-        <!-- Timer Circle -->
-        <div id="timerContainer" class="flex items-center gap-2 font-scifi">
-          <div id="timerBox" class="w-11 h-11 rounded-full bg-slate-800 border-2 border-yellow-400 flex items-center justify-center font-black text-yellow-400 text-lg transition-colors">
-            15
+        <!-- JOKER & Timer -->
+        <div class="flex items-center gap-4">
+          <!-- BOUTON JOKER 50/50 -->
+          <button id="jokerBtn" onclick="app.useJoker5050()" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 font-bold rounded-lg shadow-[0_0_10px_rgba(250,204,21,0.5)] hover:scale-105 transition-all flex items-center gap-2 font-sw text-sm">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A12.014 12.014 0 0010.337 1a12.015 12.015 0 00-9.293 4.293C.34 6.002 0 6.942 0 8.019c0 1.077.34 2.017 1.044 2.726a11.968 11.968 0 005.158 2.871A12.01 12.01 0 0010.337 15c.783 0 1.545-.078 2.28-.225a12.012 12.012 0 006.339-3.484C19.66 10.582 20 9.642 20 8.565c0-1.077-.34-2.017-1.044-2.726a12.016 12.016 0 00-7.656-4.793zM10.337 3c2.728 0 5.258.988 7.181 2.617.262.222.423.518.423.82 0 .301-.161.597-.423.819A10.015 10.015 0 0110.337 13a10.01 10.01 0 01-7.181-2.617C2.894 10.161 2.733 9.865 2.733 9.564c0-.302.161-.598.423-.82A10.016 10.016 0 0110.337 3zm.663 3.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z" clip-rule="evenodd"></path></svg>
+            50/50
+          </button>
+          
+          <div id="timerContainer" class="flex items-center gap-2 font-sw">
+            <div id="timerBox" class="w-12 h-12 rounded bg-slate-900 border-2 border-yellow-400 flex items-center justify-center text-yellow-400 text-2xl shadow-[0_0_10px_rgba(250,204,21,0.3)]">
+              15
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Turn Indicator for Duel Mode -->
       <div id="teamTurnIndicator" class="hidden text-center py-1">
-        <p class="text-sm font-bold tracking-wide uppercase" id="teamTurnText">
-          C'est au tour des <span class="text-blue-400">Rebelles</span> de répondre !
+        <p class="text-2xl font-sw text-slate-300" id="teamTurnText">
+          C'est au tour de l'<span class="text-blue-400">ALLIANCE REBELLE</span> !
         </p>
       </div>
 
       <!-- Question Card -->
-      <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-2xl">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500"></div>
+      <div class="bg-slate-800/80 backdrop-blur-sm border-2 border-slate-600 rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-2xl">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-red-500"></div>
 
-        <div class="min-h-[100px] flex items-center justify-center text-center">
-          <h3 id="questionText" class="text-xl md:text-2xl font-bold text-slate-100 leading-snug">
-            Question en chargement...
+        <div class="min-h-[110px] flex items-center justify-center text-center mt-2">
+          <h3 id="questionText" class="text-xl md:text-3xl font-sw text-white leading-snug tracking-wide">
+            Chargement de la question...
           </h3>
         </div>
 
         <!-- Options Container -->
-        <div id="optionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mt-8">
-          <!-- Les boutons de réponses seront injectés dynamiquement -->
+        <div id="optionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+          <!-- Injecté dynamiquement -->
         </div>
 
         <!-- Feedback & Explication -->
-        <div id="feedbackContainer" class="hidden mt-6 p-4 rounded-xl border transition-all text-center space-y-2">
-          <div id="feedbackTitle" class="font-scifi font-bold text-lg"></div>
-          <p id="feedbackExplanation" class="text-sm text-slate-300"></p>
-          <button id="nextBtn" onclick="app.nextQuestion()" class="mt-3 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold rounded-xl transition shadow-lg inline-flex items-center gap-2">
-            <span>Question suivante</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        <div id="feedbackContainer" class="hidden mt-8 p-5 rounded-xl border-2 transition-all text-center space-y-3 bg-slate-900">
+          <div id="feedbackTitle" class="font-sw text-3xl tracking-wide"></div>
+          <p id="feedbackExplanation" class="text-base text-slate-300 font-medium"></p>
+          <button id="nextBtn" onclick="app.nextQuestion()" class="mt-4 px-8 py-3 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-sw text-xl rounded transition shadow-[0_0_15px_rgba(250,204,21,0.4)] inline-flex items-center gap-2">
+            <span>VITESSE LUMIÈRE</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- SCREEN 3: RÉSULTATS / BILAN DU BRIEF -->
+    <!-- SCREEN 3: RÉSULTATS -->
     <section id="screen-results" class="w-full hidden text-center space-y-8 py-6">
       <div class="space-y-3">
-        <div class="inline-block p-4 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-4xl mb-2" id="resultTrophyIcon">
+        <div class="inline-block p-4 rounded-full bg-slate-800 border border-yellow-500/50 text-5xl mb-2 shadow-[0_0_20px_rgba(250,204,21,0.3)]" id="resultTrophyIcon">
           🏆
         </div>
-        <h2 id="resultMainTitle" class="text-3xl md:text-4xl font-scifi font-black text-white">
-          BRIEF TERMINÉ !
+        <h2 id="resultMainTitle" class="text-4xl md:text-6xl font-sw text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] pb-2">
+          MISSION ACCOMPLIE
         </h2>
-        <p id="resultSubtitle" class="text-slate-400 max-w-md mx-auto text-sm md:text-base">
-          Voici le récapitulatif des forces en présence ce matin.
+        <p class="text-slate-400 max-w-md mx-auto text-base font-semibold">
+          Voici le bilan de votre briefing galactique.
         </p>
       </div>
 
-      <!-- Bilan Card -->
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-xl mx-auto shadow-2xl space-y-6">
+      <div class="bg-slate-800/80 border-2 border-slate-600 rounded-2xl p-6 md:p-10 max-w-xl mx-auto shadow-2xl space-y-8 relative overflow-hidden">
         
-        <div id="soloScoreDisplay" class="space-y-2">
-          <p class="text-xs uppercase tracking-widest text-slate-400 font-bold">Score Global</p>
-          <div class="text-5xl font-scifi font-black text-yellow-400" id="finalScoreVal">8 / 10</div>
-          <div class="text-sm font-semibold text-slate-300 pt-1" id="rankTitleBadge">Rang : Chevalier Jedi de Rayon</div>
+        <div id="soloScoreDisplay" class="space-y-3 relative z-10">
+          <p class="text-xl text-slate-400 font-sw uppercase tracking-widest">Score Final</p>
+          <div class="text-7xl font-sw text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" id="finalScoreVal">8 / 10</div>
+          <div class="mt-4 inline-block px-5 py-2 rounded bg-slate-700 text-yellow-400 font-bold text-lg border border-yellow-500/30" id="rankTitleBadge">Rang : Maître Jedi</div>
         </div>
 
-        <div id="duelScoreDisplay" class="hidden space-y-4">
+        <div id="duelScoreDisplay" class="hidden space-y-6 relative z-10">
           <div class="grid grid-cols-2 gap-4">
-            <div class="p-4 rounded-2xl bg-blue-950/40 border border-blue-500/30">
-              <span id="finalUiTeamAName" class="text-xs uppercase font-extrabold text-blue-400 block mb-1">Rebelles</span>
-              <span id="finalTeamAScore" class="text-4xl font-black font-scifi text-white">0</span>
+            <div class="p-6 rounded-xl bg-slate-900 border-2 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              <span id="finalUiTeamAName" class="text-xl font-sw text-blue-400 block mb-2">REBELLES</span>
+              <span id="finalTeamAScore" class="text-6xl font-sw text-white">0</span>
             </div>
-            <div class="p-4 rounded-2xl bg-red-950/40 border border-red-500/30">
-              <span id="finalUiTeamBName" class="text-xs uppercase font-extrabold text-red-400 block mb-1">Empire</span>
-              <span id="finalTeamBScore" class="text-4xl font-black font-scifi text-white">0</span>
+            <div class="p-6 rounded-xl bg-slate-900 border-2 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+              <span id="finalUiTeamBName" class="text-xl font-sw text-red-500 block mb-2">EMPIRE</span>
+              <span id="finalTeamBScore" class="text-6xl font-sw text-white">0</span>
             </div>
           </div>
-          <div id="duelWinnerText" class="text-lg font-bold text-yellow-400">
-            Victoire écrasante de l'Alliance Rebelle !
+          <div id="duelWinnerText" class="text-2xl font-sw text-slate-900 bg-yellow-400 py-3 rounded-lg shadow-[0_0_15px_rgba(250,204,21,0.5)]">
+            L'équipe gagne !
           </div>
         </div>
 
-        <!-- Conseil / Punchline LEGO pour la journée -->
-        <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 text-left flex gap-3 items-center">
-          <span class="text-2xl">🧱</span>
-          <div class="text-xs md:text-sm text-slate-300">
-            <strong class="text-white block">Objectif floor du jour :</strong>
-            <span id="dailyMotto">Puisse la Force des ventes être avec vous sur le mur des briques Pick-A-Brick !</span>
-          </div>
-        </div>
-
-        <!-- Boutons d'action -->
-        <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-          <button onclick="app.showScreen('welcome')" class="px-6 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-sm transition">
-            Menu Principal
+        <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4 relative z-10">
+          <button onclick="app.showScreen('welcome')" class="px-6 py-3.5 rounded bg-slate-700 hover:bg-slate-600 text-white font-sw text-xl transition border border-slate-500">
+            BASE REBELLE (ACCUEIL)
           </button>
-          <button onclick="app.restartWithSameSettings()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition">
-            Revanche immédiate
-          </button>
-          <button onclick="app.showLeaderboard()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 font-semibold text-sm border border-yellow-500/30 transition shadow-md shadow-yellow-500/10">
-            Voir le Classement
+          <button onclick="app.restartWithSameSettings()" class="px-6 py-3.5 rounded bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-sw text-xl transition shadow-[0_0_15px_rgba(250,204,21,0.4)]">
+            REJOUER
           </button>
         </div>
       </div>
     </section>
 
     <!-- SCREEN 4: CLASSEMENT -->
-    <section id="screen-leaderboard" class="w-full hidden text-center space-y-8 py-6">
+    <section id="screen-leaderboard" class="w-full hidden text-center space-y-8 py-6 relative z-10">
       <div class="space-y-3">
-        <h2 class="text-3xl md:text-4xl font-scifi font-black text-yellow-400">
-          TABLEAU D'HONNEUR
-        </h2>
-        <p class="text-slate-400 max-w-md mx-auto text-sm md:text-base">
-          L'historique des meilleurs Jedi de votre LEGO Store.
-        </p>
+        <h2 class="text-4xl md:text-6xl font-sw text-white pb-2">ARCHIVES JEDI</h2>
+        <p class="text-slate-400 font-semibold">Les meilleurs experts de la galaxie.</p>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl">
-        <!-- Onglets -->
-        <div class="flex gap-4 border-b border-slate-800 mb-6 pb-2 justify-center">
-          <button onclick="app.renderLeaderboardList('solo')" id="tabSolo" class="text-yellow-400 font-bold border-b-2 border-yellow-400 px-4 py-2">Classement Solo</button>
-          <button onclick="app.renderLeaderboardList('duel')" id="tabDuel" class="text-slate-500 hover:text-slate-300 font-bold px-4 py-2">Historique des Duels</button>
+      <div class="bg-slate-800/80 border-2 border-slate-600 rounded-2xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl">
+        <div class="flex gap-4 border-b border-slate-600 mb-6 pb-2 justify-center font-sw text-xl">
+          <button onclick="app.renderLeaderboardList('solo')" id="tabSolo" class="text-yellow-400 border-b-2 border-yellow-400 px-4 py-2 transition">MODES SOLOS</button>
+          <button onclick="app.renderLeaderboardList('duel')" id="tabDuel" class="text-slate-400 hover:text-white px-4 py-2 transition">GUERRES (DUELS)</button>
         </div>
 
-        <div id="leaderboardList" class="space-y-3 text-left">
-          <!-- Injecté dynamiquement -->
-        </div>
+        <div id="leaderboardList" class="space-y-4 text-left"></div>
         
         <div class="mt-8 flex justify-center gap-4">
-          <button onclick="app.showScreen('welcome')" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition border border-slate-600">
-            Retour à l'accueil
-          </button>
-          <button onclick="app.clearLeaderboard()" class="px-4 py-2.5 rounded-xl bg-red-950/30 hover:bg-red-900/50 text-red-400 font-semibold text-xs border border-red-900 transition">
-            Vider l'historique
-          </button>
+          <button onclick="app.showScreen('welcome')" class="px-8 py-3 rounded bg-slate-700 hover:bg-slate-600 text-white font-sw text-xl transition border border-slate-500">RETOUR</button>
+          <button onclick="app.clearLeaderboard()" class="px-5 py-3 rounded bg-red-900/30 hover:bg-red-900/60 text-red-400 font-bold text-sm border border-red-500/30 transition">Purger les archives</button>
         </div>
       </div>
     </section>
@@ -329,854 +318,155 @@
 
   <!-- MODAL: CHOIX DES NOMS -->
   <div id="nameSetupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-lg font-bold font-scifi text-yellow-400">Identification des recrues</h3>
-        <button onclick="app.closeNameSetup()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+    <div class="bg-slate-800 border-2 border-yellow-500/30 rounded-2xl max-w-md w-full p-8 space-y-6 shadow-[0_0_30px_rgba(250,204,21,0.2)]">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-600">
+        <h3 class="text-2xl font-sw text-white">IDENTIFICATION</h3>
+        <button onclick="app.closeNameSetup()" class="text-slate-400 hover:text-yellow-400 text-3xl font-bold leading-none">&times;</button>
       </div>
       
-      <form id="nameSetupForm" onsubmit="app.startWithNames(event)" class="space-y-4 text-sm">
+      <form id="nameSetupForm" onsubmit="app.startWithNames(event)" class="space-y-5">
         <div id="soloNameInput" class="space-y-2">
-          <label class="block text-slate-300 text-xs font-semibold">Nom du participant (ou du groupe)</label>
-          <input type="text" id="participantName" placeholder="Ex: Maître Yoda, L'équipe Vente..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-yellow-400">
+          <label class="block text-slate-300 text-sm font-bold">Nom du Chevalier (ou Équipe)</label>
+          <input type="text" id="participantName" placeholder="Ex: Luke, Équipe Matin..." class="w-full bg-slate-900 border border-slate-600 rounded p-3 text-white font-sw focus:outline-none focus:border-yellow-400 transition">
         </div>
 
-        <div id="duelNameInputs" class="space-y-4 hidden">
+        <div id="duelNameInputs" class="space-y-5 hidden">
           <div>
-            <label class="block text-blue-400 text-xs font-semibold mb-1">Équipe 1 (Bleu)</label>
-            <input type="text" id="team1Name" placeholder="Ex: Les Rebelles, Vendeurs..." class="w-full bg-slate-800 border border-blue-500/50 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-400">
+            <label class="block text-blue-400 font-sw text-xl mb-2">Alliance Rebelle</label>
+            <input type="text" id="team1Name" value="Rebelles" class="w-full bg-slate-900 border border-blue-500/50 rounded p-3 text-white font-sw focus:outline-none focus:border-blue-400 transition">
           </div>
           <div>
-            <label class="block text-red-400 text-xs font-semibold mb-1">Équipe 2 (Rouge)</label>
-            <input type="text" id="team2Name" placeholder="Ex: L'Empire, Managers..." class="w-full bg-slate-800 border border-red-500/50 rounded-lg p-2.5 text-white focus:outline-none focus:border-red-400">
+            <label class="block text-red-500 font-sw text-xl mb-2">Empire Galactique</label>
+            <input type="text" id="team2Name" value="Empire" class="w-full bg-slate-900 border border-red-500/50 rounded p-3 text-white font-sw focus:outline-none focus:border-red-400 transition">
           </div>
         </div>
 
-        <div class="flex justify-end gap-2 pt-3">
-          <button type="button" onclick="app.closeNameSetup()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Annuler</button>
-          <button type="submit" class="px-6 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold shadow-lg shadow-yellow-500/20">Démarrer le Quiz !</button>
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" onclick="app.closeNameSetup()" class="px-5 py-3 rounded bg-slate-700 text-white font-sw transition hover:bg-slate-600">ANNULER</button>
+          <button type="submit" class="px-6 py-3 rounded bg-yellow-400 text-slate-900 font-sw font-bold hover:bg-yellow-300 shadow-[0_0_10px_rgba(250,204,21,0.5)]">DÉCOLLAGE</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="w-full text-center py-4 text-xs text-slate-500 border-t border-slate-800/80">
-    <p>Conçu pour animer le brief d'équipe • LEGO® & Star Wars™ • Que la Force soit avec votre chiffre du jour ! 🚀</p>
-  </footer>
-
   <script>
     /**
-     * BANQUE DE 100 QUESTIONS STAR WARS & LEGO STAR WARS
+     * BANQUE DE QUESTIONS STAR WARS & LEGO (40 Questions pour l'exemple)
      */
     const INITIAL_QUESTIONS = [
-      // 1-15 : Les questions originales
-      {
-        question: "Combien de pièces possède l'iconique Faucon Millenium UCS (réf. 75192) ?",
-        options: ["7 541 pièces", "5 197 pièces", "8 420 pièces", "6 890 pièces"],
-        correct: 0, category: "LEGO UCS",
-        explanation: "Avec ses 7 541 briques, il a longtemps été le plus gros set LEGO de l'histoire avant d'être dépassé par la Carte du Monde et le Titanic !"
-      },
-      {
-        question: "Quelle est la couleur originale du sabre laser de Luke Skywalker dans l'Épisode IV : Un Nouvel Espoir ?",
-        options: ["Bleu", "Vert", "Jaune", "Violet"],
-        correct: 0, category: "Lore Films",
-        explanation: "C'est l'ancien sabre bleu d'Anakin Skywalker, légué par Obi-Wan Kenobi. Il construira son sabre vert pour Le Retour du Jedi."
-      },
-      {
-        question: "Quelle est la particularité très célèbre de la minifig originale de Boba Fett dans le Cloud City de 2003 (set 10123) ?",
-        options: ["Sérigraphie sur les bras et les jambes", "Casque en or 24 carats", "Cape en cuir véritable", "Visage phosphorescent"],
-        correct: 0, category: "Minifigures",
-        explanation: "C'était l'une des toutes premières minifigs avec des bras et jambes imprimés. Elle est aujourd'hui ultra recherchée et cote plus de 1 500 € !"
-      },
-      {
-        question: "Quel numéro d'ordre déclenche l'éradication des Jedi par les soldats Clones ?",
-        options: ["Ordre 66", "Ordre 99", "Ordre 42", "Ordre 1138"],
-        correct: 0, category: "Lore Films",
-        explanation: "L'Ordre 66 a été secrètement implanté via des puces inhibitrices dans le cerveau des soldats clones de la République."
-      },
-      {
-        question: "En quelle année est sortie la toute première gamme LEGO Star Wars ?",
-        options: ["1999", "1997", "2002", "1995"],
-        correct: 0, category: "Histoire LEGO",
-        explanation: "1999, à l'occasion de la sortie de La Menace Fantôme au cinéma ! C'était aussi la première licence officielle du Groupe LEGO."
-      },
-      {
-        question: "En combien de parsecs Han Solo affirme-t-il avoir fait le raid de Kessel avec le Faucon Millenium ?",
-        options: ["Moins de 12 parsecs", "En 14 parsecs", "En 20 parsecs", "Moins de 5 parsecs"],
-        correct: 0, category: "Lore Films",
-        explanation: "Moins de 12 parsecs ! Et comme un parsec est une unité de distance et non de temps, cela prouve qu'il a coupé par un raccourci ultra dangereux."
-      },
-      {
-        question: "Avant l'introduction de la couleur 'chair' en 2004, de quelle couleur étaient les visages des minifigs Star Wars ?",
-        options: ["Jaune classique LEGO", "Blanc pâle", "Gris souris", "Transparent"],
-        correct: 0, category: "Histoire LEGO",
-        explanation: "Entre 1999 et début 2004, tous les personnages sous licence comme Luke ou Han Solo avaient la tête jaune classique !"
-      },
-      {
-        question: "Quel est le vrai nom de l'adorable enfant surnommé 'Baby Yoda' dans The Mandalorian ?",
-        options: ["Grogu", "Gorgan", "Yaddle Jr.", "Babu Frik"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Son nom est Grogu, révélé par Ahsoka Tano sur la planète Corvus."
-      },
-      {
-        question: "Quel véhicule impérial géant de Hoth a eu droit à une monumentale version UCS (set 75313) de 6 785 pièces ?",
-        options: ["L'AT-AT", "Le Star Destroyer", "Le TIE Interceptor", "L'AT-ST"],
-        correct: 0, category: "LEGO UCS",
-        explanation: "L'AT-AT UCS ! Tellement spacieux qu'il peut accueillir jusqu'à 40 minifigurines de Snowtroopers dans sa carlingue."
-      },
-      {
-        question: "De quel compositeur légendaire sont les musiques inoubliables de la saga Star Wars ?",
-        options: ["John Williams", "Hans Zimmer", "Ennio Morricone", "Howard Shore"],
-        correct: 0, category: "Cinéma",
-        explanation: "John Williams a composé l'ensemble des musiques des 9 films canoniques, remportant un Oscar dès 1978."
-      },
-      {
-        question: "Combien d'exemplaires en or massif 14k de la minifig de C-3PO ont été édités pour le concours du 30ème anniversaire en 2007 ?",
-        options: ["Seulement 5 exemplaires", "100 exemplaires", "1 exemplaire unique", "50 exemplaires"],
-        correct: 0, category: "Collector",
-        explanation: "Seulement 5 exemplaires officiels au monde ont été insérés au hasard dans des boîtes de sets aux USA !"
-      },
-      {
-        question: "Qui tue l'Empereur Palpatine dans Le Retour du Jedi en le jetant dans le puits du réacteur ?",
-        options: ["Dark Vador (Anakin Skywalker)", "Luke Skywalker", "Lando Calrissian", "Chewbacca"],
-        correct: 0, category: "Lore Films",
-        explanation: "Dark Vador accomplit enfin la prophétie de l'Élu en sauvant son fils Luke et en précipitant l'Empereur dans l'abîme."
-      },
-      {
-        question: "Quel célèbre Battle Pack sorti en 2020 a été massivement réclamé par la communauté AFOL sur les réseaux sociaux ?",
-        options: ["La 501ème Légion de Clone Troopers", "La Garde Royale Impériale", "Les Jawas de Tatooine", "Les Rebelles de Scarif"],
-        correct: 0, category: "Sets Cultes",
-        explanation: "Le set 75280 '501st Legion Clone Troopers' a vu le jour grâce à la campagne virale menée par des milliers de fans !"
-      },
-      {
-        question: "Quelle espèce d'extraterrestres pilote les Podracers et gère la boutique de ferraille où travaille le jeune Anakin sur Tatooine ?",
-        options: ["Un Toydarien (Watto)", "Un Hutt", "Un Rodien", "Un Zabrak"],
-        correct: 0, category: "Lore Films",
-        explanation: "Watto est un Toydarien, une espèce insensible aux tours de passe-passe de l'esprit des Jedi."
-      },
-      {
-        question: "Quelle arme emblématique de Dark Vador est souvent représentée par une tige LEGO trans-red 4L fixée sur une poignée argentée ?",
-        options: ["Son sabre laser", "Son blaster personnel", "Son scanner thermique", "Son détonateur thermique"],
-        correct: 0, category: "Pièces LEGO",
-        explanation: "C'est la barre 4L trans-rouge, devenue l'une des pièces les plus iconiques de toute la gamme !"
-      },
-
-      // NOUVELLES QUESTIONS (16-100)
-      {
-        question: "Sur quelle planète volcanique a lieu le duel épique entre Obi-Wan Kenobi et Anakin Skywalker ?",
-        options: ["Mustafar", "Geonosis", "Sullust", "Tatooine"],
-        correct: 0, category: "Lore Films",
-        explanation: "C'est sur Mustafar, au milieu des rivières de lave, que Dark Vador subit ses terribles blessures."
-      },
-      {
-        question: "Dans quel set LEGO de 2023 trouve-t-on le Croiseur d'Assaut de classe Venator de la République ?",
-        options: ["Le set UCS 75367", "Le set Master Builder 75290", "Le set 75252", "Le set 75192"],
-        correct: 0, category: "LEGO UCS",
-        explanation: "Le monumental Venator UCS (75367) célèbre les 20 ans de la série The Clone Wars avec plus de 5 000 pièces."
-      },
-      {
-        question: "Comment s'appelle le Wookiee, fidèle compagnon de Han Solo ?",
-        options: ["Chewbacca", "Tarfful", "Krrsantan", "Zaalbar"],
-        correct: 0, category: "Lore Films",
-        explanation: "Chewbacca (ou Chewie), copilote du Faucon Millenium et ami fidèle de Han Solo."
-      },
-      {
-        question: "Dans la gamme LEGO Star Wars 'Diorama Collection', quelle scène mythique de l'Épisode IV a été recréée (set 75339) ?",
-        options: ["Le compacteur d'ordures de l'Étoile de la Mort", "Le bar de Mos Eisley", "L'attaque de Hoth", "Le combat sur Mustafar"],
-        correct: 0, category: "Dioramas LEGO",
-        explanation: "Le compacteur d'ordures, avec un mécanisme ingénieux permettant de resserrer les murs sur Luke, Han, Leia et Chewie !"
-      },
-      {
-        question: "Quel Seigneur Sith possède un sabre laser rouge à double lame dans La Menace Fantôme ?",
-        options: ["Dark Maul", "Le Comte Dooku", "Dark Sidious", "Kylo Ren"],
-        correct: 0, category: "Lore Films",
-        explanation: "Dark Maul, l'apprenti de Dark Sidious, qui utilise ce sabre impressionnant lors du Duel of the Fates."
-      },
-      {
-        question: "Comment s'appelle le vaisseau emblématique de Boba Fett (bien que Disney l'appelle désormais 'Firespray') ?",
-        options: ["Le Slave I", "Le Razor Crest", "Le Hound's Tooth", "L'IG-2000"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "Le Slave I (Esclave I), un vaisseau de patrouille de classe Firespray-31 redouté dans toute la galaxie."
-      },
-      {
-        question: "Quel acteur incarne Luke Skywalker dans la trilogie originale ?",
-        options: ["Mark Hamill", "Harrison Ford", "Carrie Fisher", "Alec Guinness"],
-        correct: 0, category: "Cinéma",
-        explanation: "Mark Hamill a donné vie au personnage de Luke Skywalker à partir de 1977."
-      },
-      {
-        question: "Dans le set LEGO Cantina de Mos Eisley (Master Builder Series 75290), combien de minifigures exclusives environ trouve-t-on ?",
-        options: ["Plus de 20 (dont 7 exclusives)", "Environ 10", "Seulement 5", "Plus de 40"],
-        correct: 0, category: "Master Builder",
-        explanation: "Ce set massif contient 21 minifigures, dont des personnages jamais édités auparavant comme Ponda Baba ou Dr. Evazan."
-      },
-      {
-        question: "Quelle est la couleur du sabre laser de Mace Windu ?",
-        options: ["Violet", "Rouge", "Vert", "Bleu"],
-        correct: 0, category: "Armes & Lore",
-        explanation: "Violet ! L'acteur Samuel L. Jackson avait expressément demandé cette couleur à George Lucas pour se démarquer dans les batailles."
-      },
-      {
-        question: "Quel droïde astromech est le compagnon indissociable de C-3PO ?",
-        options: ["R2-D2", "BB-8", "Chopper", "K-2SO"],
-        correct: 0, category: "Personnages",
-        explanation: "R2-D2, le petit droïde cylindrique bleu et blanc qui a sauvé la mise de nos héros d'innombrables fois."
-      },
-      {
-        question: "Quel set LEGO de la collection 'Casques' a été le premier à sortir représentant un chasseur de primes ?",
-        options: ["Casque de Boba Fett (75277)", "Casque du Mandalorien", "Casque de Boushh", "Casque de Jango Fett"],
-        correct: 0, category: "Casques LEGO",
-        explanation: "Le casque de Boba Fett a fait partie de la toute première vague de la Helmet Collection en 2020."
-      },
-      {
-        question: "Sur quelle planète se trouve la base Echo des rebelles dans L'Empire Contre-Attaque ?",
-        options: ["Hoth", "Endor", "Yavin 4", "Crait"],
-        correct: 0, category: "Planètes",
-        explanation: "Hoth, la planète glacée qui est le théâtre d'une des plus grandes batailles de la saga."
-      },
-      {
-        question: "Quel chasseur stellaire de l'Alliance Rebelle est célèbre pour ses ailes en forme de 'X' ?",
-        options: ["Le X-Wing", "Le Y-Wing", "Le A-Wing", "Le B-Wing"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "Le X-Wing, piloté par Luke Skywalker lors de la destruction de la première Étoile de la Mort."
-      },
-      {
-        question: "En quelle année LEGO a-t-il sorti pour la première fois l'Étoile de la Mort sous forme de playset géant (10188) ?",
-        options: ["2008", "2005", "2012", "2016"],
-        correct: 0, category: "Histoire LEGO",
-        explanation: "Sortie en 2008, la Death Star 10188 est restée au catalogue pendant 7 ans, un record de longévité pour un set !"
-      },
-      {
-        question: "Qui est le père de Boba Fett ?",
-        options: ["Jango Fett", "Cad Bane", "Hondo Ohnaka", "Din Djarin"],
-        correct: 0, category: "Lore Films",
-        explanation: "Jango Fett, dont Boba est un clone inaltéré qu'il a élevé comme son fils sur Kamino."
-      },
-      {
-        question: "Quel Cristal donne sa couleur et sa puissance à un sabre laser ?",
-        options: ["Un Cristal Kyber", "Un Cristal de Krayt", "Un Cristal de Corusca", "Un Diamant de Naboo"],
-        correct: 0, category: "Armes & Lore",
-        explanation: "Les cristaux Kyber. Les Sith doivent faire 'saigner' le cristal pour qu'il devienne rouge."
-      },
-      {
-        question: "Dans le premier jeu vidéo LEGO Star Wars sorti en 2005, quel lieu servait de Hub central (Menu) ?",
-        options: ["Le Dexter's Diner (Coruscant)", "La Cantina de Mos Eisley", "Le Temple Jedi", "Le Faucon Millenium"],
-        correct: 0, category: "Jeux Vidéo LEGO",
-        explanation: "C'était le fameux 'Dexter's Diner'. La Cantina est devenue le hub dans le deuxième jeu !"
-      },
-      {
-        question: "Qui est le Suprême Leader du Premier Ordre au début de la Postlogie ?",
-        options: ["Snoke", "Kylo Ren", "Général Hux", "Palpatine"],
-        correct: 0, category: "Lore Films",
-        explanation: "Le Suprême Leader Snoke, qui sera par la suite trahi par son apprenti Kylo Ren."
-      },
-      {
-        question: "Quel set LEGO de 2022 (75331) reproduit le vaisseau emblématique de Din Djarin en version UCS ?",
-        options: ["Le Razor Crest", "Le Naboo N-1 Starfighter", "Le Gauntlet Mandalorien", "Le Light Cruiser"],
-        correct: 0, category: "LEGO UCS",
-        explanation: "Le Razor Crest UCS avec plus de 6000 pièces, détaillé à l'extrême avec sa soute et sa chambre de congélation carbonique."
-      },
-      {
-        question: "Comment s'appelle l'apprentie d'Anakin Skywalker dans The Clone Wars ?",
-        options: ["Ahsoka Tano", "Asajj Ventress", "Barriss Offee", "Aayla Secura"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Ahsoka Tano, surnommée 'Chipie' (Snips en VO) par Anakin."
-      },
-      {
-        question: "Quelle créature poilue vit sur la lune forestière d'Endor ?",
-        options: ["Les Ewoks", "Les Wookiees", "Les Jawas", "Les Ugnaughts"],
-        correct: 0, category: "Espèces",
-        explanation: "Les Ewoks, qui ont aidé l'Alliance Rebelle à vaincre l'Empire dans Le Retour du Jedi."
-      },
-      {
-        question: "La première minifigurine de Maître Yoda (en 2002) avait un défaut de fabrication amusant. Lequel ?",
-        options: ["La couleur verte n'était pas la bonne (vert sable)", "Il était plus grand que Luke Skywalker", "Ses oreilles étaient à l'envers", "Il n'avait pas de jambes"],
-        correct: 0, category: "Anecdotes LEGO",
-        explanation: "La teinte choisie était un vert sable (sand green) très terne. Cela a vite été corrigé par la suite vers un vert plus vif."
-      },
-      {
-        question: "Quel chasseur TIE possède des panneaux solaires incurvés vers l'intérieur ?",
-        options: ["Le TIE Advanced x1 (Dark Vador)", "Le TIE Interceptor", "Le TIE Bomber", "Le TIE Defender"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "Le TIE Advanced x1, le prototype personnel utilisé par Dark Vador lors de la Bataille de Yavin."
-      },
-      {
-        question: "Quel droïde assassin accompagne souvent Boba Fett et a une forme élancée ?",
-        options: ["IG-88", "4-LOM", "HK-47", "K-2SO"],
-        correct: 0, category: "Personnages",
-        explanation: "IG-88, un terrifiant droïde assassin devenu chasseur de primes."
-      },
-      {
-        question: "Quel set de 2021 (75308) est une version ultra détaillée de R2-D2 et inclut une brique spéciale pour le 50ème anniversaire de Lucasfilm ?",
-        options: ["R2-D2 (Construisible)", "Le Diorama de Dagobah", "Le Faucon Millenium Microfighter", "La base d'Endor"],
-        correct: 0, category: "Sets Cultes",
-        explanation: "Ce R2-D2 construisible cache d'ailleurs le sabre laser de Luke dans sa tête, comme dans le film !"
-      },
-      {
-        question: "Sur quelle planète est basé le Temple Jedi dans la prélogie ?",
-        options: ["Coruscant", "Naboo", "Alderaan", "Tython"],
-        correct: 0, category: "Planètes",
-        explanation: "Coruscant, la planète-ville qui sert de capitale à la République Galactique."
-      },
-      {
-        question: "Quel est l'ancien nom de Kylo Ren ?",
-        options: ["Ben Solo", "Jacen Solo", "Anakin Solo", "Kyp Durron"],
-        correct: 0, category: "Lore Films",
-        explanation: "Ben Solo, le fils de Leia Organa et de Han Solo."
-      },
-      {
-        question: "Laquelle de ces couleurs n'a jamais été utilisée officiellement par LEGO pour la lame d'un sabre laser ?",
-        options: ["Orange opaque", "Vert fluo transparent", "Violet transparent", "Noir (Darksaber)"],
-        correct: 0, category: "Pièces LEGO",
-        explanation: "La tige n'a jamais été moulée en 'Orange opaque'. L'orange a toujours été transparent, comme les autres sabres."
-      },
-      {
-        question: "Quel contrebandier gagne la cité des Nuages (Bespin) au jeu de Sabacc ?",
-        options: ["Lando Calrissian", "Han Solo", "Dash Rendar", "Maz Kanata"],
-        correct: 0, category: "Lore Films",
-        explanation: "Lando Calrissian, avant d'en devenir l'administrateur baron."
-      },
-      {
-        question: "Comment s'appelle le vaisseau amiral de Dark Vador, long de 19 kilomètres ?",
-        options: ["L'Executor", "L'Étoile de la Mort", "Le Chimaera", "L'Invisible Hand"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "L'Executor, un Super Star Destroyer de classe Executor qui s'écrase sur la 2ème Étoile de la Mort."
-      },
-      {
-        question: "En quelle année est sorti le jeu vidéo épique 'LEGO Star Wars : La Saga Skywalker' ?",
-        options: ["2022", "2020", "2019", "2023"],
-        correct: 0, category: "Jeux Vidéo LEGO",
-        explanation: "Sorti en avril 2022, il retrace l'intégralité des 9 films canoniques avec un tout nouveau moteur de jeu."
-      },
-      {
-        question: "Quel Seigneur Sith a instauré la célèbre 'Règle des Deux' (un maître et un apprenti) ?",
-        options: ["Dark Bane", "Dark Plagueis", "Dark Revan", "Dark Sidious"],
-        correct: 0, category: "Lore Étendu",
-        explanation: "Dark Bane, pour éviter que les Sith ne se détruisent perpétuellement entre eux."
-      },
-      {
-        question: "Quelle créature monstrueuse vit dans les égouts du compacteur d'ordures de l'Étoile de la Mort ?",
-        options: ["Un Dianoga", "Un Sarlacc", "Un Rathtar", "Un Wampa"],
-        correct: 0, category: "Créatures",
-        explanation: "Le Dianoga, une créature tentaculaire avec un seul œil sur un pédoncule."
-      },
-      {
-        question: "Dans le Faucon Millenium UCS (75192), on trouve deux 'équipages'. Qui représente la version Postlogie ?",
-        options: ["Vieux Han, Rey, Finn, BB-8", "Luke, Leia, Han, Chewie", "Lando, Nien Nunb", "Rey, Poe, Rose"],
-        correct: 0, category: "LEGO UCS",
-        explanation: "Le set permet de changer l'antenne (ronde ou rectangulaire) et fournit les deux générations de personnages !"
-      },
-      {
-        question: "Qui a dit la célèbre réplique : 'C'est un piège !' (It's a trap!) ?",
-        options: ["L'Amiral Ackbar", "Mon Mothma", "Général Dodonna", "Princesse Leia"],
-        correct: 0, category: "Citations",
-        explanation: "L'Amiral Ackbar du peuple Mon Calamari lors de la Bataille d'Endor."
-      },
-      {
-        question: "Sur quelle planète Luke Skywalker s'isole-t-il à la fin de sa vie ?",
-        options: ["Ahch-To", "Dagobah", "Tatooine", "Exegol"],
-        correct: 0, category: "Planètes",
-        explanation: "Ahch-To, le lieu supposé du premier Temple Jedi."
-      },
-      {
-        question: "Quel format LEGO regroupe généralement 4 minifigures et un petit véhicule pour se créer une armée à petit prix ?",
-        options: ["Les Battle Packs", "Les Microfighters", "Les Mechs (Robots)", "Les Polybags"],
-        correct: 0, category: "Gamme LEGO",
-        explanation: "Les Battle Packs, inventés en 2007, sont les produits préférés des collectionneurs pour faire du 'Army Building'."
-      },
-      {
-        question: "De quelle planète est originaire la Reine Padmé Amidala ?",
-        options: ["Naboo", "Alderaan", "Chandrila", "Coruscant"],
-        correct: 0, category: "Lore Films",
-        explanation: "Naboo, une planète pacifique connue pour son architecture magnifique et le peuple Gungan."
-      },
-      {
-        question: "Qui est le créateur original de la saga Star Wars ?",
-        options: ["George Lucas", "Steven Spielberg", "J.J. Abrams", "Dave Filoni"],
-        correct: 0, category: "Cinéma",
-        explanation: "George Lucas, qui a écrit et réalisé le premier film en 1977."
-      },
-      {
-        question: "Combien y a-t-il de films Star Wars dans la 'Saga Skywalker' canonique (sans les spin-offs) ?",
-        options: ["9 films", "6 films", "12 films", "8 films"],
-        correct: 0, category: "Cinéma",
-        explanation: "9 films divisés en 3 trilogies (Prélogie, Originale, Postlogie)."
-      },
-      {
-        question: "Dans le set LEGO du 'Trône de l'Empereur' (Diorama 75352), quel élément sert de fenêtre géante à l'arrière-plan ?",
-        options: ["Une pièce sérigraphiée sur mesure de grande taille", "Un grand autocollant transparent", "L'utilisation de briques de cockpit", "Rien, c'est ouvert"],
-        correct: 0, category: "Pièces LEGO",
-        explanation: "C'est en réalité une verrière géante (souvent utilisée pour les cockpits de gros vaisseaux) spécialement sérigraphiée !"
-      },
-      {
-        question: "Quel nom porte l'armée de clones commandée par le Capitaine Rex et Anakin Skywalker ?",
-        options: ["La 501ème Légion", "La 212ème Bataillon d'Attaque", "La Garde de Coruscant", "Les Bad Batch (Clone Force 99)"],
-        correct: 0, category: "Lore Films",
-        explanation: "La 501ème Légion, arborant des marques bleues sur leurs armures."
-      },
-      {
-        question: "Quelle princesse est la sœur jumelle de Luke Skywalker ?",
-        options: ["Leia Organa", "Padmé Amidala", "Mon Mothma", "Jyn Erso"],
-        correct: 0, category: "Lore Films",
-        explanation: "Leia Organa, adoptée et élevée sur Alderaan par Bail Organa."
-      },
-      {
-        question: "Quel animal Din Djarin (le Mandalorien) doit-il monter pour maîtriser l'art de la monte sur Arvala-7 ?",
-        options: ["Un Blurrg", "Un Bantha", "Un Tauntaun", "Un Dewback"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Un Blurrg, une bête bipède têtue avec l'aide de Kuiil ('J'ai parlé')."
-      },
-      {
-        question: "Quelle a été la toute première arme brandie par un Jedi en brique LEGO dans le set 7140 X-Wing en 1999 ?",
-        options: ["Un sabre laser (manche gris classique + tige transparente)", "Un blaster noir standard", "Un pistolet chromé", "Une épée médiévale LEGO"],
-        correct: 0, category: "Histoire LEGO",
-        explanation: "Dès 1999, LEGO avait moulé le manche de sabre laser que nous connaissons tous encore aujourd'hui !"
-      },
-      {
-        question: "Quel Général cyborg manie 4 sabres laser grâce à ses 4 bras ?",
-        options: ["Général Grievous", "Dark Maul", "L'Amiral Trench", "K-2SO"],
-        correct: 0, category: "Lore Films",
-        explanation: "Le Général Grievous, commandant en chef de l'armée droïde séparatiste."
-      },
-      {
-        question: "Quelle drogue épicée est extraite des mines de la planète Kessel ?",
-        options: ["Le Coaxium", "L'Épice", "Le Bacta", "La Carbonite"],
-        correct: 0, category: "Lore Films",
-        explanation: "L'Épice (ou coaxium brut). C'est pourquoi Han Solo fait le 'raid de Kessel'."
-      },
-      {
-        question: "Comment s'appelle l'Édition Spéciale LEGO qui fête les 25 ans de la gamme Star Wars en 2024 ?",
-        options: ["Des sets incluant une minifig exclusive 25ème anniversaire", "Des briques en or dans toutes les boîtes", "Des sets 100% gratuits", "La réédition du tout premier Faucon"],
-        correct: 0, category: "Histoire LEGO",
-        explanation: "Des minifigs spéciales (Fives, Dark Malak, Cal Kestis...) sont incluses sur un socle anniversaire dans certains sets de 2024 !"
-      },
-      {
-        question: "Qui dirige la cantina sur Takodana dans l'Épisode VII ?",
-        options: ["Maz Kanata", "Jabba le Hutt", "Dexter Jettster", "Greef Karga"],
-        correct: 0, category: "Lore Films",
-        explanation: "Maz Kanata, une extraterrestre millénaire qui conserve le sabre laser de Luke/Anakin."
-      },
-      {
-        question: "Quelle était la spécialité des soldats clones appelés 'Bad Batch' (Clone Force 99) ?",
-        options: ["Des clones avec des mutations génétiques désirables", "Des pilotes de chasse d'élite", "Des clones défectueux envoyés à la casse", "La garde personnelle de Palpatine"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Ce sont des clones génétiquement modifiés (Hunter, Wrecker, Tech, Crosshair) possédant des talents uniques."
-      },
-      {
-        question: "Quel set géant UCS a été réédité en 2017 (réf. 75192) après une première version culte en 2007 (réf. 10179) ?",
-        options: ["Le Faucon Millenium", "L'Étoile de la Mort", "L'Imperial Star Destroyer", "Le Super Star Destroyer"],
-        correct: 0, category: "LEGO UCS",
-        explanation: "Le Millennium Falcon UCS, passant de 5195 pièces (2007) à 7541 pièces (2017)."
-      },
-      {
-        question: "Sur Tatooine, quel véhicule chenillé massif est utilisé par les Jawas comme base mobile ?",
-        options: ["Un Sandcrawler (Char des Sables)", "Un Juggernaut", "Un AT-AT", "Un Landspeeder"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "Le Sandcrawler (Char des sables). De nombreux sets LEGO l'ont reproduit au fil des ans !"
-      },
-      {
-        question: "Quel Jedi s'infiltre sur Kamino et découvre l'armée de clones ?",
-        options: ["Obi-Wan Kenobi", "Mace Windu", "Yoda", "Qui-Gon Jinn"],
-        correct: 0, category: "Lore Films",
-        explanation: "Obi-Wan Kenobi, en poursuivant Jango Fett depuis Coruscant."
-      },
-      {
-        question: "Dans la gamme LEGO Star Wars 'Microfighters', qui conduit généralement le mini-vaisseau ?",
-        options: ["Une vraie minifigurine assise sur le toit", "Personne, il n'y a pas de place", "Un micro-droïde exclusif", "Une figurine moulée d'une seule pièce"],
-        correct: 0, category: "Gamme LEGO",
-        explanation: "Les Microfighters se caractérisent par des proportions déformées (Chibi) où la vraie minifig s'assoit de manière comique sur le dessus du vaisseau !"
-      },
-      {
-        question: "Comment s'appelle l'Amiral impérial à la peau bleue et aux yeux rouges de la série Ahsoka / Rebels ?",
-        options: ["Le Grand Amiral Thrawn", "L'Amiral Piett", "L'Amiral Ozzel", "Le Moff Gideon"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Le Grand Amiral Thrawn, un génie tacticien brillant et impitoyable."
-      },
-      {
-        question: "Quel animal monstrueux Luke doit-il affronter dans la fosse de Jabba le Hutt ?",
-        options: ["Un Rancor", "Un Sarlacc", "Un Wampa", "Un Dragon Krayt"],
-        correct: 0, category: "Créatures",
-        explanation: "Le Rancor. Luke parvient à le tuer en écrasant sa tête avec la herse de la grotte."
-      },
-      {
-        question: "En quelle année LEGO a-t-il mis fin aux visages de couleur 'jaune classique' pour la licence Star Wars ?",
-        options: ["2004", "1999", "2010", "2007"],
-        correct: 0, category: "Histoire LEGO",
-        explanation: "À partir de 2004 (notamment avec la sortie de l'Étoile de la mort 10188 et les sets Episode IV), les teintes 'chair' ont été adoptées."
-      },
-      {
-        question: "Comment s'appelle l'arme traditionnelle mandalorienne à lame noire ?",
-        options: ["Le Darksaber (Sabre Noir)", "La Lance en Beskar", "Le Vibrolame", "Le Marteau de Forge"],
-        correct: 0, category: "Armes & Lore",
-        explanation: "Le Darksaber, créé par Tarre Vizsla, le premier Mandalorien à intégrer l'Ordre Jedi."
-      },
-      {
-        question: "Quel chasseur est piloté par l'Empire et est réputé pour son cri perçant dans le vide spatial ?",
-        options: ["Le Chasseur TIE", "Le Star Destroyer", "La Navette Lambda", "L'Intercepteur Jedi"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "Le TIE Fighter (Twin Ion Engine), célèbre pour son hurlement caractéristique inventé par le designer sonore Ben Burtt."
-      },
-      {
-        question: "Dans le set LEGO 75159 (L'Étoile de la Mort de 2016), combien de pièces contient-il environ ?",
-        options: ["~4 000 pièces", "~2 000 pièces", "~7 500 pièces", "~10 000 pièces"],
-        correct: 0, category: "Sets Cultes",
-        explanation: "Elle contient précisément 4 016 pièces. C'est une mise à jour mineure de la version de 2008 (10188)."
-      },
-      {
-        question: "Quelle Sith Inquisitrice traque Obi-Wan Kenobi dans la série éponyme ?",
-        options: ["Reva (La Troisième Sœur)", "Trilla (La Deuxième Sœur)", "Shin Hati", "Asajj Ventress"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Reva, ancienne apprentie Jedi ayant survécu à l'Ordre 66 et cherchant à se venger de Dark Vador."
-      },
-      {
-        question: "Qui est le chasseur de primes qui a capturé Han Solo dans la Cité des Nuages ?",
-        options: ["Boba Fett", "Bossk", "Dengar", "IG-88"],
-        correct: 0, category: "Lore Films",
-        explanation: "Boba Fett, qui livre ensuite Han Solo figé dans la carbonite à Jabba le Hutt."
-      },
-      {
-        question: "Quel set est reconnu comme étant la première 'Cantina de Mos Eisley' éditée par LEGO (réf 4501) ?",
-        options: ["Un set sorti en 2004", "Un set sorti en 1999", "Un set sorti en 2014", "Un set Master Builder sorti en 2020"],
-        correct: 0, category: "Histoire LEGO",
-        explanation: "La toute première version (4501) est sortie en 2004, incluant un petit Landspeeder, un bout de bar, Luke, Obi-Wan, Han, Greedo et un Sandtrooper monté sur Dewback !"
-      },
-      {
-        question: "Sur quelle planète neigeuse se cachent les Rebelles au début de L'Empire Contre-Attaque ?",
-        options: ["Hoth", "Ilum", "Kijimi", "Crait"],
-        correct: 0, category: "Planètes",
-        explanation: "Hoth, une planète inhospitalière balayée par le blizzard."
-      },
-      {
-        question: "Quel est le grade du père de Jyn Erso (Galen Erso) dans Rogue One ?",
-        options: ["Concepteur principal de l'Étoile de la Mort", "Amiral de la Flotte Impériale", "Général Rebelle", "Sénateur de la République"],
-        correct: 0, category: "Lore Films",
-        explanation: "C'est un brillant scientifique forcé par l'Empire à concevoir le superlaser de l'Étoile de la Mort (il y intègre une faille secrète)."
-      },
-      {
-        question: "Dans la gamme LEGO Star Wars 'Helmet Collection' (Casques), lequel de ces personnages n'a PAS (encore) eu son casque ?",
-        options: ["Général Grievous", "Le Mandalorien", "Boba Fett", "Scout Trooper"],
-        correct: 0, category: "Casques LEGO",
-        explanation: "Grievous n'a pas (encore) eu de set casque ! Son visage étant plus un crâne cyborg qu'un véritable casque de soldat."
-      },
-      {
-        question: "Qui tue Jabba le Hutt sur la barge à voiles ?",
-        options: ["Leia Organa", "Luke Skywalker", "Han Solo", "Boba Fett"],
-        correct: 0, category: "Lore Films",
-        explanation: "Leia l'étrangle avec la chaîne par laquelle il la tenait captive."
-      },
-      {
-        question: "Quel droïde sphérique blanc et orange accompagne Poe Dameron ?",
-        options: ["BB-8", "R2-D2", "D-O", "Chopper"],
-        correct: 0, category: "Personnages",
-        explanation: "BB-8, un droïde astromech de la Résistance."
-      },
-      {
-        question: "Dans le monde merveilleux des briques LEGO, que signifie l'acronyme 'AFOL' ?",
-        options: ["Adult Fan Of LEGO", "Awesome Fans Of LEGO", "Association For Original LEGO", "Action Figure Object LEGO"],
-        correct: 0, category: "Culture LEGO",
-        explanation: "L'AFOL (Adult Fan Of LEGO) représente la part des adultes qui collectionnent, construisent et exposent des LEGO. Un marché énorme pour Star Wars !"
-      },
-      {
-        question: "Quel Sith légendaire est ramené à la vie dans l'Épisode IX : L'Ascension de Skywalker ?",
-        options: ["L'Empereur Palpatine", "Dark Vador", "Le Comte Dooku", "Dark Plagueis"],
-        correct: 0, category: "Lore Films",
-        explanation: "Palpatine (Dark Sidious), qui a survécu via la technologie du clonage et le côté obscur."
-      },
-      {
-        question: "Quel célèbre gang criminel dirige Tatooine après la chute de Jabba le Hutt ?",
-        options: ["Boba Fett et Fennec Shand (Leur propre syndicat)", "L'Aube Écarlate", "Le Syndicat Pyke", "Le Soleil Noir"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Dans le Livre de Boba Fett, Boba prend la place de Bib Fortuna et tente de régner par le respect plutôt que la peur."
-      },
-      {
-        question: "Dans le set du Gunship de la République UCS (75309), quelle erreur s'est glissée sur la première version de la boîte ?",
-        options: ["Le logo impérial était imprimé à la place du logo républicain", "Il manquait une pièce sur l'illustration", "Le nom était écrit 'Republic Dropship'", "Yoda avait un sabre bleu"],
-        correct: 0, category: "Anecdotes LEGO",
-        explanation: "Sur les toutes premières boîtes, le logo imprimé à côté du nom était celui de l'Empire Galactique au lieu de celui de la République ! LEGO a vite corrigé."
-      },
-      {
-        question: "Qui a dit 'Fais-le ou ne le fais pas. Il n'y a pas d'essai.' ?",
-        options: ["Yoda", "Obi-Wan Kenobi", "Qui-Gon Jinn", "Luke Skywalker"],
-        correct: 0, category: "Citations",
-        explanation: "Yoda, tentant d'enseigner à Luke que la Force requiert conviction et foi, pas de simples 'essais'."
-      },
-      {
-        question: "Sur quelle planète désertique Rey grandit-elle dans la postlogie ?",
-        options: ["Jakku", "Tatooine", "Geonosis", "Jedha"],
-        correct: 0, category: "Planètes",
-        explanation: "Jakku, un cimetière géant de vaisseaux spatiaux datant de la chute de l'Empire."
-      },
-      {
-        question: "Comment s'appelle le métal précieux indestructible, utilisé pour l'armure du Mandalorien ?",
-        options: ["Le Beskar", "Le Cortosis", "Le Duracier", "Le Phrik"],
-        correct: 0, category: "Armes & Lore",
-        explanation: "Le Beskar, ou fer mandalorien, l'un des rares matériaux capables de résister à un coup direct de sabre laser."
-      },
-      {
-        question: "Quel set de 2018 détient le record du Faucon Millenium le plus controversé car basé sur un film Spin-off ?",
-        options: ["Le Faucon Millenium du Raid de Kessel (75212)", "Le Faucon de The Force Awakens (75105)", "Le Faucon de Rise of Skywalker (75257)", "Le Microfighter (75193)"],
-        correct: 0, category: "Sets Cultes",
-        explanation: "Le Kessel Run Millennium Falcon de 'Solo: A Star Wars Story' arborait un design bleu et blanc tout neuf et une capsule d'évasion à l'avant, très différent du gris usé classique !"
-      },
-      {
-        question: "Quelle créature avale Boba Fett dans Le Retour du Jedi ?",
-        options: ["Le Sarlacc", "Le Rancor", "Un Krayt Dragon", "Un Exogorth"],
-        correct: 0, category: "Créatures",
-        explanation: "Le Sarlacc, situé dans le Puits de Carkoon. Boba réussira finalement à s'en échapper (comme vu dans la série)."
-      },
-      {
-        question: "Combien de moteurs principaux propulsent un X-Wing de l'Alliance Rebelle ?",
-        options: ["4 moteurs", "2 moteurs", "3 moteurs", "6 moteurs"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "Il y a 4 moteurs (d'où les 4 ailes se déployant en X pour élargir l'angle de tir et de refroidissement)."
-      },
-      {
-        question: "Parmi ces personnages, lequel n'est JAMAIS apparu sous forme de minifigurine LEGO ?",
-        options: ["Shmi Skywalker (Mère d'Anakin)", "Dexter Jettster (Le cuisinier de Coruscant)", "Yaddle (Membre du conseil Jedi)", "Boss Nass (Chef Gungan)"],
-        correct: 0, category: "Minifigures",
-        explanation: "Shmi Skywalker n'a jamais été produite en figurine LEGO à ce jour, au grand dam des fans complétistes de la Menace Fantôme !"
-      },
-      {
-        question: "Qui est le réalisateur de 'L'Empire Contre-Attaque' ?",
-        options: ["Irvin Kershner", "George Lucas", "Richard Marquand", "Ron Howard"],
-        correct: 0, category: "Cinéma",
-        explanation: "Irvin Kershner a été choisi par George Lucas (qui produisait) pour réaliser ce film souvent considéré comme le meilleur de la saga."
-      },
-      {
-        question: "Dans le lore Star Wars, que signifie 'TIE' dans TIE Fighter ?",
-        options: ["Twin Ion Engine (Moteur à Double Ion)", "Tactical Imperial Escort", "Territorial Infiltration Enforcer", "Target Interceptor Engine"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "Twin Ion Engine (Moteur à Double Ion), qui donne à ce chasseur sa vitesse redoutable au détriment du bouclier."
-      },
-      {
-        question: "Comment s'appelle le petit alien vert à la voix robotique dans la série Rebels ?",
-        options: ["Hera Syndulla", "Kanan Jarrus", "Zeb Orrelios", "C1-10P (Chopper)"],
-        correct: 0, category: "Séries & Lore",
-        explanation: "Il s'agissait bien sûr d'un piège, l'alien de l'équipage n'est pas vert, c'est Zeb (qui est violet). L'alien vert c'est Hera, et le robot c'est Chopper !"
-      },
-      {
-        question: "Sur quelle planète s'écrase le vaisseau de Padmé au début de La Menace Fantôme, la forçant à rencontrer Anakin ?",
-        options: ["Tatooine", "Naboo", "Coruscant", "Geonosis"],
-        correct: 0, category: "Lore Films",
-        explanation: "Tatooine, où Qui-Gon découvre le jeune esclave Anakin Skywalker et son potentiel dans la Force."
-      },
-      {
-        question: "Quel vaisseau géant de plus de 4 700 pièces est sorti en set UCS en 2019 (réf. 75252) ?",
-        options: ["L'Imperial Star Destroyer", "Le Super Star Destroyer", "Le croiseur de Kylo Ren", "La frégate médicale Nebulon-B"],
-        correct: 0, category: "LEGO UCS",
-        explanation: "L'Imperial Star Destroyer (ISD) UCS, reprenant le vaisseau mythique vu au tout premier plan de l'Épisode IV en 1977."
-      },
-      {
-        question: "Qui est l'actrice qui incarne Ahsoka Tano en prise de vues réelles (Live Action) ?",
-        options: ["Rosario Dawson", "Ashley Eckstein", "Zoe Saldana", "Tessa Thompson"],
-        correct: 0, category: "Cinéma / TV",
-        explanation: "Rosario Dawson a repris le rôle dans The Mandalorian et sa propre série Ahsoka."
-      },
-      {
-        question: "Quel nom porte la bataille épique sur la planète de glace dans l'Épisode V ?",
-        options: ["La Bataille de Hoth", "La Bataille d'Endor", "La Bataille de Yavin", "La Bataille de Scarif"],
-        correct: 0, category: "Lore Films",
-        explanation: "La Bataille de Hoth, où l'Empire utilise ses marcheurs AT-AT pour écraser la base rebelle Echo."
-      },
-      {
-        question: "Quelle arme est emblématique de Chewbacca ?",
-        options: ["Une Arbalète Wookiee (Bowcaster)", "Un Fusil Blaster E-11", "Un Pistolet Blaster DL-44", "Un Bâton Gaffi"],
-        correct: 0, category: "Armes & Lore",
-        explanation: "Le Bowcaster (arbalète laser wookiee) tire de puissants carreaux d'énergie capables de propulser un ennemi en arrière."
-      },
-      {
-        question: "Dans le jeu 'LEGO Star Wars: The Freemaker Adventures', comment s'appelle le petit droïde de l'équipe ?",
-        options: ["R0-GR (Roger)", "BB-8", "Chopper", "D-O"],
-        correct: 0, category: "Jeux Vidéo LEGO",
-        explanation: "Roger, un droïde de combat séparatiste reprogrammé devenu un fidèle (mais maladroit) allié de la famille Freemaker."
-      },
-      {
-        question: "Combien de pattes possède le véhicule de transport impérial AT-AT ?",
-        options: ["4 pattes", "2 pattes", "6 pattes", "8 pattes"],
-        correct: 0, category: "Vaisseaux",
-        explanation: "L'AT-AT (All Terrain Armored Transport) est un quadripode."
-      },
-      {
-        question: "Qui était le maître Sith de Palpatine ?",
-        options: ["Dark Plagueis", "Dark Bane", "Dark Tenebrous", "Dark Revan"],
-        correct: 0, category: "Lore Étendu",
-        explanation: "Dark Plagueis 'le Sage', qui prétendait pouvoir manipuler les midi-chloriens pour créer la vie."
-      },
-      {
-        question: "Quel numéro porte la cellule de Leia sur la première Étoile de la Mort ?",
-        options: ["2187", "1138", "501", "327"],
-        correct: 0, category: "Anecdotes",
-        explanation: "La cellule 2187. Ce nombre est aussi le matricule de Finn (FN-2187) dans Le Réveil de la Force !"
-      },
-      {
-        question: "Parmi ces gammes LEGO, laquelle s'adresse spécifiquement au public 18+ (Adults Welcome) ?",
-        options: ["Diorama Collection", "Microfighters", "Battle Packs", "Action Battle (Spring-loaded)"],
-        correct: 0, category: "Gamme LEGO",
-        explanation: "La Diorama Collection, avec ses socles noirs et ses citations cultes, est conçue spécifiquement pour l'exposition adulte."
-      },
-      {
-        question: "Quel personnage a été recréé en CGI pour une scène d'action spectaculaire à la fin de Rogue One ?",
-        options: ["Dark Vador", "Princesse Leia", "Grand Moff Tarkin", "Luke Skywalker"],
-        correct: 0, category: "Cinéma",
-        explanation: "Dark Vador a fait une apparition physique brutale, mais Leia et Tarkin ont tous les deux été recréés en CGI pour lier le film à l'Épisode IV !"
-      },
-      {
-        question: "Quel est le nom de l'Ordre religieux respectant l'équilibre de la galaxie (le côté clair) ?",
-        options: ["L'Ordre Jedi", "L'Empire Sith", "Les Sœurs de la Nuit", "L'Aube Écarlate"],
-        correct: 0, category: "Lore Films",
-        explanation: "L'Ordre Jedi, les gardiens de la paix et de la justice dans la galaxie depuis plus de mille générations."
-      },
-      {
-        question: "L'acteur Peter Mayhew mesurait 2m21. Quel personnage a-t-il incarné ?",
-        options: ["Chewbacca", "Dark Vador", "Un Wampa", "L'Empereur"],
-        correct: 0, category: "Cinéma",
-        explanation: "Le grand Peter Mayhew a incarné le légendaire Wookiee Chewbacca."
-      },
-      {
-        question: "Quelle est la particularité du sabre laser de Kylo Ren ?",
-        options: ["Il a une garde laser (quillons croisés)", "Il est noir (Darksaber)", "Il possède une double lame tournante", "Sa lame est jaune"],
-        correct: 0, category: "Armes & Lore",
-        explanation: "Son cristal Kyber étant fissuré, le sabre nécessite des évents latéraux pour évacuer l'excédent d'énergie, formant une garde en croix."
-      },
-      {
-        question: "Quelle exclusivité LEGO est souvent offerte chaque année pour célébrer la date du 4 mai (May the 4th) ?",
-        options: ["Un petit set GWP (Gift With Purchase) inédit", "Une énorme boîte à 500€", "Des capes en vrai tissu", "Un set qui coûte 4€"],
-        correct: 0, category: "Culture LEGO",
-        explanation: "Chaque 'May the 4th', LEGO offre des petits sets promotionnels GWP ou des polybags exclusifs pour tout achat Star Wars."
-      },
-      {
-        question: "Sur quelle planète Jyn Erso et l'équipe Rogue One dérobent-ils les plans de l'Étoile de la Mort ?",
-        options: ["Scarif", "Coruscant", "Eadu", "Jedha"],
-        correct: 0, category: "Planètes",
-        explanation: "Scarif, une planète tropicale abritant les gigantesques archives impériales."
-      },
-      {
-        question: "Combien d'années séparent La Revanche des Sith et Un Nouvel Espoir dans la chronologie des films ?",
-        options: ["19 ans", "10 ans", "30 ans", "5 ans"],
-        correct: 0, category: "Lore Films",
-        explanation: "Il s'écoule 19 ans, le temps pour Luke et Leia de grandir."
-      },
-      {
-        question: "Quel nom donne Palpatine à l'Empire naissant lors de son discours au Sénat ?",
-        options: ["Le Premier Empire Galactique", "Le Nouvel Ordre", "L'Hégémonie Sith", "La République Impériale"],
-        correct: 0, category: "Lore Films",
-        explanation: "Il le proclame 'Le Premier Empire Galactique' pour assurer un ordre et une sécurité garantis."
-      },
-      {
-        question: "Dans le set LEGO du combat de Obi-Wan vs Dark Vador (75334), quel mécanisme permet aux flammes de surgir ?",
-        options: ["Un plateau tournant qui pousse des briques trans-orange", "Une lampe LED intégrée", "Un système de propulsion à ressort (ressort missile)", "De vraies briques chauffantes (Faux, ça serait dangereux !)"],
-        correct: 0, category: "Pièces LEGO",
-        explanation: "Un mécanisme simple coulissant sous le plateau fait 'pousser' les flammes entre les deux personnages."
-      }
+      { question: "En quelle année LEGO a-t-il lancé la gamme Star Wars ?", options: ["1999", "1977", "2005", "1995"], correct: 0, category: "Histoire LEGO", explanation: "C'était en 1999, à l'occasion de la sortie de l'Épisode I : La Menace Fantôme." },
+      { question: "Quelle est la couleur du sabre laser de Mace Windu ?", options: ["Violet", "Bleu", "Vert", "Rouge"], correct: 0, category: "Films", explanation: "Samuel L. Jackson a demandé spécifiquement un sabre violet pour se repérer dans la bataille de Geonosis." },
+      { question: "Quel set Ultimate Collector Series (UCS) détient le record du nombre de pièces (7541) ?", options: ["Le Faucon Millenium (75192)", "Le Star Destroyer (75252)", "L'AT-AT (75313)", "Le Colisée"], correct: 0, category: "Sets UCS", explanation: "Sorti en 2017, le Faucon UCS est resté longtemps le plus gros set LEGO du monde." },
+      { question: "Comment s'appelle le vaisseau emblématique de Boba Fett ?", options: ["Le Slave I (Firespray)", "Le Razor Crest", "Le Faucon Millenium", "Le X-Wing"], correct: 0, category: "Vaisseaux", explanation: "Le Slave I est le redoutable vaisseau de Jango puis Boba Fett." },
+      { question: "Quelle planète est entièrement recouverte d'eau et abrite les cloneurs ?", options: ["Kamino", "Tatooine", "Hoth", "Coruscant"], correct: 0, category: "Planètes", explanation: "C'est sur Kamino qu'Obi-Wan découvre l'armée de clones." },
+      { question: "Qui est le père de Luke Skywalker ?", options: ["Anakin Skywalker / Dark Vador", "Obi-Wan Kenobi", "L'Empereur Palpatine", "Boba Fett"], correct: 0, category: "Films", explanation: 'Le célèbre "Non, je suis ton père" de l\'Épisode V.' },
+      { question: "Quelle était la particularité de la première figurine de Dark Vador en 1999 ?", options: ["Son casque était en une seule pièce moulée", "Il avait une cape en plastique rigide", "Il n'avait pas de sabre", "Il avait un visage jaune"], correct: 0, category: "Minifigures", explanation: "Contrairement aux casques actuels en deux parties, le premier était un seul bloc." },
+      { question: "Comment s'appelle l'enfant Mandalorien que Din Djarin protège ?", options: ["Grogu", "Yoda", "Gorgu", "Yaddle"], correct: 0, category: "Séries", explanation: "Souvent appelé 'Bébé Yoda' par les fans, son vrai nom est Grogu." },
+      { question: "Dans quel film voit-on les Ewoks détruire l'Empire sur Endor ?", options: ["Le Retour du Jedi", "L'Empire contre-attaque", "Un Nouvel Espoir", "La Revanche des Sith"], correct: 0, category: "Films", explanation: "L'Épisode VI conclut la trilogie originale sur la lune forestière d'Endor." },
+      { question: "Qui a dit 'Fais-le, ou ne le fais pas. Il n'y a pas d'essai.' ?", options: ["Yoda", "Obi-Wan", "Qui-Gon Jinn", "Luke Skywalker"], correct: 0, category: "Citations", explanation: "Une grande leçon de Yoda à Luke dans les marais de Dagobah." },
+      { question: "Quel est le nom de la cantina sur Tatooine ?", options: ["La cantina de Mos Eisley", "La cantina de Dex", "Le Palais de Jabba", "Le Club Outlander"], correct: 0, category: "Lieux", explanation: "Mos Eisley, un repaire de brigands où Han Solo tire (le premier)." },
+      { question: "Combien y a-t-il de films dans la 'Saga Skywalker' principale ?", options: ["9", "6", "3", "12"], correct: 0, category: "Films", explanation: "La saga compte 3 trilogies, soit 9 épisodes au total (sans compter Rogue One ou Solo)." },
+      { question: "Quel métal précieux compose l'armure du Mandalorien ?", options: ["Le Beskar", "Le Vibranium", "L'Adamantium", "Le Duracier"], correct: 0, category: "Lore", explanation: "Le Beskar est ultra-résistant et peut même dévier les tirs de blaster et les sabres laser." },
+      { question: "Quel grand vaisseau de transport impérial a quatre longues pattes articulées (vu sur Hoth) ?", options: ["L'AT-AT", "L'AT-ST", "L'AT-TE", "Le Sandcrawler"], correct: 0, category: "Véhicules", explanation: "L'AT-AT (Transport Blindé Tout-Terrain) est la terreur de la bataille de Hoth." },
+      { question: "En 2022, LEGO a sorti la 'Diorama Collection'. Lequel de ces sets N'EST PAS un diorama ?", options: ["Le Palais de Jabba", "La Poursuite dans les tranchées de l'Étoile de la Mort", "L'Entraînement Jedi sur Dagobah", "L'Écrasement du compacteur de déchets"], correct: 0, category: "Sets LEGO", explanation: "Le Palais de Jabba a été un diorama plus tard en 2023/24 mais lors du lancement de 2022, seuls le compacteur, Dagobah et les tranchées composaient la gamme." },
+      { question: "Quel acteur incarne Han Solo dans la trilogie originale ?", options: ["Harrison Ford", "Mark Hamill", "Carrie Fisher", "Alec Guinness"], correct: 0, category: "Acteurs", explanation: "Harrison Ford a rendu inoubliable ce contrebandier au grand cœur." },
+      { question: "Qui est le créateur de l'univers Star Wars ?", options: ["George Lucas", "Steven Spielberg", "J.J. Abrams", "Peter Jackson"], correct: 0, category: "Histoire", explanation: "George Lucas a imaginé cette épopée spatiale sortie en 1977." },
+      { question: "Comment s'appelle la planète de glace au début de l'Épisode V ?", options: ["Hoth", "Endor", "Naboo", "Jakku"], correct: 0, category: "Planètes", explanation: "C'est sur Hoth que l'Alliance Rebelle a établi la base Echo." },
+      { question: "Quel droïde sphérique accompagne Poe Dameron et Rey ?", options: ["BB-8", "R2-D2", "C-3PO", "D-O"], correct: 0, category: "Droïdes", explanation: "BB-8 a été introduit dans Le Réveil de la Force en 2015." },
+      { question: "Quel casque de pilote rebelle a été le premier à sortir dans la gamme LEGO 'Helmets' ?", options: ["Luke Skywalker (Red Five)", "Wedge Antilles", "Poe Dameron", "Lando Calrissian"], correct: 0, category: "Sets LEGO", explanation: "Le casque de pilote de Luke a rejoint la collection 18+ aux côtés de ceux de l'Empire et de Boba Fett." }
     ];
 
     /**
-     * MOTEUR AUDIO HYBRIDE (SFX SEULEMENT - SANS MUSIQUE)
+     * SOUND ENGINE - Synthétiseur Laser & Blaster
      */
     class SoundEngine {
       constructor() {
         this.ctx = null;
         this.enabled = true;
       }
-
       initCtx() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) {
-            this.ctx = new AudioContext();
-          }
+          if (AudioContext) this.ctx = new AudioContext();
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
       }
-
-      playSaberCorrect() {
+      playSaber() { // Bonne réponse
         if (!this.enabled) return;
         this.initCtx();
-        if (!this.ctx) return;
-
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(280, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.35);
-
-        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.35);
-      }
-
-      playBlasterWrong() {
-        if (!this.enabled) return;
-        this.initCtx();
-        if (!this.ctx) return;
-
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(550, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.25);
-
-        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.25);
+        osc.frequency.setValueAtTime(60, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(120, this.ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.5, this.ctx.currentTime + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.6);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.6);
       }
-
-      playTick() {
+      playBlaster() { // Mauvaise réponse
         if (!this.enabled) return;
         this.initCtx();
-        if (!this.ctx) return;
-
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.3);
+      }
+      playJoker() { // Son du Joker
+        if (!this.enabled) return;
+        this.initCtx();
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(950, this.ctx.currentTime);
-
-        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.05);
+        osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(2000, this.ctx.currentTime + 0.3);
+        osc.frequency.linearRampToValueAtTime(800, this.ctx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.5);
       }
-
-      playVictoryFanfare() {
+      playTick() { // Timer
         if (!this.enabled) return;
         this.initCtx();
-        if (!this.ctx) return;
-
-        const notes = [261.6, 329.6, 392.0, 523.2];
-        notes.forEach((freq, idx) => {
-          setTimeout(() => {
-            if (!this.ctx) return;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start();
-            osc.stop(this.ctx.currentTime + 0.4);
-          }, idx * 130);
-        });
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1000, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.05);
       }
     }
 
     /**
-     * CONTRÔLEUR PRINCIPAL DE L'APPLICATION
+     * ANIMATION D'ÉTOILES
+     */
+    function createStars() {
+      const container = document.getElementById('starsContainer');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        star.style.animationDelay = (Math.random() * 2) + 's';
+        container.appendChild(star);
+      }
+    }
+    createStars();
+
+    /**
+     * MOTEUR DE JEU
      */
     class QuizApp {
       constructor() {
@@ -1193,16 +483,18 @@
         this.teamBScore = 0;
         this.currentTurn = 'teamA';
         
-        // Variables pour les noms
-        this.playerName = 'Joueur';
+        this.playerName = 'Maître Jedi';
         this.teamAName = 'Rebelles';
-        this.teamBName = 'Empire';
+        this.teamBName = "Empire";
         this.pendingMode = 'solo';
 
         this.timerEnabled = true;
         this.timerSeconds = 15;
         this.timerInterval = null;
         this.hasAnswered = false;
+
+        // État des Jokers 50/50
+        this.jokers = { solo: true, teamA: true, teamB: true };
 
         this.initUI();
       }
@@ -1227,11 +519,9 @@
 
       showScreen(screenId) {
         clearInterval(this.timerInterval);
-        document.getElementById('screen-welcome').classList.add('hidden');
-        document.getElementById('screen-quiz').classList.add('hidden');
-        document.getElementById('screen-results').classList.add('hidden');
-        document.getElementById('screen-leaderboard').classList.add('hidden');
-
+        ['welcome', 'quiz', 'results', 'leaderboard'].forEach(id => {
+          document.getElementById(`screen-${id}`).classList.add('hidden');
+        });
         document.getElementById(`screen-${screenId}`).classList.remove('hidden');
       }
 
@@ -1245,7 +535,6 @@
           document.getElementById('participantName').required = true;
           document.getElementById('team1Name').required = false;
           document.getElementById('team2Name').required = false;
-          // Petite astuce pour forcer le focus sur l'input une fois affiché
           setTimeout(() => document.getElementById('participantName').focus(), 50);
         } else {
           document.getElementById('soloNameInput').classList.add('hidden');
@@ -1265,10 +554,10 @@
       startWithNames(e) {
         e.preventDefault();
         if (this.pendingMode === 'solo') {
-          this.playerName = document.getElementById('participantName').value.trim() || 'Joueur';
+          this.playerName = document.getElementById('participantName').value.trim() || 'Jedi Inconnu';
         } else {
-          this.teamAName = document.getElementById('team1Name').value.trim() || 'Équipe 1';
-          this.teamBName = document.getElementById('team2Name').value.trim() || 'Équipe 2';
+          this.teamAName = document.getElementById('team1Name').value.trim() || 'Rebelles';
+          this.teamBName = document.getElementById('team2Name').value.trim() || 'Empire';
         }
         this.closeNameSetup();
         this.setupGame(this.pendingMode);
@@ -1279,12 +568,12 @@
         this.gameMode = mode;
         this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
 
-        // Configuration pour 10 questions
-        this.totalQuestionsCount = 10;
+        // Reset Jokers
+        this.jokers = { solo: true, teamA: true, teamB: true };
 
+        this.totalQuestionsCount = 10;
         const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
-        const targetCount = Math.min(this.totalQuestionsCount, shuffled.length);
-        this.activeQuestions = shuffled.slice(0, targetCount);
+        this.activeQuestions = shuffled.slice(0, Math.min(this.totalQuestionsCount, shuffled.length));
 
         this.currentIndex = 0;
         this.soloScore = 0;
@@ -1296,23 +585,19 @@
           document.getElementById('duelHeaderWidget').classList.remove('hidden');
           document.getElementById('soloHeaderWidget').classList.add('hidden');
           document.getElementById('teamTurnIndicator').classList.remove('hidden');
-          document.getElementById('uiTeamAName').innerText = this.teamAName;
-          document.getElementById('uiTeamBName').innerText = this.teamBName;
+          document.getElementById('uiTeamAName').innerText = this.teamAName.toUpperCase();
+          document.getElementById('uiTeamBName').innerText = this.teamBName.toUpperCase();
           this.updateDuelHeader();
         } else {
           document.getElementById('duelHeaderWidget').classList.add('hidden');
           document.getElementById('soloHeaderWidget').classList.remove('hidden');
           document.getElementById('teamTurnIndicator').classList.add('hidden');
-          document.getElementById('uiSoloName').innerText = this.playerName;
+          document.getElementById('uiSoloName').innerText = this.playerName.toUpperCase();
           document.getElementById('soloScore').innerText = '0';
         }
 
         const timerContainer = document.getElementById('timerContainer');
-        if (this.timerEnabled) {
-          timerContainer.classList.remove('hidden');
-        } else {
-          timerContainer.classList.add('hidden');
-        }
+        this.timerEnabled ? timerContainer.classList.remove('hidden') : timerContainer.classList.add('hidden');
 
         this.showScreen('quiz');
         this.loadQuestion();
@@ -1331,30 +616,81 @@
         const turnText = document.getElementById('teamTurnText');
 
         if (this.currentTurn === 'teamA') {
-          teamABox.className = "px-3 py-1.5 rounded-lg border border-blue-400 bg-blue-950/60 shadow-lg shadow-blue-500/20";
-          teamBBox.className = "px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-900/60 opacity-60";
-          turnText.innerHTML = `Au tour de : <span class="text-blue-400 font-black">${this.teamAName.toUpperCase()}</span> !`;
+          teamABox.className = "px-4 py-2 rounded-lg border-2 border-blue-400 bg-blue-900/50 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)] scale-105 transition-all";
+          teamBBox.className = "px-4 py-2 rounded-lg border border-slate-600 bg-slate-800 text-slate-500 opacity-60 scale-95 transition-all";
+          turnText.innerHTML = `Au tour de : <span class="text-blue-400 font-bold tracking-widest">${this.teamAName.toUpperCase()}</span>`;
         } else {
-          teamBBox.className = "px-3 py-1.5 rounded-lg border border-red-500 bg-red-950/60 shadow-lg shadow-red-500/20";
-          teamABox.className = "px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-900/60 opacity-60";
-          turnText.innerHTML = `Au tour de : <span class="text-red-400 font-black">${this.teamBName.toUpperCase()}</span> !`;
+          teamBBox.className = "px-4 py-2 rounded-lg border-2 border-red-400 bg-red-900/50 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)] scale-105 transition-all";
+          teamABox.className = "px-4 py-2 rounded-lg border border-slate-600 bg-slate-800 text-slate-500 opacity-60 scale-95 transition-all";
+          turnText.innerHTML = `Au tour de : <span class="text-red-500 font-bold tracking-widest">${this.teamBName.toUpperCase()}</span>`;
         }
+      }
+
+      /**
+       * GESTION DU JOKER 50/50
+       */
+      updateJokerUI() {
+        const btn = document.getElementById('jokerBtn');
+        let available = false;
+        
+        if (this.gameMode === 'solo') {
+          available = this.jokers.solo;
+        } else {
+          available = (this.currentTurn === 'teamA') ? this.jokers.teamA : this.jokers.teamB;
+        }
+
+        if (available && !this.hasAnswered) {
+          btn.disabled = false;
+          btn.className = "px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 font-bold rounded-lg shadow-[0_0_10px_rgba(250,204,21,0.5)] hover:scale-105 transition-all flex items-center gap-2 font-sw text-sm";
+        } else {
+          btn.disabled = true;
+          btn.className = "px-4 py-2 bg-slate-700 text-slate-500 font-bold rounded-lg cursor-not-allowed flex items-center gap-2 font-sw text-sm border border-slate-600 grayscale opacity-50";
+        }
+      }
+
+      useJoker5050() {
+        if (this.hasAnswered) return;
+        
+        let available = false;
+        if (this.gameMode === 'solo' && this.jokers.solo) {
+          this.jokers.solo = false; available = true;
+        } else if (this.gameMode === 'duel') {
+          if (this.currentTurn === 'teamA' && this.jokers.teamA) {
+            this.jokers.teamA = false; available = true;
+          } else if (this.currentTurn === 'teamB' && this.jokers.teamB) {
+            this.jokers.teamB = false; available = true;
+          }
+        }
+
+        if (!available) return;
+
+        this.sound.playJoker();
+        this.updateJokerUI(); // Désactive le bouton
+
+        // On masque 2 mauvaises réponses
+        const q = this.activeQuestions[this.currentIndex];
+        const correctText = q.options[q.correct];
+        const buttons = Array.from(document.querySelectorAll('#optionsGrid button'));
+        
+        const wrongButtons = buttons.filter(btn => btn.querySelector('.font-bold').innerText !== correctText);
+        
+        // Mélanger les mauvais boutons et masquer les deux premiers
+        wrongButtons.sort(() => 0.5 - Math.random());
+        wrongButtons[0].style.opacity = '0';
+        wrongButtons[0].style.pointerEvents = 'none';
+        wrongButtons[1].style.opacity = '0';
+        wrongButtons[1].style.pointerEvents = 'none';
       }
 
       loadQuestion() {
         this.hasAnswered = false;
         clearInterval(this.timerInterval);
+        
+        this.updateJokerUI(); // Vérifie si le Joker est dispo pour ce tour
 
         const q = this.activeQuestions[this.currentIndex];
-        document.getElementById('currentRoundBadge').innerText = `Question ${this.currentIndex + 1} / ${this.activeQuestions.length}`;
-        document.getElementById('categoryBadge').innerText = q.category || 'Star Wars';
-
-        const catBadge = document.getElementById('categoryBadge');
-        if (q.category && q.category.includes('LEGO')) {
-          catBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/40';
-        } else {
-          catBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30';
-        }
+        document.getElementById('currentRoundBadge').innerText = `Q${this.currentIndex + 1} / ${this.activeQuestions.length}`;
+        document.getElementById('categoryBadge').innerText = q.category || 'Galaxie';
 
         document.getElementById('questionText').innerText = q.question;
         document.getElementById('feedbackContainer').classList.add('hidden');
@@ -1372,74 +708,36 @@
         const letters = ['A', 'B', 'C', 'D'];
         choices.forEach((choice, i) => {
           const btn = document.createElement('button');
-          btn.className = `group w-full p-4 rounded-2xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-left flex items-center justify-between transition-all transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none`;
+          btn.className = `option-btn group w-full p-4 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 hover:border-yellow-400 text-left flex items-center justify-between shadow-sm focus:outline-none transition-all`;
           btn.innerHTML = `
-            <div class="flex items-center gap-3.5">
-              <span class="w-8 h-8 rounded-lg bg-slate-900 group-hover:bg-yellow-400 group-hover:text-black flex items-center justify-center font-scifi font-bold text-xs text-yellow-400 border border-slate-700 transition">
-                ${letters[i] || '•'}
+            <div class="flex items-center gap-4">
+              <span class="w-10 h-10 rounded bg-slate-900 group-hover:bg-yellow-400 group-hover:text-slate-900 flex items-center justify-center font-sw text-xl text-slate-400 border border-slate-700 group-hover:border-yellow-400 transition-colors">
+                ${letters[i]}
               </span>
-              <span class="text-sm md:text-base font-semibold text-slate-100">${choice.text}</span>
+              <span class="text-sm md:text-base font-bold text-slate-200">${choice.text}</span>
             </div>
-            <div class="option-icon opacity-0 transition"></div>
+            <div class="option-icon opacity-0 transition-opacity"></div>
           `;
 
           btn.onclick = () => this.handleAnswer(choice.isCorrect, btn, choices);
           grid.appendChild(btn);
         });
 
-        if (this.timerEnabled) {
-          this.startTimer();
-        }
+        if (this.timerEnabled) this.startTimer();
       }
-      
-        useJoker() {
-        if (this.hasAnswered) return;
-        
-        const currentEntity = this.gameMode === 'solo' ? 'solo' : this.currentTurn;
-        if (this.jokers[currentEntity] <= 0) return; // Joker déjà utilisé
 
-        // Consommer le Joker
-        this.jokers[currentEntity] = 0;
-        this.sound.playSparkle(); // Bruit magique
-
-        // Griser le bouton
-        const jokerBtn = document.getElementById('jokerBtn');
-        jokerBtn.classList.add('opacity-40', 'cursor-not-allowed', 'scale-95', 'grayscale');
-        jokerBtn.classList.remove('hover:scale-105', 'hover:from-purple-500', 'hover:to-pink-500');
-        jokerBtn.disabled = true;
-
-        // Trouver les mauvaises réponses
-        const q = this.activeQuestions[this.currentIndex];
-        const correctText = q.options[q.correct];
-        const buttons = Array.from(document.querySelectorAll('#optionsGrid button'));
-        
-        const wrongButtons = buttons.filter(btn => {
-          const text = btn.querySelector('.font-bold').innerText;
-          return text !== correctText;
-        });
-
-        // En désactiver 2 au hasard
-        wrongButtons.sort(() => 0.5 - Math.random());
-        const toDisable = wrongButtons.slice(0, 2);
-
-        toDisable.forEach(btn => {
-          btn.disabled = true;
-          btn.classList.add('opacity-20');
-          btn.classList.remove('hover:bg-pink-50', 'hover:border-pink-300');
-        });
-      }
       startTimer() {
         this.timerSeconds = 15;
         const box = document.getElementById('timerBox');
         box.innerText = this.timerSeconds;
-        box.className = "w-11 h-11 rounded-full bg-slate-800 border-2 border-yellow-400 flex items-center justify-center font-black text-yellow-400 text-lg transition-colors";
+        box.className = "w-12 h-12 rounded bg-slate-900 border-2 border-yellow-400 flex items-center justify-center font-sw text-yellow-400 text-2xl shadow-[0_0_10px_rgba(250,204,21,0.3)]";
 
         this.timerInterval = setInterval(() => {
           this.timerSeconds--;
           box.innerText = this.timerSeconds;
 
           if (this.timerSeconds <= 5) {
-            box.className = "w-11 h-11 rounded-full bg-red-950/80 border-2 border-red-500 flex items-center justify-center font-black text-red-400 text-lg animate-danger-pulse";
+            box.className = "w-12 h-12 rounded bg-red-900/30 border-2 border-red-500 flex items-center justify-center font-sw text-red-500 text-2xl animate-danger-pulse";
             this.sound.playTick();
           }
 
@@ -1453,7 +751,8 @@
       handleTimeout() {
         if (this.hasAnswered) return;
         this.hasAnswered = true;
-        this.sound.playBlasterWrong();
+        this.sound.playBlaster();
+        this.updateJokerUI(); // Désactive Joker si temps écoulé
         this.revealAnswers(null, false, true);
       }
 
@@ -1461,29 +760,24 @@
         if (this.hasAnswered) return;
         this.hasAnswered = true;
         clearInterval(this.timerInterval);
+        
+        this.updateJokerUI(); // Bloque le Joker
 
         if (isCorrect) {
-          this.sound.playSaberCorrect();
+          this.sound.playSaber();
           if (typeof confetti === 'function') {
-            confetti({
-              particleCount: 35,
-              spread: 60,
-              origin: { y: 0.7 }
-            });
+            confetti({ particleCount: 50, spread: 60, colors: ['#eab308', '#3b82f6'], origin: { y: 0.65 } });
           }
 
           if (this.gameMode === 'solo') {
             this.soloScore++;
             document.getElementById('soloScore').innerText = this.soloScore;
           } else {
-            if (this.currentTurn === 'teamA') {
-              this.teamAScore++;
-            } else {
-              this.teamBScore++;
-            }
+            if (this.currentTurn === 'teamA') this.teamAScore++;
+            else this.teamBScore++;
           }
         } else {
-          this.sound.playBlasterWrong();
+          this.sound.playBlaster();
         }
 
         this.revealAnswers(clickedBtn, isCorrect, false);
@@ -1496,19 +790,21 @@
 
         buttons.forEach(btn => {
           btn.disabled = true;
-          const text = btn.querySelector('.font-semibold').innerText;
+          const text = btn.querySelector('.font-bold').innerText;
           const icon = btn.querySelector('.option-icon');
 
           if (text === correctText) {
-            btn.className = "w-full p-4 rounded-2xl bg-emerald-950/80 border-2 border-emerald-400 text-left flex items-center justify-between";
-            icon.innerHTML = `<span class="text-emerald-400 font-bold text-lg">✓</span>`;
+            btn.className = "w-full p-4 rounded-xl bg-green-900/30 border-2 border-green-500 text-left flex items-center justify-between shadow-[0_0_15px_rgba(34,197,94,0.3)] transform scale-[1.02] transition-transform";
+            icon.innerHTML = `<span class="text-green-400 font-black text-2xl">✓</span>`;
             icon.classList.remove('opacity-0');
           } else if (btn === clickedBtn && !isCorrect) {
-            btn.className = "w-full p-4 rounded-2xl bg-red-950/80 border-2 border-red-500 text-left flex items-center justify-between";
-            icon.innerHTML = `<span class="text-red-400 font-bold text-lg">✕</span>`;
+            btn.className = "w-full p-4 rounded-xl bg-red-900/30 border-2 border-red-500 text-left flex items-center justify-between shadow-[0_0_15px_rgba(239,68,68,0.3)]";
+            icon.innerHTML = `<span class="text-red-500 font-black text-2xl">✕</span>`;
             icon.classList.remove('opacity-0');
           } else {
-            btn.className = "w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-left opacity-40 flex items-center justify-between";
+            if (btn.style.opacity !== '0') { // Ne pas ré-afficher ceux masqués par le joker
+              btn.className = "w-full p-4 rounded-xl bg-slate-800 border-2 border-slate-700 text-left opacity-40 flex items-center justify-between";
+            }
           }
         });
 
@@ -1519,24 +815,22 @@
         feedbackContainer.classList.remove('hidden');
 
         if (isTimeout) {
-          feedbackContainer.className = "mt-6 p-4 rounded-xl border border-amber-500/30 bg-amber-950/30 text-center space-y-2";
-          feedbackTitle.innerText = "⏳ Temps écoulé !";
-          feedbackTitle.className = "font-scifi font-bold text-lg text-amber-400";
+          feedbackContainer.className = "mt-8 p-5 rounded-xl border border-orange-500 bg-orange-900/20 text-left space-y-3";
+          feedbackTitle.innerText = "⏳ TROP LENT, CHEVALIER !";
+          feedbackTitle.className = "font-sw text-2xl text-orange-400";
         } else if (isCorrect) {
-          feedbackContainer.className = "mt-6 p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/30 text-center space-y-2";
-          feedbackTitle.innerText = "⭐ Excellente réponse !";
-          feedbackTitle.className = "font-scifi font-bold text-lg text-emerald-400";
+          feedbackContainer.className = "mt-8 p-5 rounded-xl border border-green-500 bg-green-900/20 text-left space-y-3";
+          feedbackTitle.innerText = "✨ LA FORCE EST PUISSANTE !";
+          feedbackTitle.className = "font-sw text-2xl text-green-400";
         } else {
-          feedbackContainer.className = "mt-6 p-4 rounded-xl border border-red-500/30 bg-red-950/30 text-center space-y-2";
-          feedbackTitle.innerText = "❌ Raté ! Les briques se sont effondrées";
-          feedbackTitle.className = "font-scifi font-bold text-lg text-red-400";
+          feedbackContainer.className = "mt-8 p-5 rounded-xl border border-red-500 bg-red-900/20 text-left space-y-3";
+          feedbackTitle.innerText = "💥 ÉCHEC DE LA MISSION !";
+          feedbackTitle.className = "font-sw text-2xl text-red-400";
         }
 
-        feedbackExplanation.innerText = q.explanation || "Bravo pour l'effort d'équipe !";
+        feedbackExplanation.innerText = q.explanation;
         
-        if (this.gameMode === 'duel') {
-          this.updateDuelHeader();
-        }
+        if (this.gameMode === 'duel') this.updateDuelHeader();
       }
 
       nextQuestion() {
@@ -1554,23 +848,10 @@
 
       showResults() {
         this.showScreen('results');
-        this.sound.playVictoryFanfare();
 
         if (typeof confetti === 'function') {
-          confetti({
-            particleCount: 120,
-            spread: 90,
-            origin: { y: 0.5 }
-          });
+          confetti({ particleCount: 150, spread: 100, colors: ['#eab308', '#ffffff'], origin: { y: 0.3 } });
         }
-
-        const mottos = [
-          "Que vos constructions soient solides et vos ventes légendaires aujourd'hui !",
-          "Préparez les sabres laser et faites briller le mur Pick-a-Brick !",
-          "La Force est puissante dans cette équipe du matin. Belle journée en magasin !",
-          "Un grand Jedi sait conseiller le bon set à la bonne personne au bon moment !"
-        ];
-        document.getElementById('dailyMotto').innerText = mottos[Math.floor(Math.random() * mottos.length)];
 
         if (this.gameMode === 'solo') {
           document.getElementById('soloScoreDisplay').classList.remove('hidden');
@@ -1580,28 +861,17 @@
           const total = this.activeQuestions.length;
           document.getElementById('finalScoreVal').innerText = `${finalScore} / ${total}`;
 
-          let rank = "";
-          let icon = "🏆";
+          let rank = ""; let icon = "🏆";
           const ratio = finalScore / total;
 
-          if (ratio === 1) {
-            rank = "Grand Maître du Conseil Jedi & Vendeur Légendaire";
-            icon = "👑";
-          } else if (ratio >= 0.75) {
-            rank = "Chevalier Jedi du Floor";
-            icon = "⚔️";
-          } else if (ratio >= 0.5) {
-            rank = "Padawan Prometteur du LEGO Store";
-            icon = "🧱";
-          } else {
-            rank = "Recrue des Mines d'Épice de Kessel (Un café s'impose !)";
-            icon = "☕";
-          }
+          if (ratio === 1) { rank = "Maître du Conseil Jedi"; icon = "👑"; }
+          else if (ratio >= 0.75) { rank = "Chevalier Jedi"; icon = "⚔️"; }
+          else if (ratio >= 0.5) { rank = "Padawan"; icon = "🛸"; }
+          else { rank = "Droïde Pit"; icon = "🤖"; }
 
-          document.getElementById('rankTitleBadge').innerText = `Rang : ${rank}`;
+          document.getElementById('rankTitleBadge').innerText = `RANG : ${rank}`;
           document.getElementById('resultTrophyIcon').innerText = icon;
           
-          // Sauvegarder dans le leaderboard
           this.saveScoreToLocal({ mode: 'solo', name: this.playerName, score: finalScore, total: total, rank: rank });
         } else {
           document.getElementById('soloScoreDisplay').classList.add('hidden');
@@ -1615,20 +885,16 @@
           const duelWinnerText = document.getElementById('duelWinnerText');
           let winner = "";
           if (this.teamAScore > this.teamBScore) {
-            duelWinnerText.innerHTML = `🚀 Victoire éclatante de : <span class='text-blue-400 font-black'>${this.teamAName}</span> !`;
-            document.getElementById('resultTrophyIcon').innerText = "🛸";
-            winner = this.teamAName;
+            duelWinnerText.innerHTML = `✨ LA FACTION <span class='text-blue-900 font-bold uppercase'>${this.teamAName}</span> L'EMPORTE !`;
+            document.getElementById('resultTrophyIcon').innerText = "🏅"; winner = this.teamAName;
           } else if (this.teamBScore > this.teamAScore) {
-            duelWinnerText.innerHTML = `⚡ Victoire impériale pour : <span class='text-red-400 font-black'>${this.teamBName}</span> !`;
-            document.getElementById('resultTrophyIcon').innerText = "💀";
-            winner = this.teamBName;
+            duelWinnerText.innerHTML = `✨ LA FACTION <span class='text-red-900 font-bold uppercase'>${this.teamBName}</span> L'EMPORTE !`;
+            document.getElementById('resultTrophyIcon').innerText = "🏅"; winner = this.teamBName;
           } else {
-            duelWinnerText.innerHTML = "🤝 Égalité parfaite ! La Force a trouvé son équilibre ce matin.";
-            document.getElementById('resultTrophyIcon').innerText = "⚖️";
-            winner = "Égalité";
+            duelWinnerText.innerHTML = "🤝 ÉQUILIBRE DANS LA FORCE ! ÉGALITÉ !";
+            document.getElementById('resultTrophyIcon').innerText = "⚖️"; winner = "Égalité";
           }
           
-          // Sauvegarder dans l'historique
           this.saveScoreToLocal({ 
             mode: 'duel', 
             teamA: this.teamAName, scoreA: this.teamAScore,
@@ -1654,11 +920,11 @@
         const tabSolo = document.getElementById('tabSolo');
         const tabDuel = document.getElementById('tabDuel');
         if (filterMode === 'solo') {
-          tabSolo.className = "text-yellow-400 font-bold border-b-2 border-yellow-400 px-4 py-2";
-          tabDuel.className = "text-slate-500 hover:text-slate-300 font-bold px-4 py-2";
+          tabSolo.className = "text-yellow-400 border-b-2 border-yellow-400 px-4 py-2 transition";
+          tabDuel.className = "text-slate-500 hover:text-white px-4 py-2 transition";
         } else {
-          tabDuel.className = "text-yellow-400 font-bold border-b-2 border-yellow-400 px-4 py-2";
-          tabSolo.className = "text-slate-500 hover:text-slate-300 font-bold px-4 py-2";
+          tabDuel.className = "text-yellow-400 border-b-2 border-yellow-400 px-4 py-2 transition";
+          tabSolo.className = "text-slate-500 hover:text-white px-4 py-2 transition";
         }
         
         const listContainer = document.getElementById('leaderboardList');
@@ -1668,61 +934,45 @@
         let filteredScores = scores.filter(s => s.mode === filterMode);
         
         if (filteredScores.length === 0) {
-          listContainer.innerHTML = `<div class="text-center py-10 text-slate-500 italic text-sm">Aucun score enregistré. Que la Force soit avec les prochains participants !</div>`;
+          listContainer.innerHTML = `<div class="text-center py-12 text-slate-500 italic text-base">Archives vides.</div>`;
           return;
         }
         
         if (filterMode === 'solo') {
-          // Tri : Le meilleur ratio (score/total), puis le plus récent
-          filteredScores.sort((a, b) => {
-            const ratioA = a.score / a.total;
-            const ratioB = b.score / b.total;
-            if (ratioB !== ratioA) return ratioB - ratioA;
-            return new Date(b.date) - new Date(a.date);
-          });
-          
+          filteredScores.sort((a, b) => (b.score / b.total) - (a.score / a.total));
           filteredScores.forEach((s, idx) => {
-            const date = new Date(s.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
-            const ratio = Math.round((s.score / s.total) * 100);
+            const date = new Date(s.date).toLocaleDateString('fr-FR');
             listContainer.innerHTML += `
-              <div class="flex items-center justify-between p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 hover:bg-slate-700/60 transition">
+              <div class="flex items-center justify-between p-4 rounded-xl bg-slate-800 border border-slate-600">
                 <div class="flex items-center gap-4">
-                  <div class="w-8 text-center text-xl font-bold font-scifi ${idx === 0 ? 'text-yellow-400 text-2xl' : (idx === 1 ? 'text-slate-300' : (idx === 2 ? 'text-amber-600' : 'text-slate-500'))}">
-                    #${idx + 1}
-                  </div>
+                  <div class="w-8 text-center font-sw text-xl ${idx === 0 ? 'text-yellow-400' : 'text-slate-400'}">#${idx + 1}</div>
                   <div>
-                    <div class="font-black text-slate-100 uppercase tracking-wide">${s.name}</div>
-                    <div class="text-xs text-slate-400">${date} - <span class="italic">${s.rank}</span></div>
+                    <div class="font-sw text-white text-lg">${s.name}</div>
+                    <div class="text-xs text-slate-400">${date} - <span class="text-yellow-500">${s.rank}</span></div>
                   </div>
                 </div>
                 <div class="text-right">
-                  <div class="font-bold text-yellow-400 font-scifi text-xl">${s.score} <span class="text-sm text-slate-500">/ ${s.total}</span></div>
-                  <div class="text-[10px] uppercase font-bold text-slate-500">${ratio}% de réussite</div>
+                  <div class="font-bold text-yellow-400 font-sw text-2xl">${s.score} <span class="text-sm text-slate-500">/ ${s.total}</span></div>
                 </div>
               </div>
             `;
           });
         } else {
-          // Tri duel : du plus récent au plus ancien
           filteredScores.sort((a, b) => new Date(b.date) - new Date(a.date));
-          
-          filteredScores.forEach((s, idx) => {
-            const date = new Date(s.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
+          filteredScores.forEach((s) => {
+            const date = new Date(s.date).toLocaleDateString('fr-FR');
             listContainer.innerHTML += `
-              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-3">
-                <div class="flex justify-between items-center text-xs text-slate-400">
-                  <span class="font-bold">Match du ${date}</span>
-                  <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 font-semibold ${s.winner === 'Égalité' ? 'text-slate-300' : 'text-yellow-400'}">Vainqueur : ${s.winner}</span>
-                </div>
-                <div class="flex items-stretch justify-between gap-3">
-                  <div class="flex-1 text-center bg-blue-950/40 rounded-lg py-2 border border-blue-500/20 flex flex-col justify-center">
-                    <span class="block text-xs font-black uppercase text-blue-400 truncate px-1" title="${s.teamA}">${s.teamA}</span>
-                    <span class="text-2xl font-bold font-scifi text-white">${s.scoreA} <span class="text-xs text-slate-500">/ ${s.total}</span></span>
+              <div class="p-4 rounded-xl bg-slate-800 border border-slate-600 space-y-3">
+                <div class="text-xs text-slate-400 text-center font-bold">Partie du ${date} - Vainqueur: <span class="text-yellow-400">${s.winner}</span></div>
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex-1 text-center bg-blue-900/30 py-2 rounded border border-blue-500/50">
+                    <div class="text-xs font-sw text-blue-400">${s.teamA}</div>
+                    <div class="text-2xl font-sw text-white">${s.scoreA}</div>
                   </div>
-                  <div class="flex items-center px-1 font-black text-slate-600 text-sm italic">VS</div>
-                  <div class="flex-1 text-center bg-red-950/40 rounded-lg py-2 border border-red-500/20 flex flex-col justify-center">
-                    <span class="block text-xs font-black uppercase text-red-400 truncate px-1" title="${s.teamB}">${s.teamB}</span>
-                    <span class="text-2xl font-bold font-scifi text-white">${s.scoreB} <span class="text-xs text-slate-500">/ ${s.total}</span></span>
+                  <div class="text-slate-500 font-sw">VS</div>
+                  <div class="flex-1 text-center bg-red-900/30 py-2 rounded border border-red-500/50">
+                    <div class="text-xs font-sw text-red-500">${s.teamB}</div>
+                    <div class="text-2xl font-sw text-white">${s.scoreB}</div>
                   </div>
                 </div>
               </div>
@@ -1732,58 +982,16 @@
       }
       
       clearLeaderboard() {
-        if (confirm("Êtes-vous sûr de vouloir effacer tout l'historique du magasin ?")) {
+        if (confirm("Purger les archives Jedi définitivement ?")) {
           localStorage.removeItem('legoStarWarsQuizScores');
           this.renderLeaderboardList('solo');
         }
       }
-
-      openCustomModal() {
-        document.getElementById('customModal').classList.remove('hidden');
-      }
-
-      closeCustomModal() {
-        document.getElementById('customModal').classList.add('hidden');
-        document.getElementById('addQuestionForm').reset();
-      }
-
-      handleCustomQuestionSubmit(e) {
-        e.preventDefault();
-        const text = document.getElementById('custQText').value.trim();
-        const correct = document.getElementById('custQCorrect').value.trim();
-        const wrong1 = document.getElementById('custQWrong1').value.trim();
-        const wrong2 = document.getElementById('custQWrong2').value.trim();
-        const wrong3 = document.getElementById('custQWrong3').value.trim();
-        const expl = document.getElementById('custQExpl').value.trim() || "Question personnalisée ajoutée pour le brief d'équipe !";
-
-        if (!text || !correct || !wrong1) return;
-
-        this.questionsPool.unshift({
-          question: text,
-          options: [correct, wrong1, wrong2 || "Autre", wrong3 || "Inconnu"],
-          correct: 0,
-          category: "Spécial Store",
-          explanation: expl
-        });
-
-        this.initUI();
-        this.closeCustomModal();
-        this.sound.playSaberCorrect();
-      }
     }
 
-    // Initialisation immédiate et globale pour éviter ReferenceError: app is not defined
-    const initApp = () => {
-      if (!window.app) {
-        window.app = new QuizApp();
-      }
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initApp);
-    } else {
-      initApp();
-    }
+    const initApp = () => { if (!window.app) window.app = new QuizApp(); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
+    else initApp();
   </script>
 </body>
 </html>
