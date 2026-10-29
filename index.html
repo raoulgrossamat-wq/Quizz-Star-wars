@@ -12,6 +12,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
 
   <style>
+    <!-- La balise audio invisible -->
+<audio id="musique-quiz" src="musique-fond.mp3" loop></audio>
+
+<!-- Le script de déclenchement -->
+<script>
+  document.body.addEventListener('click', function() {
+    const musique = document.getElementById('musique-quiz');
+    if (musique.paused) {
+      musique.play().catch(erreur => console.log("Attente d'interaction de l'utilisateur..."));
+    }
+  }, { once: true });
+</script>
     body {
       font-family: 'Oswald', sans-serif;
       background-color: #050505; /* Espace profond */
